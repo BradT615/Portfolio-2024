@@ -1,101 +1,100 @@
-import Image from "next/image";
+import Link from 'next/link';
+import { Logo } from '@/components/Logo';
+import { SkillsTree } from '@/components/SkillsTree';
+import ProductCard from '@/components/ProductCard';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const projects = [
+    {
+      title: "Full Stack Spotify Clone",
+      description: "A web app built using the Spotify API and SDK. It integrates OAuth 2.0 for authentication, employs RESTful services, and uses AJAX for real-time data interactions, delivering a dynamic user experience reminiscent of the original platform.",
+      imageUrl: "/images/spotifyCloneThumbnail.png",
+      liveLink: "#", // Add the live link if available
+      repoLink: "https://github.com/BradT615/Spotify-Clone",
+      skills: ["React", "Spotify API", "OAuth 2.0", "RESTful", "AJAX"]
+    },
+    {
+      title: "Algorithm Visualizer",
+      description: "A React-based web application showcasing 16 unique sorting algorithms with interactive visualizations, offering an engaging, user-friendly experience for learning and exploring algorithm dynamics.",
+      imageUrl: "/images/AlgorithmThumbnail.png",
+      liveLink: "https://bradt615algorithm.netlify.app/",
+      repoLink: "https://github.com/BradT615/Algorithm-Visualizer",
+      skills: ["React", "JavaScript", "Algorithms", "Data Structures"]
+    },
+    {
+      title: "Habit Tracker",
+      description: "A React-powered habit tracking app, deployed using Firebase, leveraging robust Firebase authentication and efficient Firestore integration for secure user management and real-time data synchronization.",
+      imageUrl: "/images/StreakThumbnail.png",
+      liveLink: "https://bradt615-streaks.web.app/",
+      repoLink: "https://github.com/BradT615/Streaks",
+      skills: ["React", "Firebase", "Firestore", "Authentication"]
+    },
+    {
+      title: "Sudoku Game",
+      description: "A dynamic web platform that generates Sudoku puzzles using a sophisticated recursive algorithm. This ensures diverse and challenging puzzles for users. Tailored for optimal user experience, the site offers both puzzle creation and advanced solving tools.",
+      imageUrl: "/images/sudokuThumbnail.png",
+      liveLink: "https://bradt615sudoku.netlify.app",
+      repoLink: "https://github.com/BradT615/Sudoku",
+      skills: ["JavaScript", "Algorithms", "HTML", "CSS"]
+    },
+    {
+      title: "Movie Database",
+      description: "A web app powered by the TMDb API, allowing users to find movies and view their details such as title, image, rating, and summary.",
+      imageUrl: "/images/movieDatabaseThumbnail.png",
+      liveLink: "https://bradt615movie.netlify.app",
+      repoLink: "https://github.com/BradT615/MovieDatabase",
+      skills: ["React", "TMDb API", "REST API", "Tailwind CSS"]
+    }
+  ];
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  return (
+    <div className="flex flex-col h-screen text-neutral-300">
+      {/* Fixed Header */}
+      <header className='fixed top-0 left-0 right-0 z-50 flex items-center w-full h-16 px-5 bg-neutral-800 border-b border-neutral-800'>
+        <div className='flex items-center w-full'>
+          <Logo 
+            startColor="#f5f5f5" 
+            endColor="#f5f5f5" 
+            className="h-10 w-10 mr-2"
+          />
+          <div className='flex items-center gap-4'>
+            <h1 className='text-xl font-bold'>Brad Titus</h1>
+            <button className='px-3 py-1.5 text-sm font-semibold text-neutral-900 bg-neutral-300 rounded-lg hover:bg-neutral-200 transition-colors'>
+              Resume
+            </button>
+          </div>
+          <div className='flex-1' />
+          <nav className='flex items-center text-lg'>
+            <Link href='https://www.linkedin.com/in/bradt615/' className='nav-link hover:text-neutral-400 transition-colors' target="_blank">LinkedIn</Link>
+            <span className="mx-6">/</span>
+            <Link href='https://github.com/BradT615' className='nav-link hover:text-neutral-400 transition-colors' target="_blank">Github</Link>
+            <span className="mx-6">/</span>
+            <a href='#' className='nav-link hover:text-neutral-400 transition-colors'>Email</a>
+          </nav>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </header>
+
+      {/* Main Content with Fixed Sidebar */}
+      <div className="flex flex-1 pt-16">
+        {/* Fixed Sidebar */}
+        <aside className="fixed top-16 left-0 bottom-0 w-80 overflow-y-auto bg-neutral-800 border-r border-neutral-800">
+          <div className='p-4'>
+            <SkillsTree />
+          </div>
+        </aside>
+
+        {/* Main Content Area */}
+        <main className='flex-1 ml-80 p-8 bg-neutral-900'>
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl font-semibold mb-8">Projects</h2>
+            <div className="flex flex-col gap-8">
+              {projects.map((project, index) => (
+                <ProductCard key={index} {...project} />
+              ))}
+            </div>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
