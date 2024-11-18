@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, ReactNode } from "react";
-import { FileIcon, FolderIcon, ChevronRight } from "lucide-react";
+import React, { useState, ReactNode, useRef, useEffect } from "react";
+import { FileIcon, FolderIcon, FolderOpenIcon, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -40,6 +40,7 @@ const Tree: React.FC<TreeProps> = ({ children }) => {
 
 const Folder: React.FC<FolderProps> = ({ element, children }) => {
   const [isOpen, setIsOpen] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <motion.div 
@@ -50,10 +51,11 @@ const Folder: React.FC<FolderProps> = ({ element, children }) => {
       <motion.div 
         className={cn(
           "flex items-center gap-2 p-1.5 text-sm cursor-pointer rounded-sm",
-          "hover:bg-neutral-800"
+          isHovered && "bg-neutral-800"
         )}
         onClick={() => setIsOpen(!isOpen)}
-        whileHover={{ backgroundColor: "rgba(38, 38, 38, 0.8)" }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         whileTap={{ scale: 0.98 }}
       >
         <motion.div
@@ -63,7 +65,11 @@ const Folder: React.FC<FolderProps> = ({ element, children }) => {
         >
           <ChevronRight className="h-4 w-4" />
         </motion.div>
-        <FolderIcon className="h-4 w-4" />
+        {isOpen ? (
+          <FolderOpenIcon className="h-4 w-4" />
+        ) : (
+          <FolderIcon className="h-4 w-4" />
+        )}
         <span>{element}</span>
       </motion.div>
       <AnimatePresence initial={false}>
@@ -104,7 +110,7 @@ const File: React.FC<FileProps> = ({ children }) => {
       whileHover={{ 
         x: 4,
         backgroundColor: "rgba(38, 38, 38, 0.8)",
-        transition: { duration: 0.2 }
+        transition: { duration: 0.1 }
       }}
       className="flex items-center gap-2 p-1.5 text-sm rounded-sm"
     >
@@ -142,14 +148,41 @@ const renderTechIcon = ({ iconPath, useFont }: TechIconProps) => {
 };
 
 export const SkillsTree: React.FC = () => {
+  const [showTopShadow, setShowTopShadow] = useState(false);
+  const [showBottomShadow, setShowBottomShadow] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const element = e.currentTarget;
+    const scrollTop = element.scrollTop;
+    const scrollHeight = element.scrollHeight;
+    const clientHeight = element.clientHeight;
+
+    setShowTopShadow(scrollTop > 0);
+    setShowBottomShadow(Math.ceil(scrollTop + clientHeight) < scrollHeight);
+  };
+
+  useEffect(() => {
+    if (containerRef.current) {
+      handleScroll({ currentTarget: containerRef.current } as React.UIEvent<HTMLDivElement>);
+    }
+  }, []);
+
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="w-full h-[calc(100vh-5rem)] rounded-lg bg-neutral-800/50 backdrop-blur-sm border border-neutral-700"
+      initial={{ opacity: 0, x: -50 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.5 }}
+      className="h-full relative"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="h-full overflow-y-auto px-4 py-2 custom-scrollbar">
+      <div 
+        ref={containerRef}
+        onScroll={handleScroll}
+        className="absolute inset-0 overflow-y-auto px-4 py-2 custom-scrollbar"
+      >
         <Tree>
           <Folder element="Skills">
             <Folder element="Front-End">
@@ -288,9 +321,19 @@ export const SkillsTree: React.FC = () => {
                 </div>
               </File>
             </Folder>
-            </Folder>
+          </Folder>
         </Tree>
       </div>
+      <div 
+        className={`absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-black/20 to-transparent pointer-events-none z-10 transition-opacity duration-500 ${
+          showTopShadow && isHovered ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
+      <div 
+        className={`absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-black/20 to-transparent pointer-events-none z-10 transition-opacity duration-500 ${
+          showBottomShadow && isHovered ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
     </motion.div>
   );
 };

@@ -47,28 +47,74 @@
 }
 
 @layer utilities {
-  .custom-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: #525252 transparent;
+  @media (pointer: fine) {
+    .custom-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: transparent transparent;
+      transition: scrollbar-color 0.3s ease-in-out;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+      border-radius: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: transparent;
+      border-radius: 4px;
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    .custom-scrollbar:hover {
+      scrollbar-color: #525252 transparent;
+    }
+
+    .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+      background-color: #525252;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background-color: #666666;
+    }
   }
 
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+  /* Mobile Devices */
+  @media (pointer: coarse) {
+    .custom-scrollbar {
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: #525252 transparent;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+      border-radius: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: #525252;
+      border-radius: 4px;
+    }
   }
 
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: 4px;
+  .scrollbar-hidden {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #525252;
-    border-radius: 4px;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: #666666;
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
   }
 
   * {
@@ -76,8 +122,26 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  .motion-reduce * {
-    transition: none !important;
-    animation: none !important;
+  @media (prefers-reduced-motion: reduce) {
+    .custom-scrollbar {
+      transition: none;
+    }
+    
+    .motion-reduce * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .custom-scrollbar {
+      scroll-behavior: smooth;
+    }
+  }
+
+  @supports (-webkit-overflow-scrolling: touch) {
+    .custom-scrollbar {
+      -webkit-overflow-scrolling: touch;
+    }
   }
 }
