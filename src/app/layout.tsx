@@ -20,7 +20,7 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" 
         />
       </head>
-      <body className="min-h-full h-full bg-neutral-900">
+      <body className="min-h-full h-full text-neutral-400 bg-neutral-900">
         {children}
       </body>
     </html>

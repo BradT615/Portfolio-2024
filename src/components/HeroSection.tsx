@@ -1,70 +1,52 @@
-// components/HeroSection.tsx
-import { motion, useAnimate } from 'framer-motion';
+import React from 'react';
 import { ChevronDown } from 'lucide-react';
 
-const HeroSection = () => {
-  const [scope, animate] = useAnimate();
+interface HeroSectionProps {
+  onNavigateToProjects: () => void;
+}
 
-  const scrollToProjects = () => {
-    const main = document.querySelector('main');
-    if (!main) return;
-
-    animate(main, { 
-      scrollTop: window.innerHeight 
-    }, { 
-      duration: 1.5, // Increased duration
-      ease: [0.16, 1, 0.3, 1] // Custom ease curve for smoother animation
-    });
-  };
-
+const HeroSection = ({ onNavigateToProjects }: HeroSectionProps) => {
   return (
-    <motion.div 
-      ref={scope}
-      className="flex flex-col h-full items-center justify-center relative bg-neutral-900"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
-    >
-      <div className="text-center space-y-8">
-        <motion.h1 
-          className="text-6xl font-bold mb-6"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          Brad Titus
-        </motion.h1>
-        <motion.div 
-          className="flex gap-6 justify-center"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-        >
+    <>
+      <div className="text-center flex flex-col pb-16 justify-center space-y-12 h-full w-full">
+        <div className="space-y-4">
+          <h1 className="text-7xl font-bold bg-gradient-to-br from-white to-neutral-400 bg-clip-text text-transparent drop-shadow-lg">
+            Brad Titus
+          </h1>
+          <p className="text-lg text-neutral-400 font-light tracking-wide">
+            Full Stack Developer
+          </p>
+        </div>
+
+        <div className="flex gap-8 justify-center">
           <button 
-            className="px-8 py-4 text-lg font-semibold text-neutral-900 bg-neutral-300 rounded-lg hover:bg-neutral-200 transition-colors"
+            className="group relative px-8 py-4 text-lg font-semibold text-neutral-900 bg-neutral-300 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-neutral-700"
             onClick={() => window.open('/resume.pdf', '_blank')}
           >
-            Resume
+            <span className="relative z-10">Resume</span>
+            <div className="absolute inset-0 bg-gradient-to-r from-neutral-200 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </button>
+          
           <button 
-            className="px-8 py-4 text-lg font-semibold text-neutral-300 border-2 border-neutral-300 rounded-lg hover:bg-neutral-800 transition-colors"
-            onClick={scrollToProjects}
+            className="group px-8 py-4 text-lg font-semibold text-neutral-300 border-2 border-neutral-300 rounded-lg overflow-hidden relative transition-all duration-300 hover:border-white hover:text-white hover:shadow-lg hover:shadow-neutral-800/50"
+            onClick={onNavigateToProjects}
           >
-            Projects
+            <span className="relative z-10">Projects</span>
+            <div className="absolute inset-0 bg-neutral-800 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
           </button>
-        </motion.div>
+        </div>
       </div>
       
-      <motion.div 
-        className="absolute bottom-12 cursor-pointer"
-        initial={{ y: 0 }}
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
-        onClick={scrollToProjects}
+      <div 
+        className="absolute bottom-12 left-1/2 -translate-x-1/2 cursor-pointer"
+        onClick={onNavigateToProjects}
       >
-        <ChevronDown size={32} />
-      </motion.div>
-    </motion.div>
+        <ChevronDown 
+          size={45} 
+          className="text-neutral-400 transition-all duration-300 hover:translate-y-1 hover:text-white animate-bounce"
+        />
+      </div>
+    </>
   );
 };
 
