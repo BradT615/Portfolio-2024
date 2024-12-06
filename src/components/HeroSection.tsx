@@ -43,7 +43,7 @@ const HeroSection = ({ onNavigateToProjects }: HeroSectionProps) => {
       >
         <ChevronDown 
           size={45} 
-          className="text-neutral-400 transition-all duration-300 hover:translate-y-1 hover:text-white animate-bounce"
+          className="text-neutral-400 transition-all animate-[bounce_1s_ease-in-out_infinite] hover:text-white"
         />
       </div>
     </>
