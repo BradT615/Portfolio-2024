@@ -66,7 +66,7 @@ export const File: React.FC<FileProps> = ({ name, icon, activeSkills = [] }) => 
       }}
       className={cn(
         "flex items-center gap-2 p-1.5 text-sm rounded-sm transition-colors duration-200",
-        isActive ? "bg-neutral-700 text-white" : "text-neutral-400"
+        isActive ? "text-white" : "text-neutral-400"
       )}
     >
       <FileIcon className="h-4 w-4" />

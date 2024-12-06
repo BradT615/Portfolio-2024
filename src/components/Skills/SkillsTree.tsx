@@ -5,14 +5,40 @@ import { motion } from "framer-motion";
 import { File, Folder } from "./FileFolder";
 
 export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills = [] }) => {
+  const handleScroll = (e: React.WheelEvent) => {
+    const element = e.currentTarget;
+    const { scrollTop, scrollHeight, clientHeight } = element;
+    
+    // Calculate if there's room to scroll
+    const canScrollUp = scrollTop > 0;
+    const canScrollDown = scrollTop < scrollHeight - clientHeight;
+
+    // Always stop propagation if trying to scroll and there's room to scroll
+    if ((e.deltaY > 0 && canScrollDown) || (e.deltaY < 0 && canScrollUp)) {
+      e.stopPropagation();
+    }
+    
+    // If we can't scroll in the direction the user is trying to scroll,
+    // let the event propagate to trigger the section change
+  };
+
+
   return (
     <motion.div 
       initial={{ opacity: 0, x: -50 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5 }}
-      className="h-full relative"
+      className="h-full flex flex-col relative"
+      onWheel={handleScroll}
     >
-      <div className="px-4 py-6 custom-scrollbar">
+      <div 
+        className="flex-1 px-4 py-6 custom-scrollbar overflow-y-auto relative"
+        style={{
+          paddingTop: "2rem",
+          paddingBottom: "2rem",
+          minHeight: "0"
+        }}
+      >
         <Folder name="Skills" activeSkills={activeSkills} forceOpen={activeSkills.length > 0}>
           <Folder name="Front-End" activeSkills={activeSkills} forceOpen={activeSkills.length > 0}>
             <Folder name="Core" activeSkills={activeSkills} forceOpen={activeSkills.length > 0}>
@@ -188,8 +214,8 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
           </Folder>
         </Folder>
       </div>
-      <div className="absolute top-0 left-0 right-0 h-8 w-11/12 bg-gradient-to-b from-neutral-900 to-transparent pointer-events-none z-10 transition-opacity duration-200" />
-      <div className="absolute bottom-0 left-0 right-0 h-8 w-11/12 bg-gradient-to-t from-neutral-900 to-transparent pointer-events-none z-10 transition-opacity duration-200" />
+      <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-neutral-900 to-transparent pointer-events-none z-10 transition-opacity duration-200" />
+      <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-neutral-900 to-transparent pointer-events-none z-10 transition-opacity duration-200" />
     </motion.div>
   );
 };

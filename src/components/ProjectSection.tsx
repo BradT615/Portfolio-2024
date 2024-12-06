@@ -80,7 +80,7 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onProjectChange }) => {
                 >
                   <div className="relative aspect-[3/2] overflow-hidden rounded-xl bg-neutral-800/30 p-[1px]">
                     <Spotlight
-                      className="from-blue-900/50 via-blue-700/50 to-blue-500/50 dark:from-blue-900 dark:via-blue-700 dark:to-blue-500"
+                      className="from-blue-900/50 via-blue-700/50 to-blue-500/50"
                       size={600}
                     />
                     <div className="relative h-full w-full rounded-xl bg-neutral-900 overflow-hidden">

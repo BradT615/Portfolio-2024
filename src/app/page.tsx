@@ -19,6 +19,10 @@ export default function Home() {
   };
 
   const handleScroll = (e: React.WheelEvent) => {
+    if (e.ctrlKey || e.metaKey) return;
+    
+    if ((e.target as HTMLElement).closest('[data-scroll-container]')) return;
+
     const delta = e.deltaY;
     if (delta > 0 && currentSection === 'hero') {
       handleSectionChange('projects');
@@ -66,7 +70,7 @@ export default function Home() {
                 }}
                 className="absolute inset-0 flex"
               >
-                <div className="w-80 shrink-0">
+                <div className="w-80 shrink-0" data-scroll-container>
                   <SkillsTree activeSkills={activeSkills} />
                 </div>
                 <div className="flex-1 overflow-hidden">
