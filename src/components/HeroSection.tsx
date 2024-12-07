@@ -1,5 +1,6 @@
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 interface HeroSectionProps {
   onNavigateToProjects: () => void;
@@ -10,12 +11,18 @@ const HeroSection = ({ onNavigateToProjects }: HeroSectionProps) => {
     <>
       <div className="text-center flex flex-col pb-16 justify-center space-y-12 h-full w-full">
         <div className="space-y-4">
-          <h1 className="text-7xl font-bold bg-gradient-to-br from-white to-neutral-400 bg-clip-text text-transparent drop-shadow-lg">
+          <h1 className="text-7xl font-bold bg-gradient-to-b from-white to-neutral-400 bg-clip-text text-transparent drop-shadow-lg">
             Brad Titus
           </h1>
-          <p className="text-lg text-neutral-400 font-light tracking-wide">
+          <h2 className="text-3xl text-neutral-400 font-light">
             Full Stack Developer
-          </p>
+          </h2>
+          <div className='flex justify-center items-center gap-2'>
+            <MapPin size={18} strokeWidth={1.25} />
+            <h3 className="text-xl text-neutral-400 font-light">
+              Tampa, FL
+            </h3>
+          </div>
         </div>
 
         <div className="flex gap-8 justify-center">

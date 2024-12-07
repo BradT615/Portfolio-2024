@@ -25,6 +25,8 @@ interface FileProps {
   activeSkills?: string[];
 }
 
+type FileOrFolderElement = React.ReactElement<FileProps | FolderProps>;
+
 const renderTechIcon = ({ type, path, font }: FileProps['icon']) => {
   if (type === 'font' && font) {
     return (
@@ -79,11 +81,12 @@ export const File: React.FC<FileProps> = ({ name, icon, activeSkills = [] }) => 
 };
 
 export const Folder: React.FC<FolderProps> = ({ name, children, activeSkills = [], forceOpen }) => {
-  const hasActiveSkills = React.Children.toArray(children).some((child: any) => {
-    if (child.type?.name === 'File') {
-      return activeSkills.includes(child.props.name);
+  const hasActiveSkills = React.Children.toArray(children).some((child) => {
+    const element = child as FileOrFolderElement;
+    if (element.type === File) {
+      return activeSkills.includes(element.props.name);
     }
-    return child.props.activeSkills?.some((skill: string) => activeSkills.includes(skill));
+    return element.props.activeSkills?.some((skill: string) => activeSkills.includes(skill));
   });
 
   const [isOpen, setIsOpen] = useState(true);

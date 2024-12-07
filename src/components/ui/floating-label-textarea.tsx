@@ -10,12 +10,10 @@ export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextArea
 
 const FloatingTextarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, value, defaultValue, onChange, minHeight = 52, maxHeight = 400, ...props }, ref) => {
-    const [isAutofilling, setIsAutofilling] = React.useState(false);
     const [hasContent, setHasContent] = React.useState(Boolean(value || defaultValue));
     const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
     const [triggerAutoSize, setTriggerAutoSize] = React.useState('');
 
-    // Merge refs
     React.useEffect(() => {
       if (typeof ref === 'function') {
         ref(textareaRef.current);
@@ -31,20 +29,17 @@ const FloatingTextarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       minHeight,
     });
 
-    // Handle value changes
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       setHasContent(e.target.value.length > 0);
       setTriggerAutoSize(e.target.value);
       onChange?.(e);
     };
 
-    // Update hasContent when value prop changes
     React.useEffect(() => {
       setHasContent(Boolean(value));
       setTriggerAutoSize(value as string);
     }, [value]);
 
-    // Set initial hasContent state
     React.useEffect(() => {
       setHasContent(Boolean(defaultValue));
       setTriggerAutoSize(defaultValue as string);
@@ -63,7 +58,6 @@ const FloatingTextarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           '[&::-webkit-autofill]:border-neutral-600',
           'px-3 py-2',
           hasContent && 'not-empty',
-          isAutofilling && 'animate-autofill',
           className
         )}
         ref={textareaRef}

@@ -46,7 +46,7 @@ const EmailModal = () => {
             Get in Touch
           </DialogTitle>
           <DialogDescription className="font-light text-neutral-300">
-            Send me a message and I'll get back to you as soon as possible.
+            Send me a message and I&apos;ll get back to you as soon as possible.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-6 py-4 text-neutral-300">

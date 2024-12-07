@@ -25,9 +25,9 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onProjectChange }) => {
 
   const getSlideStyles = (index: number) => {
     const diff = (index - currentIndex + projects.length) % projects.length;
-    if (diff === 0) return 'z-20 relative'; // Current slide
-    if (diff === 1 || diff === projects.length - 1) return 'z-10 cursor-pointer'; // Adjacent slides
-    return 'z-0'; // Other slides
+    if (diff === 0) return 'z-20 relative';
+    if (diff === 1 || diff === projects.length - 1) return 'z-10 cursor-pointer';
+    return 'z-0';
   };
 
   return (
