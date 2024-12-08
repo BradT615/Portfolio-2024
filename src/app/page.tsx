@@ -33,10 +33,6 @@ export default function Home() {
 
   return (
     <div className="flex flex-col h-screen relative overflow-hidden">
-      <div className="absolute inset-0 opacity-[6%]">
-        <div className="h-full w-full bg-[linear-gradient(to_right,#333_1px,transparent_1px),linear-gradient(to_bottom,#333_1px,transparent_1px)] bg-[size:4rem_4rem]" />
-      </div>
-
       <Header />
 
       <main className="h-full w-full" onWheel={handleScroll}>
