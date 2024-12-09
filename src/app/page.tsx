@@ -34,6 +34,20 @@ export default function Home() {
   return (
     <div className="flex flex-col h-screen relative overflow-hidden">
       <Header />
+      <motion.div 
+        className="absolute inset-0"
+        animate={{
+          background: `radial-gradient(
+            ${currentSection === 'hero' ? '40vw 30vh' : '60vw 0vh'} at 50% 0%,
+            hsl(240, 7%, 10%),
+            hsl(240, 7%, 6%)
+          )`
+        }}
+        transition={{
+          duration: 0.5,
+          ease: [0.16, 1, 0.3, 1]
+        }}
+      />
 
       <main className="h-full w-full" onWheel={handleScroll}>
         <div className="relative h-full">
@@ -45,7 +59,7 @@ export default function Home() {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: '-100%', opacity: 0 }}
                 transition={{
-                  duration: 0.8,
+                  duration: 1,
                   ease: [0.16, 1, 0.3, 1],
                   opacity: { duration: 0.5 }
                 }}
@@ -60,7 +74,7 @@ export default function Home() {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: '100%', opacity: 0 }}
                 transition={{
-                  duration: 0.8,
+                  duration: 1,
                   ease: [0.16, 1, 0.3, 1],
                   opacity: { duration: 0.5 }
                 }}

@@ -31,11 +31,10 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onProjectChange }) => {
   };
 
   return (
-    <div id="projects" className="h-full relative flex flex-col pt-16">
-      <h1 className="text-3xl text-neutral-400 font-light tracking-wide ml-12 mb-12">Projects</h1>
-      
-      <div className="flex-1 relative w-full max-w-5xl mx-auto px-16">
-        <div className="relative h-full flex items-center justify-center">
+    <div id="projects" className="h-full pt-16 flex flex-col gap-8 justify-center">
+      <div className="max-w-5xl mx-auto px-16">
+        <h1 className="text-5xl text-center text-neutral-400 font-light mb-8">Projects</h1> 
+        <div className="relative flex flex-col items-center justify-center">
           <AnimatePresence initial={false}>
             {projects.map((project, index) => {
               const diff = (index - currentIndex + projects.length) % projects.length;
@@ -78,12 +77,12 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onProjectChange }) => {
                     transition: { duration: 0.2 }
                   } : undefined}
                 >
-                  <div className="relative aspect-[3/2] overflow-hidden rounded-xl bg-neutral-800/30 p-[1px]">
+                  <div className="relative aspect-[3/2] overflow-hidden rounded-xl p-[1px]">
                     <Spotlight
-                      className="from-blue-900/50 via-blue-700/50 to-blue-500/50"
+                      className="from-neutral-100/50 via-neutral-300/50 to-neutral-100/50"
                       size={600}
                     />
-                    <div className="relative h-full w-full rounded-xl bg-neutral-900 overflow-hidden">
+                    <div className="relative h-full w-full rounded-xl bg-[#2f2f36] overflow-hidden">
                       <div className="relative h-3/5">
                         <img 
                           src={project.imageUrl} 

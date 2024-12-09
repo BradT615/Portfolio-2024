@@ -9,29 +9,9 @@ interface HeroSectionProps {
 const HeroSection = ({ onNavigateToProjects }: HeroSectionProps) => {
   return (
     <>
-      {/* Gradient background that animates with the hero section */}
-      <motion.div 
-        className="fixed inset-0 pointer-events-none z-0"
-        initial={false}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <div 
-          className="absolute inset-0"
-          style={{
-            background: `radial-gradient(
-              60vw 40vh at 50% 0%,
-              rgb(38, 38, 38),
-              rgb(0, 0, 0)
-            )`
-          }}
-        />
-      </motion.div>
-
       <div className="text-center flex flex-col justify-center h-full w-fit items-center z-10 pb-10">
         <div className="space-y-4">
-          <h1 className="text-8xl font-bold bg-gradient-to-b from-white to-neutral-400 bg-clip-text text-transparent drop-shadow-lg">
+          <h1 className="text-8xl font-bold bg-gradient-to-b from-white to-neutral-500 bg-clip-text text-transparent drop-shadow-lg">
             Brad Titus
           </h1>
           <h2 className="text-4xl text-neutral-400 font-light">
