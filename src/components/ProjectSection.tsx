@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -26,7 +24,8 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onProjectChange }) => {
   const getSlideStyles = (index: number) => {
     const diff = (index - currentIndex + projects.length) % projects.length;
     if (diff === 0) return 'z-20 relative';
-    if (diff === 1 || diff === projects.length - 1) return 'z-10 cursor-pointer';
+    if (diff === 1) return 'z-10 cursor-pointer';
+    if (diff === 2) return 'z-5 cursor-pointer';
     return 'z-0';
   };
 
@@ -35,13 +34,12 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onProjectChange }) => {
       <div className="max-w-5xl mx-auto px-16">
         <h1 className="text-5xl text-center text-neutral-400 font-light mb-8">Projects</h1> 
         <div className="relative flex flex-col items-center justify-center">
-          <AnimatePresence initial={false}>
+          <AnimatePresence initial={false} mode="wait">
             {projects.map((project, index) => {
               const diff = (index - currentIndex + projects.length) % projects.length;
               const isActive = diff === 0;
-              const isAdjacent = diff === 1 || diff === projects.length - 1;
               const isNext = diff === 1;
-              const isPrev = diff === projects.length - 1;
+              const isNextPlus = diff === 2;
               
               return (
                 <motion.div
@@ -50,32 +48,52 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onProjectChange }) => {
                   initial={{ 
                     scale: 0.8, 
                     opacity: 0,
-                    x: index > currentIndex ? 200 : -200 
+                    x: 200 
                   }}
                   animate={{ 
-                    scale: isActive ? 1 : 0.8,
-                    opacity: isActive ? 1 : isAdjacent ? 0.5 : 0,
-                    x: isActive ? 0 : (diff === 1 ? 200 : diff === projects.length - 1 ? -200 : 0),
-                    zIndex: isActive ? 20 : 10
+                    scale: isActive ? 1 : isNext ? 0.9 : isNextPlus ? 0.8 : 0,
+                    opacity: isActive ? 1 : isNext ? 1 : isNextPlus ? 0.6 : 0,
+                    x: isActive ? 0 : isNext ? 125 : isNextPlus ? 225 : 0,
+                    zIndex: isActive ? 20 : isNext ? 10 : isNextPlus ? 5 : 0
                   }}
                   exit={{ 
                     scale: 0.8,
                     opacity: 0,
-                    x: index < currentIndex ? -200 : 200 
+                    x: -200
                   }}
                   transition={{
                     duration: 0.4,
-                    ease: "easeInOut"
+                    ease: "easeInOut",
+                    opacity: {
+                      duration: 0.3
+                    }
                   }}
                   onClick={() => {
                     if (isNext) nextSlide();
-                    if (isPrev) prevSlide();
                   }}
-                  whileHover={isAdjacent ? { 
-                    scale: 0.85,
-                    opacity: 0.7,
-                    transition: { duration: 0.2 }
-                  } : undefined}
+                  whileHover={
+                    isNext ? {
+                      scale: 0.95,
+                      opacity: 1,
+                      transition: { 
+                        duration: 0.2,
+                        opacity: { duration: 0.1 }
+                      }
+                    } : 
+                    isNextPlus ? {
+                      scale: 0.85,
+                      opacity: 0.8,
+                      transition: { 
+                        duration: 0.2,
+                        opacity: { duration: 0.1 }
+                      }
+                    } : undefined
+                  }
+                  whileTap={
+                    (isNext || isNextPlus) ? {
+                      scale: isNext ? 0.93 : 0.83
+                    } : undefined
+                  }
                 >
                   <div className="relative aspect-[3/2] overflow-hidden rounded-xl p-[1px]">
                     <Spotlight
