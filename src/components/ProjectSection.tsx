@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { Github, ExternalLink } from 'lucide-react';
 import { projects } from '@/lib/projects';
 import { Spotlight } from '@/components/core/spotlight';
@@ -19,7 +19,6 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onProjectChange }) => {
   }, [currentIndex, onProjectChange]);
 
   const nextSlide = () => setCurrentIndex((prev) => (prev + 1) % projects.length);
-  const prevSlide = () => setCurrentIndex((prev) => (prev - 1 + projects.length) % projects.length);
 
   const getSlideStyles = (index: number) => {
     const diff = (index - currentIndex + projects.length) % projects.length;
@@ -30,10 +29,9 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onProjectChange }) => {
   };
 
   return (
-    <div id="projects" className="h-full pt-16 flex flex-col gap-8 justify-center">
+    <div id="projects" className="h-full px-24 flex flex-col gap-8 justify-center">
       <div className="max-w-5xl mx-auto px-16">
-        <h1 className="text-5xl text-center text-neutral-400 font-light mb-8">Projects</h1> 
-        <div className="relative flex flex-col items-center justify-center">
+        <div className="relative flex flex-col items-center justify-center pt-16">
           <AnimatePresence initial={false} mode="wait">
             {projects.map((project, index) => {
               const diff = (index - currentIndex + projects.length) % projects.length;
@@ -70,6 +68,10 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onProjectChange }) => {
                   }}
                   onClick={() => {
                     if (isNext) nextSlide();
+                    if (isNextPlus) {
+                      nextSlide(); 
+                      nextSlide();
+                    }
                   }}
                   whileHover={
                     isNext ? {
@@ -95,7 +97,7 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onProjectChange }) => {
                     } : undefined
                   }
                 >
-                  <div className="relative aspect-[3/2] overflow-hidden rounded-xl p-[1px]">
+                  <div className="relative aspect-[1.3] overflow-hidden rounded-xl p-[1px]">
                     <Spotlight
                       className="from-neutral-100/50 via-neutral-300/50 to-neutral-100/50"
                       size={600}
