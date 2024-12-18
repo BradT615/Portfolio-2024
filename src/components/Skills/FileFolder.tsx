@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, ReactNode, useEffect } from "react";
+import Image from "next/image";
 import { FileIcon, FolderIcon, FolderOpenIcon, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
@@ -42,9 +43,11 @@ const renderTechIcon = ({ type, path, font }: FileProps['icon']) => {
   
   if (type === 'devicon' && path) {
     return (
-      <img 
+      <Image 
         src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${path}`} 
         className="h-4 w-4"
+        width={16}
+        height={16} 
         loading="lazy"
         alt=""
       />

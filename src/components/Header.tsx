@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { Logo } from '@/components/Logo';
 import EmailModal from '@/components/ui/EmailModal';
 import { TextEffect } from './core/text-effect';
-import { motion, AnimatePresence } from 'motion/react';
 
 interface HeaderProps {
   currentSection?: 'hero' | 'projects';

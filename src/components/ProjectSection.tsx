@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 import { Github, ExternalLink } from 'lucide-react';
 import { projects } from '@/lib/projects';
@@ -104,11 +105,13 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onProjectChange }) => {
                     />
                     <div className="relative h-full w-full rounded-xl bg-[#2f2f36] overflow-hidden">
                       <div className="relative h-3/5">
-                        <img 
-                          src={project.imageUrl} 
-                          alt={project.title}
-                          className="absolute inset-0 w-full h-full object-cover object-top"
-                        />
+                      <Image 
+                        src={project.imageUrl} 
+                        alt={project.title}
+                        width={500}
+                        height={300}
+                        className="absolute inset-0 w-full h-full object-cover object-top"
+                      />
                       </div>
                       
                       <div className="h-2/5 p-6 flex flex-col">
