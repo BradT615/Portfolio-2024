@@ -14,57 +14,43 @@ import { FloatingLabelInput } from '@/components/ui/floating-label-input';
 import { FloatingLabelTextarea } from '@/components/ui/floating-label-textarea';
 
 const EmailModal = () => {
-  const [maxHeight, setMaxHeight] = React.useState(150);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
 
-  React.useEffect(() => {
-    const updateMaxHeight = () => {
-      setMaxHeight(window.innerHeight / 3);
-    };
-
-    updateMaxHeight();
-    window.addEventListener('resize', updateMaxHeight);
-    return () => window.removeEventListener('resize', updateMaxHeight);
-  }, []);
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setIsSubmitting(true);
 
-    const form = event.target as HTMLFormElement;
+    const form = e.currentTarget;
     const formData = new FormData(form);
+    
+    // Convert FormData to a plain object
+    const formObject: Record<string, string> = {};
+    formData.forEach((value, key) => {
+      formObject[key] = value.toString();
+    });
 
-    fetch("/", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams(Array.from(formData.entries()).reduce((acc, [key, value]) => {
-        acc[key] = value as string;
-        return acc;
-      }, {} as Record<string, string>)).toString()
-    })
-      .then(() => {
-        setIsSuccess(true);
-        form.reset();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Sorry, there was a problem submitting your message. Please try again.');
-      })
-      .finally(() => {
-        setIsSubmitting(false);
+    try {
+      await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formObject).toString(),
       });
+      setIsSuccess(true);
+      form.reset();
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Sorry, there was a problem submitting your message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <>
-      {/* Hidden form for Netlify detection - required for JavaScript-rendered forms */}
-      <form 
-        name="contact" 
-        data-netlify="true" 
-        hidden
-      >
+      {/* Hidden form for Netlify detection */}
+      <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>
         <input type="text" name="name" />
         <input type="email" name="email" />
         <textarea name="message"></textarea>
@@ -78,9 +64,7 @@ const EmailModal = () => {
           {!isSuccess ? (
             <>
               <DialogHeader>
-                <DialogTitle className="text-2xl">
-                  Get in Touch
-                </DialogTitle>
+                <DialogTitle className="text-2xl">Get in Touch</DialogTitle>
                 <DialogDescription className="font-light text-neutral-300">
                   Send me a message and I&apos;ll get back to you as soon as possible.
                 </DialogDescription>
@@ -89,12 +73,17 @@ const EmailModal = () => {
                 name="contact"
                 method="POST"
                 data-netlify="true"
+                netlify-honeypot="bot-field"
                 className="space-y-6 py-4 text-neutral-300"
                 onSubmit={handleSubmit}
               >
-                {/* Required for JavaScript-rendered forms */}
                 <input type="hidden" name="form-name" value="contact" />
-                
+                <p className="hidden">
+                  <label>
+                    Don't fill this out if you're human: <input name="bot-field" />
+                  </label>
+                </p>
+
                 <div className="space-y-4 font-thin">
                   <FloatingLabelInput
                     id="name"
@@ -123,8 +112,6 @@ const EmailModal = () => {
                     name="message"
                     label="Message"
                     required
-                    minHeight={150}
-                    maxHeight={maxHeight}
                     labelClassName="peer-focus:text-neutral-300"
                     className="rounded-sm"
                     disabled={isSubmitting}
