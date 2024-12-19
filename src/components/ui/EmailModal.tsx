@@ -25,7 +25,6 @@ const EmailModal = () => {
     const form = e.currentTarget;
     const formData = new FormData(form);
     
-    // Convert FormData to a plain object
     const formObject: Record<string, string> = {};
     formData.forEach((value, key) => {
       formObject[key] = value.toString();
@@ -80,7 +79,7 @@ const EmailModal = () => {
                 <input type="hidden" name="form-name" value="contact" />
                 <p className="hidden">
                   <label>
-                    Don't fill this out if you're human: <input name="bot-field" />
+                    Don&apos;t fill this out if you&apos;re human: <input name="bot-field" />
                   </label>
                 </p>
 
