@@ -52,7 +52,7 @@ const EmailModal = () => {
         setTimeout(() => {
           setIsOpen(false);
           setIsSuccess(false);
-        }, 2000);
+        }, 1000);
       } else {
         throw new Error('Form submission failed');
       }
@@ -66,6 +66,7 @@ const EmailModal = () => {
 
   return (
     <>
+      {/* Hidden form for Netlify form detection */}
       <form 
         name="contact" 
         data-netlify="true" 
@@ -98,10 +99,11 @@ const EmailModal = () => {
             data-netlify="true"
             netlify-honeypot="bot-field"
           >
+            {/* Required hidden inputs */}
             <input type="hidden" name="form-name" value="contact" />
             <p className="hidden">
               <label>
-                Don't fill this out if you're human: <input name="bot-field" />
+                Don&apos;t fill this out if you&apos;re human: <input name="bot-field" />
               </label>
             </p>
 
