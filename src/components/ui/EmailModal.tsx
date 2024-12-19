@@ -13,7 +13,6 @@ import {
 import { FloatingLabelInput } from '@/components/ui/floating-label-input';
 import { FloatingLabelTextarea } from '@/components/ui/floating-label-textarea';
 
-
 const EmailModal = () => {
   const [maxHeight, setMaxHeight] = React.useState(150);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -30,15 +29,37 @@ const EmailModal = () => {
     return () => window.removeEventListener('resize', updateMaxHeight);
   }, []);
 
-  const encode = (data: Record<string, string>) => {
-    return Object.keys(data)
-      .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
-      .join("&");
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+
+    const form = event.target as HTMLFormElement;
+    const formData = new FormData(form);
+
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(Array.from(formData.entries()).reduce((acc, [key, value]) => {
+        acc[key] = value as string;
+        return acc;
+      }, {} as Record<string, string>)).toString()
+    })
+      .then(() => {
+        setIsSuccess(true);
+        form.reset();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Sorry, there was a problem submitting your message. Please try again.');
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   return (
     <>
-      {/* Hidden form for Netlify form detection */}
+      {/* Hidden form for Netlify detection - required for JavaScript-rendered forms */}
       <form 
         name="contact" 
         data-netlify="true" 
@@ -69,36 +90,9 @@ const EmailModal = () => {
                 method="POST"
                 data-netlify="true"
                 className="space-y-6 py-4 text-neutral-300"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setIsSubmitting(true);
-                  
-                  const form = e.target as HTMLFormElement;
-                  const formData = new FormData(form);
-                  const data: Record<string, string> = {};
-                  
-                  formData.forEach((value, key) => {
-                    data[key] = value.toString();
-                  });
-
-                  fetch('/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: encode({ ...data, "form-name": "contact" })
-                  })
-                    .then(() => {
-                      setIsSuccess(true);
-                      form.reset();
-                    })
-                    .catch((error) => {
-                      console.error('Error:', error);
-                      alert('Sorry, there was a problem submitting your message. Please try again.');
-                    })
-                    .finally(() => {
-                      setIsSubmitting(false);
-                    });
-                }}
+                onSubmit={handleSubmit}
               >
+                {/* Required for JavaScript-rendered forms */}
                 <input type="hidden" name="form-name" value="contact" />
                 
                 <div className="space-y-4 font-thin">
