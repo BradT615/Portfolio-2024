@@ -6,6 +6,7 @@ import HeroSection from '@/components/HeroSection';
 import Header from '@/components/Header';
 import { motion, AnimatePresence } from 'framer-motion';
 import { projects } from '@/lib/projects';
+import ContactForm from '@/components/ContactForm';
 
 export default function Home() {
   const [currentSection, setCurrentSection] = useState<'hero' | 'projects'>('hero');
@@ -52,6 +53,9 @@ export default function Home() {
                 className="absolute inset-0 grid place-items-center"
               >
                 <HeroSection onNavigateToProjects={() => handleSectionChange('projects')} />
+                <div className="mt-8">
+                  <ContactForm />
+                </div>
               </motion.div>
             ) : (
               <motion.div
