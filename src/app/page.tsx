@@ -4,6 +4,7 @@ import { SkillsTree } from '@/components/Skills/SkillsTree';
 import ProjectSection from '@/components/ProjectSection';
 import HeroSection from '@/components/HeroSection';
 import Header from '@/components/Header';
+import { ImagePreloader } from '@/components/ImagePreloader';
 import { motion, AnimatePresence } from 'framer-motion';
 import { projects } from '@/lib/projects';
 
@@ -33,6 +34,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col h-screen relative overflow-hidden">
+      <ImagePreloader />
       <Header currentSection={currentSection} />
 
       <main className="h-full w-full" onWheel={handleScroll}>

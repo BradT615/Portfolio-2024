@@ -110,7 +110,6 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onProjectChange }) => {
                         alt={project.title}
                         width={500}
                         height={300}
-                        priority
                         className="absolute inset-0 w-full h-full object-cover object-top"
                       />
                       </div>
