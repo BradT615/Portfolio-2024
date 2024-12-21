@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SkillsTree } from '@/components/Skills/SkillsTree';
 import ProjectSection from '@/components/ProjectSection';
 import HeroSection from '@/components/HeroSection';
@@ -12,6 +12,7 @@ export default function Home() {
   const [currentSection, setCurrentSection] = useState<'hero' | 'projects'>('hero');
   const [activeSkills, setActiveSkills] = useState<string[]>([]);
   const [hasScrolled, setHasScrolled] = useState(false);
+  const [isLogoAnimationComplete, setIsLogoAnimationComplete] = useState(false);
 
   const handleSectionChange = (newSection: 'hero' | 'projects') => {
     setCurrentSection(newSection);
@@ -35,7 +36,9 @@ export default function Home() {
   return (
     <div className="flex flex-col h-screen relative overflow-hidden">
       <ImagePreloader />
-      <Header currentSection={currentSection} />
+      <Header 
+        currentSection={currentSection} 
+      />
 
       <main className="h-full w-full" onWheel={handleScroll}>
         <div className="relative h-full">
@@ -43,17 +46,22 @@ export default function Home() {
             {currentSection === 'hero' ? (
               <motion.div
                 key="hero"
-                initial={hasScrolled ? { y: '-100%', opacity: 0 } : false}
+                initial={hasScrolled ? { y: '-100%', opacity: 0 } : { opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: '-100%', opacity: 0 }}
                 transition={{
-                  duration: 1,
+                  duration: hasScrolled ? 1 : 0.8,
                   ease: [0.16, 1, 0.3, 1],
-                  opacity: { duration: 0.5 }
+                  opacity: { 
+                    duration: hasScrolled ? 0.5 : 0.8,
+                    delay: hasScrolled ? 0 : 2.3
+                  }
                 }}
                 className="absolute inset-0 grid place-items-center"
               >
-                <HeroSection onNavigateToProjects={() => handleSectionChange('projects')} />
+                <HeroSection 
+                  onNavigateToProjects={() => handleSectionChange('projects')}
+                />
               </motion.div>
             ) : (
               <motion.div
