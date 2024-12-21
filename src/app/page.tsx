@@ -74,6 +74,7 @@ export default function Home() {
                 <HeroSection 
                   onNavigateToProjects={() => handleSectionChange('projects')}
                   isEnabled={isInitialAnimationComplete}
+                  hasScrolled={hasScrolled}
                 />
               </motion.div>
             ) : (

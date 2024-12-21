@@ -32,8 +32,8 @@ export default function Header({ currentSection = 'hero' }: HeaderProps) {
           y: "-50%",
         }}
         animate={animationComplete ? { 
-          left: "20px",
-          top: "20px",
+          left: "16px",
+          top: "16px",
           x: "0%",
           y: "0%",
         } : {}}

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 interface HeroSectionProps {
   onNavigateToProjects: () => void;
   isEnabled?: boolean;
+  hasScrolled?: boolean;
 }
 
 interface ResumeModalProps {
@@ -18,7 +19,6 @@ const ResumeModal = ({ isOpen, onClose }: ResumeModalProps) => {
   return (
     <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
       <div className="w-full max-w-5xl flex flex-col">
-        {/* Close button container above the PDF */}
         <div className="flex justify-end mb-2">
           <button
             onClick={onClose}
@@ -28,7 +28,6 @@ const ResumeModal = ({ isOpen, onClose }: ResumeModalProps) => {
           </button>
         </div>
         
-        {/* PDF container */}
         <div className="bg-white rounded-lg h-[85vh]">
           <iframe
             src="/BradleyTitus_Resume.pdf"
@@ -41,7 +40,7 @@ const ResumeModal = ({ isOpen, onClose }: ResumeModalProps) => {
   );
 };
 
-const HeroSection = ({ onNavigateToProjects, isEnabled = true }: HeroSectionProps) => {
+const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = false }: HeroSectionProps) => {
   const [isResumeOpen, setIsResumeOpen] = useState(false);
 
   const handleClick = () => {
@@ -50,17 +49,35 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true }: HeroSectionProp
     }
   };
 
+  const contentVariants = {
+    hidden: hasScrolled ? { opacity: 0, y: '-100%' } : { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+  const contentTransition = {
+    duration: hasScrolled ? 1 : 0.8,
+    ease: [0.16, 1, 0.3, 1],
+    delay: hasScrolled ? 0 : 2.3
+  };
+
+  const chevronVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 }
+  };
+
+  const chevronTransition = {
+    duration: 0.8,
+    delay: hasScrolled ? 0.8 : 2.5
+  };
+
   return (
     <>
       <motion.div 
         className="text-center flex flex-col justify-center h-full w-fit items-center z-10 pb-10"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{
-          duration: 0.8,
-          ease: [0.16, 1, 0.3, 1],
-          delay: 2.3 // Delay after logo animation
-        }}
+        initial="hidden"
+        animate="visible"
+        variants={contentVariants}
+        transition={contentTransition}
       >
         <div className="space-y-4">
           <h1 className="text-8xl font-bold bg-gradient-to-b from-white to-neutral-500 bg-clip-text text-transparent drop-shadow-lg">
@@ -98,12 +115,10 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true }: HeroSectionProp
 
       <motion.div 
         className={`cursor-pointer w-fit fixed bottom-16 left-1/2 transform -translate-x-1/2 z-10 ${!isEnabled && 'pointer-events-none'}`}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{
-          duration: 0.8,
-          delay: 2.5 // Slightly longer delay for the chevron
-        }}
+        initial="hidden"
+        animate="visible"
+        variants={chevronVariants}
+        transition={chevronTransition}
         onClick={handleClick}
       >
         <ChevronDown 
