@@ -15,16 +15,15 @@ export default function Home() {
   const [isInitialAnimationComplete, setIsInitialAnimationComplete] = useState(false);
 
   useEffect(() => {
-    // Enable scrolling after initial animation (logo + hero fade in)
     const timer = setTimeout(() => {
       setIsInitialAnimationComplete(true);
-    }, 3500); // Adjust this timing based on your total animation duration
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
 
   const handleSectionChange = (newSection: 'hero' | 'projects') => {
-    if (!isInitialAnimationComplete) return; // Prevent section changes during animation
+    if (!isInitialAnimationComplete) return;
     
     setCurrentSection(newSection);
     setActiveSkills(newSection === 'projects' ? projects[0].skills : []);
@@ -32,7 +31,6 @@ export default function Home() {
   };
 
   const handleScroll = (e: React.WheelEvent) => {
-    // Prevent scrolling if initial animation isn't complete
     if (!isInitialAnimationComplete) return;
 
     if (e.ctrlKey || e.metaKey) return;
@@ -66,7 +64,7 @@ export default function Home() {
                   ease: [0.16, 1, 0.3, 1],
                   opacity: { 
                     duration: hasScrolled ? 0.5 : 0.8,
-                    delay: hasScrolled ? 0 : 3
+                    delay: hasScrolled ? 0 : 2.7
                   }
                 }}
                 className="absolute inset-0 grid place-items-center"

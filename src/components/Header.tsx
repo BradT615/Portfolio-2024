@@ -15,14 +15,13 @@ export default function Header({ currentSection = 'hero' }: HeaderProps) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setAnimationComplete(true);
-    }, 2500);
+    }, 2100);
 
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <>
-      {/* Logo Container - Position Fixed to break out of header bounds */}
       <motion.div 
         className="fixed z-20"
         initial={{ 
@@ -38,11 +37,11 @@ export default function Header({ currentSection = 'hero' }: HeaderProps) {
           y: "0%",
         } : {}}
         transition={{
-          duration: 0.8,
-          ease: [0.16, 1, 0.3, 1]
+          duration: 1,
+          ease: [0.25, 0.1, 0.6, 1] // Faster start, slower end
         }}
       >
-        <Logo className={`${animationComplete ? 'h-12 w-12' : 'h-52 w-52'} transition-all duration-800`} />
+        <Logo className={`${animationComplete ? 'h-12 w-12' : 'h-52 w-52'} transition-all duration-1000 ease-out`} />
       </motion.div>
 
       {/* Header with Navigation */}
@@ -53,7 +52,6 @@ export default function Header({ currentSection = 'hero' }: HeaderProps) {
         transition={{ duration: 0.5, delay: 0.5 }}
       >
         <div className="flex items-center px-5 h-20 w-full">
-          {/* Empty div to maintain spacing where logo will be */}
           <div className={`${animationComplete ? 'h-12 w-12' : 'h-32 w-32'}`} />
           
           {currentSection === 'projects' && (
