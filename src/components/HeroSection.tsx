@@ -80,7 +80,7 @@ const HeroSection = ({ onNavigateToProjects }: HeroSectionProps) => {
       </div>
 
       <div 
-        className="cursor-pointer w-fit fixed bottom-16 left-1/2 transform -translate-x-1/2"
+        className="cursor-pointer w-fit fixed bottom-16 left-1/2 transform -translate-x-1/2 z-10"
         onClick={onNavigateToProjects}
       >
         <ChevronDown 

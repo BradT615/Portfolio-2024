@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -14,25 +14,45 @@ import { FloatingLabelInput } from '@/components/ui/floating-label-input';
 import { FloatingLabelTextarea } from '@/components/ui/floating-label-textarea';
 
 const EmailModal = () => {
-  const [maxHeight, setMaxHeight] = React.useState(150);
+  const [maxHeight, setMaxHeight] = useState(150);
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
   React.useEffect(() => {
     const updateMaxHeight = () => {
       setMaxHeight(window.innerHeight / 3);
     };
 
-    // Set initial height
     updateMaxHeight();
-
-    // Update height on resize
     window.addEventListener('resize', updateMaxHeight);
-
     return () => window.removeEventListener('resize', updateMaxHeight);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Add your form submission logic here
+    setStatus('submitting');
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      message: formData.get('message'),
+    };
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) throw new Error('Failed to send message');
+
+      setStatus('success');
+      form.reset();
+    } catch {
+      setStatus('error');
+    }
   };
 
   return (
@@ -58,6 +78,7 @@ const EmailModal = () => {
               label="Name"
               autoComplete="name"
               required
+              disabled={status === 'submitting'}
               labelClassName="peer-focus:text-neutral-300"
               className="rounded-sm"
             />
@@ -68,6 +89,7 @@ const EmailModal = () => {
               label="Email"
               autoComplete="email"
               required
+              disabled={status === 'submitting'}
               labelClassName="peer-focus:text-neutral-300"
               className="rounded-sm"
             />
@@ -76,18 +98,31 @@ const EmailModal = () => {
               name="message"
               label="Message"
               required
+              disabled={status === 'submitting'}
               minHeight={150}
               maxHeight={maxHeight}
               labelClassName="peer-focus:text-neutral-300"
               className="rounded-sm"
             />
           </div>
+
+          {status === 'success' && (
+            <p className="text-green-500">Message sent successfully!</p>
+          )}
+
+          {status === 'error' && (
+            <p className="text-red-500">Failed to send message. Please try again.</p>
+          )}
+
           <DialogFooter>
             <button 
               type="submit" 
-              className="group relative px-8 py-3 text-base font-semibold text-neutral-900 bg-neutral-300 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-neutral-700 w-full sm:w-auto"
+              disabled={status === 'submitting'}
+              className="group relative px-8 py-3 text-base font-semibold text-neutral-900 bg-neutral-300 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-neutral-700 w-full sm:w-auto disabled:opacity-50"
             >
-              <span className="relative z-10">Send Message</span>
+              <span className="relative z-10">
+                {status === 'submitting' ? 'Sending...' : 'Send Message'}
+              </span>
               <div className="absolute inset-0 bg-gradient-to-r from-neutral-200 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </button>
           </DialogFooter>
