@@ -56,14 +56,14 @@ export default function Home() {
             {currentSection === 'hero' ? (
               <motion.div
                 key="hero"
-                initial={hasScrolled ? { y: '-100%', opacity: 0 } : { opacity: 0 }}
+                initial={{ y: hasScrolled ? '-100%' : 0, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: '-100%', opacity: 0 }}
                 transition={{
-                  duration: hasScrolled ? 1 : 0.8,
+                  duration: 0.8,
                   ease: [0.16, 1, 0.3, 1],
                   opacity: { 
-                    duration: hasScrolled ? 0.5 : 0.8,
+                    duration: 0.8,
                     delay: hasScrolled ? 0 : 2.7
                   }
                 }}
@@ -78,11 +78,11 @@ export default function Home() {
             ) : (
               <motion.div
                 key="projects"
-                initial={hasScrolled ? { y: '100%', opacity: 0 } : false}
+                initial={{ y: '100%', opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: '100%', opacity: 0 }}
                 transition={{
-                  duration: 1,
+                  duration: 0.8,
                   ease: [0.16, 1, 0.3, 1],
                   opacity: { duration: 0.5 }
                 }}

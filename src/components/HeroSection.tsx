@@ -50,12 +50,12 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
   };
 
   const contentVariants = {
-    hidden: hasScrolled ? { opacity: 0, y: '-100%' } : { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: hasScrolled ? '-100%' : 20 },
     visible: { opacity: 1, y: 0 },
   };
 
   const contentTransition = {
-    duration: hasScrolled ? 1 : 0.8,
+    duration: 1,
     ease: [0.16, 1, 0.3, 1],
     delay: hasScrolled ? 0 : 2.3
   };
@@ -66,8 +66,8 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
   };
 
   const chevronTransition = {
-    duration: 0.8,
-    delay: hasScrolled ? 0.8 : 2.5
+    duration: 0.4,
+    delay: 0.6
   };
 
   return (

@@ -41,7 +41,7 @@ export default function Header({ currentSection = 'hero' }: HeaderProps) {
           ease: [0.25, 0.1, 0.6, 1] // Faster start, slower end
         }}
       >
-        <Logo className={`${animationComplete ? 'h-12 w-12' : 'h-52 w-52'} transition-all duration-1000 ease-out`} />
+        <Logo className={`${animationComplete ? 'h-12 w-12' : 'h-52 w-52'} transition-all duration-1000 ease-out delay-100`} />
       </motion.div>
 
       {/* Header with Navigation */}
