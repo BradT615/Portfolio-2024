@@ -12,15 +12,29 @@ export default function Home() {
   const [currentSection, setCurrentSection] = useState<'hero' | 'projects'>('hero');
   const [activeSkills, setActiveSkills] = useState<string[]>([]);
   const [hasScrolled, setHasScrolled] = useState(false);
-  const [isLogoAnimationComplete, setIsLogoAnimationComplete] = useState(false);
+  const [isInitialAnimationComplete, setIsInitialAnimationComplete] = useState(false);
+
+  useEffect(() => {
+    // Enable scrolling after initial animation (logo + hero fade in)
+    const timer = setTimeout(() => {
+      setIsInitialAnimationComplete(true);
+    }, 3500); // Adjust this timing based on your total animation duration
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSectionChange = (newSection: 'hero' | 'projects') => {
+    if (!isInitialAnimationComplete) return; // Prevent section changes during animation
+    
     setCurrentSection(newSection);
     setActiveSkills(newSection === 'projects' ? projects[0].skills : []);
     setHasScrolled(true);
   };
 
   const handleScroll = (e: React.WheelEvent) => {
+    // Prevent scrolling if initial animation isn't complete
+    if (!isInitialAnimationComplete) return;
+
     if (e.ctrlKey || e.metaKey) return;
     
     if ((e.target as HTMLElement).closest('[data-scroll-container]')) return;
@@ -36,9 +50,7 @@ export default function Home() {
   return (
     <div className="flex flex-col h-screen relative overflow-hidden">
       <ImagePreloader />
-      <Header 
-        currentSection={currentSection} 
-      />
+      <Header currentSection={currentSection} />
 
       <main className="h-full w-full" onWheel={handleScroll}>
         <div className="relative h-full">
@@ -54,13 +66,14 @@ export default function Home() {
                   ease: [0.16, 1, 0.3, 1],
                   opacity: { 
                     duration: hasScrolled ? 0.5 : 0.8,
-                    delay: hasScrolled ? 0 : 2.3
+                    delay: hasScrolled ? 0 : 3
                   }
                 }}
                 className="absolute inset-0 grid place-items-center"
               >
                 <HeroSection 
                   onNavigateToProjects={() => handleSectionChange('projects')}
+                  isEnabled={isInitialAnimationComplete}
                 />
               </motion.div>
             ) : (

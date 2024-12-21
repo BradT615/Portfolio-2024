@@ -15,7 +15,7 @@ export default function Header({ currentSection = 'hero' }: HeaderProps) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setAnimationComplete(true);
-    }, 2000);
+    }, 2500);
 
     return () => clearTimeout(timer);
   }, []);
