@@ -78,7 +78,6 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
         // Find the InteractiveGrid's div and forward the mouse event
         const gridElement = document.querySelector('.interactive-grid-container');
         if (gridElement) {
-          const rect = gridElement.getBoundingClientRect();
           const event = new MouseEvent('mousemove', {
             clientX: e.clientX,
             clientY: e.clientY,

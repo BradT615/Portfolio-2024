@@ -19,9 +19,11 @@ const InteractiveGrid = ({
   const [isMouseInView, setIsMouseInView] = useState(false);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    // Get the position relative to the current target
+    const rect = e.currentTarget.getBoundingClientRect();
     setMousePosition({
-      x: e.clientX,
-      y: e.clientY
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
     });
     setIsMouseInView(true);
   }, []);
@@ -30,34 +32,12 @@ const InteractiveGrid = ({
     setIsMouseInView(false);
   }, []);
 
-  // Add global mouse event handlers to track mouse position everywhere
-  React.useEffect(() => {
-    const handleGlobalMouseMove = (e: MouseEvent) => {
-      setMousePosition({
-        x: e.clientX,
-        y: e.clientY
-      });
-      setIsMouseInView(true);
-    };
-
-    const handleGlobalMouseLeave = () => {
-      setIsMouseInView(false);
-    };
-
-    // Add event listeners to window
-    window.addEventListener('mousemove', handleGlobalMouseMove);
-    window.addEventListener('mouseleave', handleGlobalMouseLeave);
-
-    return () => {
-      window.removeEventListener('mousemove', handleGlobalMouseMove);
-      window.removeEventListener('mouseleave', handleGlobalMouseLeave);
-    };
-  }, []);
-
   return (
     <div 
-      className="fixed inset-0 w-full h-full pointer-events-none"
+      className="fixed inset-0 w-full h-full"
       style={{ zIndex: 5 }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
     >
       <svg className="absolute inset-0 w-full h-full">
         <defs>
