@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDown, MapPin, X } from 'lucide-react';
 import { motion } from 'framer-motion';
+import InteractiveGrid from './InteractiveGrid';
 
 interface HeroSectionProps {
   onNavigateToProjects: () => void;
@@ -71,9 +72,26 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
   };
 
   return (
-    <>
+    <div 
+      className="relative w-full h-full flex flex-col items-center justify-center"
+      onMouseMove={(e) => {
+        // Find the InteractiveGrid's div and forward the mouse event
+        const gridElement = document.querySelector('.interactive-grid-container');
+        if (gridElement) {
+          const rect = gridElement.getBoundingClientRect();
+          const event = new MouseEvent('mousemove', {
+            clientX: e.clientX,
+            clientY: e.clientY,
+            bubbles: true
+          });
+          gridElement.dispatchEvent(event);
+        }
+      }}
+    >
+      <InteractiveGrid />
+      
       <motion.div 
-        className="text-center flex flex-col justify-center h-full w-fit items-center z-10 pb-10"
+        className="text-center flex flex-col justify-center items-center z-10 pb-10"
         initial="hidden"
         animate="visible"
         variants={contentVariants}
@@ -131,7 +149,7 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
         isOpen={isResumeOpen}
         onClose={() => setIsResumeOpen(false)}
       />
-    </>
+    </div>
   );
 };
 

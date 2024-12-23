@@ -23,7 +23,7 @@ export default function Header({ currentSection = 'hero' }: HeaderProps) {
   return (
     <>
       <motion.div 
-        className="fixed z-20"
+        className="fixed"
         initial={{ 
           left: "50%",
           top: "50%",
