@@ -1,4 +1,6 @@
-import React, { useState, useCallback, ReactNode } from 'react';
+import React, { useState, useEffect, ReactNode, useRef } from 'react';
+import { Trail } from './Trail';
+import { useTrails } from './UseTrails';
 
 interface InteractiveGridProps {
   children?: ReactNode;
@@ -6,6 +8,7 @@ interface InteractiveGridProps {
   baseColor?: string;
   highlightColor?: string;
   hoverRadius?: number;
+  maxTrails?: number;
 }
 
 const InteractiveGrid = ({
@@ -13,35 +16,94 @@ const InteractiveGrid = ({
   gridSize = 75,
   baseColor = 'rgba(255, 255, 255, 0.1)',
   highlightColor = 'rgba(255, 255, 255, 0.4)',
-  hoverRadius = 100
+  hoverRadius = 120,
+  maxTrails = 8
 }: InteractiveGridProps) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isMouseInView, setIsMouseInView] = useState(false);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    // Get the position relative to the current target
-    const rect = e.currentTarget.getBoundingClientRect();
-    setMousePosition({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    });
-    setIsMouseInView(true);
+  const trails = useTrails({ dimensions, gridSize, maxTrails });
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      if (containerRef.current) {
+        const scale = window.visualViewport?.scale || 1;
+        // Use layout viewport dimensions
+        const rect = containerRef.current.getBoundingClientRect();
+        setDimensions({
+          width: rect.width * scale,
+          height: rect.height * scale
+        });
+      }
+    };
+
+    // Initial update
+    updateDimensions();
+
+    // Listen for both resize and scroll (which includes zoom)
+    window.visualViewport?.addEventListener('resize', updateDimensions);
+    window.visualViewport?.addEventListener('scroll', updateDimensions);
+    
+    // Fallback for browsers without VisualViewport API
+    window.addEventListener('resize', updateDimensions);
+    window.addEventListener('scroll', updateDimensions);
+
+    return () => {
+      window.visualViewport?.removeEventListener('resize', updateDimensions);
+      window.visualViewport?.removeEventListener('scroll', updateDimensions);
+      window.removeEventListener('resize', updateDimensions);
+      window.removeEventListener('scroll', updateDimensions);
+    };
   }, []);
 
-  const handleMouseLeave = useCallback(() => {
-    setIsMouseInView(false);
+  useEffect(() => {
+    const handleGlobalMouseMove = (e: MouseEvent) => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setMousePosition({
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top
+        });
+        setIsMouseInView(
+          e.clientX >= rect.left &&
+          e.clientX <= rect.right &&
+          e.clientY >= rect.top &&
+          e.clientY <= rect.bottom
+        );
+      }
+    };
+
+    const handleGlobalMouseLeave = () => {
+      setIsMouseInView(false);
+    };
+
+    window.addEventListener('mousemove', handleGlobalMouseMove);
+    document.addEventListener('mouseleave', handleGlobalMouseLeave);
+
+    return () => {
+      window.removeEventListener('mousemove', handleGlobalMouseMove);
+      document.removeEventListener('mouseleave', handleGlobalMouseLeave);
+    };
   }, []);
 
   return (
     <div 
-      className="fixed inset-0 w-full h-full"
-      style={{ zIndex: 5 }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      ref={containerRef}
+      className="fixed inset-0 w-full h-full pointer-events-none"
+      style={{ zIndex: 0 }}
     >
-      <svg className="absolute inset-0 w-full h-full">
+      <svg 
+        className="absolute inset-0 w-full h-full"
+        style={{ 
+          transform: `scale(${1/(window.visualViewport?.scale || 1)})`,
+          transformOrigin: 'top left'
+        }}
+        viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
+        preserveAspectRatio="xMinYMin meet"
+      >
         <defs>
-          {/* Base grid pattern */}
           <pattern
             id="grid"
             width={gridSize}
@@ -56,7 +118,6 @@ const InteractiveGrid = ({
             />
           </pattern>
 
-          {/* Highlight pattern */}
           <pattern
             id="highlight-grid"
             width={gridSize}
@@ -67,31 +128,27 @@ const InteractiveGrid = ({
               d={`M ${gridSize} 0 L 0 0 0 ${gridSize}`}
               fill="none"
               stroke={highlightColor}
-              strokeWidth="1.5"
+              strokeWidth="1"
             />
           </pattern>
 
-          {/* Radial gradient for hover effect */}
           <radialGradient id="hover-gradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
             <stop offset="0%" stopColor="white" stopOpacity="1" />
             <stop offset="60%" stopColor="white" stopOpacity="0.5" />
             <stop offset="100%" stopColor="white" stopOpacity="0" />
           </radialGradient>
 
-          {/* Top and bottom fade gradients */}
           <linearGradient id="fade-gradient" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0%" stopColor="transparent" />
-            <stop offset="15%" stopColor="white" />
+            <stop offset="20%" stopColor="white" />
             <stop offset="80%" stopColor="white" />
             <stop offset="100%" stopColor="transparent" />
           </linearGradient>
 
-          {/* Fade mask */}
           <mask id="fade-mask">
             <rect width="100%" height="100%" fill="url(#fade-gradient)" />
           </mask>
 
-          {/* Hover mask */}
           <mask id="hover-mask">
             <rect width="100%" height="100%" fill="black" />
             {isMouseInView && (
@@ -105,26 +162,34 @@ const InteractiveGrid = ({
           </mask>
         </defs>
 
-        {/* Base grid with fade mask */}
-        <rect 
-          width="100%" 
-          height="100%" 
-          fill="url(#grid)" 
-          mask="url(#fade-mask)"
-        />
-
-        {/* Highlight grid with hover and fade masks */}
         <g mask="url(#fade-mask)">
-          <rect
-            width="100%"
-            height="100%"
-            fill="url(#highlight-grid)"
-            mask="url(#hover-mask)"
-            className="mix-blend-lighten"
+          <rect 
+            width="100%" 
+            height="100%" 
+            fill="url(#grid)" 
           />
+
+          <g mask="url(#hover-mask)">
+            <rect
+              width="100%"
+              height="100%"
+              fill="url(#highlight-grid)"
+              className="mix-blend-lighten"
+            />
+          </g>
+
+          {trails.map(trail => (
+            trail.active && (
+              <Trail
+                key={trail.id}
+                {...trail}
+                gridSize={gridSize}
+              />
+            )
+          ))}
         </g>
+        {children}
       </svg>
-      {children}
     </div>
   );
 };

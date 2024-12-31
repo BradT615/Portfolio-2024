@@ -38,13 +38,12 @@ export default function Header({ currentSection = 'hero' }: HeaderProps) {
         } : {}}
         transition={{
           duration: 1,
-          ease: [0.25, 0.1, 0.6, 1] // Faster start, slower end
+          ease: [0.25, 0.1, 0.6, 1]
         }}
       >
         <Logo className={`${animationComplete ? 'h-12 w-12' : 'h-52 w-52'} transition-all duration-1000 ease-out delay-100`} />
       </motion.div>
 
-      {/* Header with Navigation */}
       <motion.header 
         className="fixed w-full z-10"
         initial={{ opacity: 0 }}
@@ -72,7 +71,7 @@ export default function Header({ currentSection = 'hero' }: HeaderProps) {
           >
             <Link 
               href="https://www.linkedin.com/in/bradt615/" 
-              className="nav-link hover:text-neutral-300 transition-colors" 
+              className="nav-link hover:text-neutral-300 transition-colors pointer-events-auto" 
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -81,7 +80,7 @@ export default function Header({ currentSection = 'hero' }: HeaderProps) {
             <span className="mx-6 text-neutral-400">/</span>
             <Link 
               href="https://github.com/BradT615" 
-              className="nav-link hover:text-neutral-300 transition-colors" 
+              className="nav-link hover:text-neutral-300 transition-colors pointer-events-auto" 
               target="_blank"
               rel="noopener noreferrer"
             >
