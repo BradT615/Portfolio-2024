@@ -73,7 +73,7 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
 
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center">
-      {/* Background Layers */}
+      {/* Interactive Grid Background */}
       <GridBackground />
       
       {/* Main Content */}
