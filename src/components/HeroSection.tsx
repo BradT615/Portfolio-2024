@@ -73,7 +73,6 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
 
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center">
-      {/* Interactive Grid Background */}
       <GridBackground />
       
       {/* Main Content */}
@@ -98,7 +97,7 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
             </h3>
           </div>
 
-          <div className="flex gap-8 justify-center pt-8">
+          <div className="flex gap-8 justify-center pt-12">
             <button 
               className={`group relative px-8 py-4 text-lg font-semibold text-neutral-900 bg-neutral-300 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-neutral-700 ${!isEnabled && 'pointer-events-none'}`}
               onClick={() => isEnabled && setIsResumeOpen(true)}

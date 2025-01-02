@@ -1,185 +1,184 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-interface GridPoint {
-  x: number;
-  y: number;
-}
-
-interface LineSegment {
-  point: GridPoint;
-}
-
-interface GridBackgroundProps {
-  gridSize?: number;
-  baseColor?: string;
-  highlightColor?: string;
-  hoverRadius?: number;
-  className?: string;
-}
-
-const FIXED_LINE_SEGMENTS: LineSegment[] = [
-  { point: { x: -8.5, y: -2.5 } },
-  { point: { x: 9.5, y: -3.5 } },
-  { point: { x: 5.5, y: -1.5 } },
-  { point: { x: -5.5, y: .5 } }
+const FIXED_LINE_SEGMENTS = [
+  { x: -10.5, y: -3.5 },
+  { x: 9.5, y: -4.5 },
+  { x: 5.5, y: -1.5 },
+  { x: -5.5, y: 0.5 }
 ];
 
-// Define different durations for each line segment
-const ANIMATION_DURATIONS = [7, 5, 8, 4];
+const ANIMATION_DELAYS = [0, 0.7, 1.4, 2.1];
 
-// Define animated cell positions (relative to center)
-const ANIMATED_CELLS = [
-  { x: -2.5, y: -2.5 },
-  { x: 1.5, y: 0.5 },
-  { x: -1.5, y: 2.5 },
-  { x: 2.5, y: -1.5 },
-  { x: -0.5, y: -0.5 },
-  { x: -3.5, y: 1.5 }
-];
+const ROWS = 15;
 
-const GridBackground: React.FC<GridBackgroundProps> = ({
-  gridSize = 82,
-  baseColor = 'rgba(255, 255, 255, 0.1)',
-  highlightColor = 'rgba(255, 255, 255, 0.4)',
-  hoverRadius = 120,
-  className = ''
-}) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const highlightRef = useRef<HTMLDivElement>(null);
-  const lineRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [mounted, setMounted] = useState(false);
+// Custom hook to track mouse position relative to a container
+const useMousePosition = (containerRef: React.RefObject<HTMLDivElement>) => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isWithinBounds, setIsWithinBounds] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-  
-  useEffect(() => {
-    const container = containerRef.current;
-    const highlight = highlightRef.current;
-    if (!container || !highlight) return;
+    const updateMousePosition = (ev: MouseEvent) => {
+      if (!containerRef.current) return;
+      
+      const rect = containerRef.current.getBoundingClientRect();
+      const x = ev.clientX - rect.left;
+      const y = ev.clientY - rect.top;
+      
+      const withinBounds = 
+        x >= 0 && 
+        x <= rect.width && 
+        y >= 0 && 
+        y <= rect.height;
 
-    let rafId: number;
-    
-    const updateMousePosition = (e: MouseEvent) => {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        const rect = container.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        container.style.setProperty('--mouse-x', `${x}px`);
-        container.style.setProperty('--mouse-y', `${y}px`);
-      });
-    };
-
-    const handleMouseEnter = () => {
-      highlight.style.opacity = '1';
+      setIsWithinBounds(withinBounds);
+      if (withinBounds) {
+        setMousePosition({ x, y });
+      }
     };
 
     const handleMouseLeave = () => {
-      highlight.style.opacity = '0';
+      setIsWithinBounds(false);
     };
 
     document.addEventListener('mousemove', updateMousePosition);
     document.addEventListener('mouseleave', handleMouseLeave);
-    document.addEventListener('mouseenter', handleMouseEnter);
 
     return () => {
-      cancelAnimationFrame(rafId);
       document.removeEventListener('mousemove', updateMousePosition);
       document.removeEventListener('mouseleave', handleMouseLeave);
-      document.removeEventListener('mouseenter', handleMouseEnter);
+    };
+  }, [containerRef]);
+
+  return { position: mousePosition, isHovering: isWithinBounds };
+};
+
+const GridBg = ({
+  baseColor = 'rgba(255, 255, 255, 0.1)',
+  highlightColor = 'rgba(255, 255, 255, 0.4)',
+  className = ''
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { position: mousePosition, isHovering } = useMousePosition(containerRef);
+  const [cellSize, setCellSize] = useState(0);
+  const [gridColumns, setGridColumns] = useState(ROWS);
+  const [highlightedCells, setHighlightedCells] = useState(new Set());
+
+  // Create a grid array that covers the full viewport
+  const rows = Array.from({ length: ROWS }, (_, rowIndex) =>
+    Array.from({ length: gridColumns }, (_, colIndex) => ({
+      id: rowIndex * gridColumns + colIndex
+    }))
+  );
+
+  useEffect(() => {
+    // Select 4 random cells
+    const totalCells = ROWS * gridColumns;
+    const randomCells = new Set();
+    
+    while (randomCells.size < 30) {
+      const randomCell = Math.floor(Math.random() * totalCells);
+      randomCells.add(randomCell);
+    }
+    
+    setHighlightedCells(randomCells);
+  }, [gridColumns]);
+
+  useEffect(() => {
+    const updateSize = () => {
+      if (!containerRef.current) return;
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      
+      const newCellSize = Math.ceil(viewportHeight / ROWS);
+      const columnsNeeded = Math.ceil(viewportWidth / newCellSize);
+      
+      setCellSize(newCellSize);
+      setGridColumns(columnsNeeded);
+    };
+
+    updateSize();
+    window.addEventListener('resize', updateSize);
+
+    return () => {
+      window.removeEventListener('resize', updateSize);
     };
   }, []);
 
   return (
     <div 
       ref={containerRef}
-      className={`fixed inset-0 w-full h-full overflow-hidden ${className}`}
-      style={{
-        '--mouse-x': '0px',
-        '--mouse-y': '0px'
-      } as React.CSSProperties}
+      className={`fixed inset-0 flex items-center justify-center overflow-hidden pointer-events-none ${className}`}
     >
       <style>
         {`
-          @keyframes pulse {
-            0% {
-              opacity: 0.2;
-            }
-            50% {
-              opacity: 0.9;
-            }
-            100% {
-              opacity: 0.2;
-            }
+          .grid-container {
+            display: grid;
+            grid-template-columns: repeat(${gridColumns}, ${cellSize}px);
+            grid-template-rows: repeat(${ROWS}, ${cellSize}px);
+            position: relative;
+            mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
           }
 
-          @keyframes cellGlow {
-            0%, 100% {
-              opacity: 0;
-            }
-            50% {
-              opacity: 0.6;
-            }
+          .grid-cell {
+            border-right: 1px solid ${baseColor};
+            border-bottom: 1px solid ${baseColor};
+            position: relative;
+            width: ${cellSize}px;
+            height: ${cellSize}px;
+          }
+
+          .grid-cell.highlighted {
+            background: rgba(255, 255, 255, 0.01);
+          }
+
+          .grid-cell:nth-child(${gridColumns}n) {
+            border-right: none;
+          }
+
+          .grid-cell:nth-child(n+${gridColumns * ROWS}) {
+            border-bottom: none;
+          }
+
+          @keyframes pulse {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.9; }
           }
         `}
       </style>
 
-      {/* Base grid */}
-      <div 
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `
-            linear-gradient(${baseColor} 1px, transparent 1px),
-            linear-gradient(90deg, ${baseColor} 1px, transparent 1px)
-          `,
-          backgroundSize: `${gridSize}px ${gridSize}px`,
-          backgroundPosition: 'center center',
-          maskImage: 'linear-gradient(to bottom, transparent, black 30%, black 70%, transparent)',
-          WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 30%, black 70%, transparent)',
-        }}
-      />
+      {/* Main Grid */}
+      <div className="grid-container">
+        {rows.map((row, rowIndex) =>
+          row.map(({ id }, colIndex) => (
+            <div
+              key={`${rowIndex}-${colIndex}`}
+              className={`grid-cell ${highlightedCells.has(id) ? 'highlighted' : ''}`}
+              data-cell-id={id}
+            />
+          ))
+        )}
+      </div>
 
-      {/* Animated cells */}
-      {ANIMATED_CELLS.map((cell, index) => (
-        <div
-          key={`cell-${index}`}
-          className="absolute"
-          style={{
-            left: `calc(50% + ${cell.x * gridSize}px)`,
-            top: `calc(50% + ${cell.y * gridSize}px)`,
-            width: `${gridSize}px`,
-            height: `${gridSize}px`,
-            backgroundColor: 'rgba(255, 255, 255, 0.08)',
-            animation: `cellGlow ${8 + index}s cubic-bezier(0.45, 0, 0.55, 1) infinite`,
-            animationDelay: `${index * 0.7}s`,
-            opacity: 0,
-            zIndex: 2
-          }}
-        />
-      ))}
-
-      {/* Highlight grid */}
+      {/* Highlight Layer */}
       <div 
-        ref={highlightRef}
-        className="absolute inset-0 transition-opacity duration-800"
+        className="absolute inset-0 transition-opacity duration-600"
         style={{
-          opacity: 0,
+          opacity: isHovering ? 1 : 0,
           backgroundImage: `
             linear-gradient(${highlightColor} 1px, transparent 1px),
             linear-gradient(90deg, ${highlightColor} 1px, transparent 1px)
           `,
-          backgroundSize: `${gridSize}px ${gridSize}px`,
+          backgroundSize: `${cellSize}px ${cellSize}px`,
           backgroundPosition: 'center center',
-          maskImage: `
-            radial-gradient(circle ${hoverRadius}px at var(--mouse-x) var(--mouse-y), black, transparent),
+          maskImage: mousePosition ? `
+            radial-gradient(circle ${cellSize * 1.5}px at ${mousePosition.x}px ${mousePosition.y}px, black, transparent),
             linear-gradient(to bottom, transparent, black 30%, black 70%, transparent)
-          `,
-          WebkitMaskImage: `
-            radial-gradient(circle ${hoverRadius}px at var(--mouse-x) var(--mouse-y), black, transparent),
+          ` : '',
+          WebkitMaskImage: mousePosition ? `
+            radial-gradient(circle ${cellSize * 1.5}px at ${mousePosition.x}px ${mousePosition.y}px, black, transparent),
             linear-gradient(to bottom, transparent, black 30%, black 70%, transparent)
-          `,
+          ` : '',
           maskComposite: 'intersect',
           WebkitMaskComposite: 'source-in',
           mixBlendMode: 'lighten',
@@ -187,30 +186,23 @@ const GridBackground: React.FC<GridBackgroundProps> = ({
         }}
       />
 
-      {/* Fixed line segments */}
+      {/* Fixed Line Segments */}
       {FIXED_LINE_SEGMENTS.map((segment, index) => (
         <div
           key={index}
-          ref={el => {
-            lineRefs.current[index] = el;
-          }}
-          className="absolute transition-opacity" 
+          className="absolute transition-opacity"
           style={{
-            left: `calc(50% + ${segment.point.x * gridSize}px)`,
-            top: `calc(50% + ${segment.point.y * gridSize}px)`,
+            left: `calc(50% + ${segment.x * cellSize}px)`,
+            top: `calc(50% + ${segment.y * cellSize}px)`,
             transform: 'translate(-50%, -50%)',
             width: '0.5px',
-            height: `${gridSize * 2}px`,
+            height: `${cellSize * 2}px`,
             zIndex: 5,
-            backgroundImage: 'linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.7) 50%, transparent 100%)',
+            backgroundImage: 'linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.9) 50%, transparent 100%)',
             mixBlendMode: 'lighten',
             pointerEvents: 'none',
-            ...(mounted ? {
-              animation: `pulse ${ANIMATION_DURATIONS[index]}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 2}s`
-            } : {
-              opacity: 0.2
-            })
+            animation: `pulse ${7 - index}s ease-in-out infinite`,
+            animationDelay: `${ANIMATION_DELAYS[index]}s`
           }}
         />
       ))}
@@ -218,4 +210,4 @@ const GridBackground: React.FC<GridBackgroundProps> = ({
   );
 };
 
-export default GridBackground;
+export default GridBg;
