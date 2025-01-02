@@ -7,8 +7,6 @@ interface GridPoint {
 
 interface LineSegment {
   point: GridPoint;
-  isVertical: boolean;
-  region: 'left' | 'right' | 'top';
 }
 
 interface GridBackgroundProps {
@@ -19,96 +17,25 @@ interface GridBackgroundProps {
   className?: string;
 }
 
-interface Region {
-  minX: number;
-  maxX: number;
-  minY: number;
-  maxY: number;
-  count: number;
-  required: number;
-}
+const FIXED_LINE_SEGMENTS: LineSegment[] = [
+  { point: { x: -8.5, y: -2.5 } },
+  { point: { x: 9.5, y: -3.5 } },
+  { point: { x: 5.5, y: -1.5 } },
+  { point: { x: -5.5, y: .5 } }
+];
 
-const regions = {
-  left: {
-    minX: -11,
-    maxX: -6,
-    minY: -4,
-    maxY: 4,
-    count: 0,
-    required: 2
-  },
-  right: {
-    minX: 6,
-    maxX: 11,
-    minY: -4,
-    maxY: 4,
-    count: 0,
-    required: 2
-  },
-  top: {
-    minX: -5,
-    maxX: 5,
-    minY: -4,
-    maxY: -3,
-    count: 0,
-    required: 1
-  }
-};
+// Define different durations for each line segment
+const ANIMATION_DURATIONS = [7, 5, 8, 4];
 
-function generateRandomIntersectionPoints(seed: number): LineSegment[] {
-  const localRegions = JSON.parse(JSON.stringify(regions));
-  
-  // Implement a simple seeded random number generator
-  let currentSeed = seed;
-  const seededRandom = () => {
-    currentSeed = (currentSeed * 9301 + 49297) % 233280;
-    return currentSeed / 233280;
-  };
-
-  const points: LineSegment[] = [];
-  const usedX = new Set<number>();
-  const usedY = new Set<number>();
-  
-  const hasConflict = (x: number, y: number): boolean => {
-    return usedX.has(x) || usedY.has(y);
-  };
-
-  const getRandomInt = (min: number, max: number): number => {
-    return Math.floor(seededRandom() * (max - min + 1)) + min;
-  };
-
-  // Try to generate points with a fixed number of attempts
-  for (let attempts = 0; attempts < 500 && points.length < 5; attempts++) {
-    const availableRegions = (Object.entries(localRegions) as [keyof typeof regions, Region][])
-      .filter(([, config]) => config.count < config.required)
-      .map(([name]) => name);
-    
-    if (availableRegions.length === 0) break;
-    
-    const regionName = availableRegions[Math.floor(seededRandom() * availableRegions.length)] as keyof typeof regions;
-    const region = localRegions[regionName];
-    
-    const x = getRandomInt(region.minX, region.maxX);
-    const y = getRandomInt(region.minY, region.maxY);
-    
-    if (!hasConflict(x, y)) {
-      usedX.add(x);
-      usedY.add(y);
-      region.count++;
-      
-      points.push({
-        point: {
-          x: x - 0.5,
-          y: y - 0.5
-        },
-        isVertical: seededRandom() < 0.5,
-        region: regionName
-      });
-    }
-  }
-
-  return points;
-}
+// Define animated cell positions (relative to center)
+const ANIMATED_CELLS = [
+  { x: -2.5, y: -2.5 },
+  { x: 1.5, y: 0.5 },
+  { x: -1.5, y: 2.5 },
+  { x: 2.5, y: -1.5 },
+  { x: -0.5, y: -0.5 },
+  { x: -3.5, y: 1.5 }
+];
 
 const GridBackground: React.FC<GridBackgroundProps> = ({
   gridSize = 82,
@@ -119,15 +46,13 @@ const GridBackground: React.FC<GridBackgroundProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
-  
-  // Use state for line segments, initialized with null
-  const [lineSegments, setLineSegments] = useState<LineSegment[] | null>(null);
+  const lineRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Generate line segments only on the client side
-    setLineSegments(generateRandomIntersectionPoints(Date.now()));
+    setMounted(true);
   }, []);
-
+  
   useEffect(() => {
     const container = containerRef.current;
     const highlight = highlightRef.current;
@@ -176,6 +101,31 @@ const GridBackground: React.FC<GridBackgroundProps> = ({
         '--mouse-y': '0px'
       } as React.CSSProperties}
     >
+      <style>
+        {`
+          @keyframes pulse {
+            0% {
+              opacity: 0.2;
+            }
+            50% {
+              opacity: 0.9;
+            }
+            100% {
+              opacity: 0.2;
+            }
+          }
+
+          @keyframes cellGlow {
+            0%, 100% {
+              opacity: 0;
+            }
+            50% {
+              opacity: 0.6;
+            }
+          }
+        `}
+      </style>
+
       {/* Base grid */}
       <div 
         className="absolute inset-0"
@@ -190,6 +140,25 @@ const GridBackground: React.FC<GridBackgroundProps> = ({
           WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 30%, black 70%, transparent)',
         }}
       />
+
+      {/* Animated cells */}
+      {ANIMATED_CELLS.map((cell, index) => (
+        <div
+          key={`cell-${index}`}
+          className="absolute"
+          style={{
+            left: `calc(50% + ${cell.x * gridSize}px)`,
+            top: `calc(50% + ${cell.y * gridSize}px)`,
+            width: `${gridSize}px`,
+            height: `${gridSize}px`,
+            backgroundColor: 'rgba(255, 255, 255, 0.08)',
+            animation: `cellGlow ${8 + index}s cubic-bezier(0.45, 0, 0.55, 1) infinite`,
+            animationDelay: `${index * 0.7}s`,
+            opacity: 0,
+            zIndex: 2
+          }}
+        />
+      ))}
 
       {/* Highlight grid */}
       <div 
@@ -218,23 +187,30 @@ const GridBackground: React.FC<GridBackgroundProps> = ({
         }}
       />
 
-      {/* Line segments - only render when available */}
-      {lineSegments?.map((segment, index) => (
+      {/* Fixed line segments */}
+      {FIXED_LINE_SEGMENTS.map((segment, index) => (
         <div
           key={index}
-          className="absolute" 
+          ref={el => {
+            lineRefs.current[index] = el;
+          }}
+          className="absolute transition-opacity" 
           style={{
             left: `calc(50% + ${segment.point.x * gridSize}px)`,
             top: `calc(50% + ${segment.point.y * gridSize}px)`,
             transform: 'translate(-50%, -50%)',
-            width: segment.isVertical ? '0.5px' : `${gridSize * 2}px`,
-            height: segment.isVertical ? `${gridSize * 2}px` : '0.5px',
+            width: '0.5px',
+            height: `${gridSize * 2}px`,
             zIndex: 5,
-            backgroundImage: segment.isVertical
-              ? 'linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.7) 50%, transparent 100%)'
-              : 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.8) 50%, transparent 100%)',
+            backgroundImage: 'linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.7) 50%, transparent 100%)',
             mixBlendMode: 'lighten',
-            pointerEvents: 'none'
+            pointerEvents: 'none',
+            ...(mounted ? {
+              animation: `pulse ${ANIMATION_DURATIONS[index]}s ease-in-out infinite`,
+              animationDelay: `${Math.random() * 2}s`
+            } : {
+              opacity: 0.2
+            })
           }}
         />
       ))}
