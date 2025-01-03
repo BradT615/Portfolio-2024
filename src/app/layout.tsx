@@ -1,10 +1,16 @@
 // app/layout.tsx
 import type { Metadata } from "next";
+import { Roboto_Mono } from 'next/font/google';
 import "./globals.css";
+
+const robotoMono = Roboto_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: "Brad Titus",
-  description: "Bradley Titus - Front end developer Portfolio",
+  description: "Brad Titus - Front End Developer Portfolio",
 };
 
 export default function RootLayout({
@@ -13,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className={robotoMono.className}>
       <head>
         <link 
           rel="stylesheet" 

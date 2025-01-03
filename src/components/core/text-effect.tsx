@@ -36,7 +36,12 @@ const defaultContainerVariants: Variants = {
     },
   },
   exit: {
-    transition: { staggerChildren: 0.05, staggerDirection: -1 },
+    opacity: 1,
+    transition: { 
+      staggerChildren: 0.05,
+      staggerDirection: -1,
+      when: "afterChildren"
+    },
   },
 };
 
@@ -44,8 +49,12 @@ const defaultItemVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
+    transition: { duration: 0.3 }
   },
-  exit: { opacity: 0 },
+  exit: { 
+    opacity: 0,
+    transition: { duration: 0.3 }
+  },
 };
 
 const presetVariants: Record<
@@ -56,40 +65,80 @@ const presetVariants: Record<
     container: defaultContainerVariants,
     item: {
       hidden: { opacity: 0, filter: 'blur(12px)' },
-      visible: { opacity: 1, filter: 'blur(0px)' },
-      exit: { opacity: 0, filter: 'blur(12px)' },
+      visible: { 
+        opacity: 1, 
+        filter: 'blur(0px)',
+        transition: { duration: 0.3 }
+      },
+      exit: { 
+        opacity: 0, 
+        filter: 'blur(12px)',
+        transition: { duration: 0.3 }
+      },
     },
   },
   'fade-in-blur': {
     container: defaultContainerVariants,
     item: {
       hidden: { opacity: 0, y: 20, filter: 'blur(12px)' },
-      visible: { opacity: 1, y: 0, filter: 'blur(0px)' },
-      exit: { opacity: 0, y: 20, filter: 'blur(12px)' },
+      visible: { 
+        opacity: 1, 
+        y: 0, 
+        filter: 'blur(0px)',
+        transition: { duration: 0.3 }
+      },
+      exit: { 
+        opacity: 0, 
+        y: 20, 
+        filter: 'blur(12px)',
+        transition: { duration: 0.3 }
+      },
     },
   },
   scale: {
     container: defaultContainerVariants,
     item: {
       hidden: { opacity: 0, scale: 0 },
-      visible: { opacity: 1, scale: 1 },
-      exit: { opacity: 0, scale: 0 },
+      visible: { 
+        opacity: 1, 
+        scale: 1,
+        transition: { duration: 0.3 }
+      },
+      exit: { 
+        opacity: 0, 
+        scale: 0,
+        transition: { duration: 0.3 }
+      },
     },
   },
   fade: {
     container: defaultContainerVariants,
     item: {
       hidden: { opacity: 0 },
-      visible: { opacity: 1 },
-      exit: { opacity: 0 },
+      visible: { 
+        opacity: 1,
+        transition: { duration: 0.3 }
+      },
+      exit: { 
+        opacity: 0,
+        transition: { duration: 0.3 }
+      },
     },
   },
   slide: {
     container: defaultContainerVariants,
     item: {
       hidden: { opacity: 0, y: 20 },
-      visible: { opacity: 1, y: 0 },
-      exit: { opacity: 0, y: 20 },
+      visible: { 
+        opacity: 1, 
+        y: 0,
+        transition: { duration: 0.3 }
+      },
+      exit: { 
+        opacity: 0, 
+        y: 20,
+        transition: { duration: 0.3 }
+      },
     },
   },
 };
@@ -187,11 +236,19 @@ export function TextEffect({
         delayChildren: delay,
       },
     },
-    exit: containerVariants.exit,
+    exit: {
+      ...containerVariants.exit,
+      transition: {
+        ...(containerVariants.exit as TargetAndTransition)?.transition,
+        staggerChildren: stagger,
+        staggerDirection: -1,
+        when: "afterChildren"
+      },
+    },
   };
 
   return (
-    <AnimatePresence mode='popLayout'>
+    <AnimatePresence mode='wait'>
       {trigger && (
         <MotionTag
           initial='hidden'

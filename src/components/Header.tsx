@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Logo } from '@/components/Logo';
 import EmailModal from '@/components/ui/EmailModal';
 import { TextEffect } from './core/text-effect';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 
 interface HeaderProps {
@@ -11,6 +11,7 @@ interface HeaderProps {
 
 export default function Header({ currentSection = 'hero' }: HeaderProps) {
   const [animationComplete, setAnimationComplete] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -19,6 +20,10 @@ export default function Header({ currentSection = 'hero' }: HeaderProps) {
 
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    setIsVisible(currentSection === 'projects');
+  }, [currentSection]);
 
   return (
     <>
@@ -53,15 +58,17 @@ export default function Header({ currentSection = 'hero' }: HeaderProps) {
         <div className="flex items-center px-5 h-20 w-full">
           <div className={`${animationComplete ? 'h-12 w-12' : 'h-32 w-32'}`} />
           
-          {currentSection === 'projects' && (
-            <TextEffect 
-              per='char' 
-              preset='fade' 
-              className="pl-4 text-3xl text-neutral-400 font-light tracking-wide"
-            >
-              Projects
-            </TextEffect>
-          )}
+          <AnimatePresence mode="wait">
+          <TextEffect 
+            key="projects-title"
+            per="char" 
+            preset="fade" 
+            className="pl-4 text-3xl text-neutral-400 font-light"
+            trigger={isVisible}
+          >
+            Projects
+          </TextEffect>
+          </AnimatePresence>
 
           <motion.nav 
             className="flex items-center text-lg ml-auto"

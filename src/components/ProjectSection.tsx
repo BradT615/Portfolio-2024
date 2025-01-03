@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Github, ExternalLink } from 'lucide-react';
 import { projects } from '@/lib/projects';
 import { Spotlight } from '@/components/core/spotlight';
@@ -14,8 +14,6 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onProjectChange }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    console.log('Project changed to:', projects[currentIndex].title);
-    console.log('Skills:', projects[currentIndex].skills);
     onProjectChange?.(projects[currentIndex].skills);
   }, [currentIndex, onProjectChange]);
 
@@ -33,7 +31,7 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onProjectChange }) => {
     <div id="projects" className="h-full px-24 flex flex-col gap-8 justify-center">
       <div className="max-w-5xl mx-auto px-16">
         <div className="relative flex flex-col items-center justify-center pt-16">
-          <AnimatePresence initial={false} mode="wait">
+          <AnimatePresence mode="sync">
             {projects.map((project, index) => {
               const diff = (index - currentIndex + projects.length) % projects.length;
               const isActive = diff === 0;
@@ -58,38 +56,34 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onProjectChange }) => {
                   exit={{ 
                     scale: 0.8,
                     opacity: 0,
-                    x: -200
+                    x: -200,
+                    transition: {
+                      duration: 0.3,
+                      ease: "easeInOut"
+                    }
                   }}
                   transition={{
                     duration: 0.4,
                     ease: "easeInOut",
-                    opacity: {
-                      duration: 0.3
-                    }
+                    opacity: { duration: 0.3 }
                   }}
                   onClick={() => {
                     if (isNext) nextSlide();
                     if (isNextPlus) {
                       nextSlide(); 
-                      nextSlide();
+                      setTimeout(nextSlide, 100);
                     }
                   }}
                   whileHover={
                     isNext ? {
                       scale: 0.95,
                       opacity: 1,
-                      transition: { 
-                        duration: 0.2,
-                        opacity: { duration: 0.1 }
-                      }
+                      transition: { duration: 0.2 }
                     } : 
                     isNextPlus ? {
                       scale: 0.85,
                       opacity: 0.8,
-                      transition: { 
-                        duration: 0.2,
-                        opacity: { duration: 0.1 }
-                      }
+                      transition: { duration: 0.2 }
                     } : undefined
                   }
                   whileTap={
@@ -105,13 +99,13 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onProjectChange }) => {
                     />
                     <div className="relative h-full w-full rounded-xl bg-[#2f2f36] overflow-hidden">
                       <div className="relative h-3/5">
-                      <Image 
-                        src={project.imageUrl} 
-                        alt={project.title}
-                        width={500}
-                        height={300}
-                        className="absolute inset-0 w-full h-full object-cover object-top"
-                      />
+                        <Image 
+                          src={project.imageUrl} 
+                          alt={project.title}
+                          width={500}
+                          height={300}
+                          className="absolute inset-0 w-full h-full object-cover object-top"
+                        />
                       </div>
                       
                       <div className="h-2/5 p-6 flex flex-col">

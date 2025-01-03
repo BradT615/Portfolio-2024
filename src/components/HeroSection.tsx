@@ -84,7 +84,7 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
         transition={contentTransition}
       >
         <div className="space-y-4">
-          <h1 className="text-8xl font-bold bg-gradient-to-b from-white to-neutral-500 bg-clip-text text-transparent drop-shadow-lg">
+          <h1 className="text-8xl font-bold text-neutral-200">
             Brad Titus
           </h1>
           <h2 className="text-4xl text-neutral-400 font-light">

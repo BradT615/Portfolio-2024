@@ -71,7 +71,7 @@ const GridBg = ({
   );
 
   useEffect(() => {
-    // Select 4 random cells
+    // Select 30 random cells
     const totalCells = ROWS * gridColumns;
     const randomCells = new Set();
     
@@ -116,8 +116,14 @@ const GridBg = ({
             grid-template-columns: repeat(${gridColumns}, ${cellSize}px);
             grid-template-rows: repeat(${ROWS}, ${cellSize}px);
             position: relative;
-            mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
-            -webkit-mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
+            mask-image: 
+              linear-gradient(to bottom, transparent, black 30%, black 70%, transparent),
+              linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: 
+              linear-gradient(to bottom, transparent, black 30%, black 70%, transparent),
+              linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            mask-composite: intersect;
+            -webkit-mask-composite: source-in;
           }
 
           .grid-cell {
@@ -173,11 +179,13 @@ const GridBg = ({
           backgroundPosition: 'center center',
           maskImage: mousePosition ? `
             radial-gradient(circle ${cellSize * 1.5}px at ${mousePosition.x}px ${mousePosition.y}px, black, transparent),
-            linear-gradient(to bottom, transparent, black 30%, black 70%, transparent)
+            linear-gradient(to bottom, transparent, black 30%, black 70%, transparent),
+            linear-gradient(to right, transparent, black 10%, black 90%, transparent)
           ` : '',
           WebkitMaskImage: mousePosition ? `
             radial-gradient(circle ${cellSize * 1.5}px at ${mousePosition.x}px ${mousePosition.y}px, black, transparent),
-            linear-gradient(to bottom, transparent, black 30%, black 70%, transparent)
+            linear-gradient(to bottom, transparent, black 30%, black 70%, transparent),
+            linear-gradient(to right, transparent, black 10%, black 90%, transparent)
           ` : '',
           maskComposite: 'intersect',
           WebkitMaskComposite: 'source-in',
@@ -195,10 +203,10 @@ const GridBg = ({
             left: `calc(50% + ${segment.x * cellSize}px)`,
             top: `calc(50% + ${segment.y * cellSize}px)`,
             transform: 'translate(-50%, -50%)',
-            width: '0.5px',
+            width: '1px',
             height: `${cellSize * 2}px`,
             zIndex: 5,
-            backgroundImage: 'linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.9) 50%, transparent 100%)',
+            backgroundImage: 'linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.7) 50%, transparent 100%)',
             mixBlendMode: 'lighten',
             pointerEvents: 'none',
             animation: `pulse ${7 - index}s ease-in-out infinite`,

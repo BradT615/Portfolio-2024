@@ -52,7 +52,7 @@ export default function Home() {
 
       <main className="h-full w-full" onWheel={handleScroll}>
         <div className="relative h-full">
-          <AnimatePresence>
+          <AnimatePresence mode="sync">
             {currentSection === 'hero' ? (
               <motion.div
                 key="hero"
