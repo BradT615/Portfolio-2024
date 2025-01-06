@@ -54,7 +54,7 @@ const useMousePosition = (containerRef: React.RefObject<HTMLDivElement>) => {
 
 const GridBg = ({
   baseColor = 'rgba(255, 255, 255, 0.1)',
-  highlightColor = 'rgba(255, 255, 255, 0.4)',
+  highlightColor = 'rgba(30, 234, 252, 0.4)',
   className = ''
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -70,17 +70,62 @@ const GridBg = ({
     }))
   );
 
+  const getAdjacentCells = (cellId: number, columns: number) => {
+    return [
+      cellId - columns, // top
+      cellId + columns, // bottom
+      cellId - 1, // left
+      cellId + 1  // right
+    ].filter(id => {
+      if (id < 0 || id >= ROWS * columns) return false;
+      const currentRow = Math.floor(cellId / columns);
+      const adjacentRow = Math.floor(id / columns);
+      return Math.abs(currentRow - adjacentRow) <= 1;
+    });
+  };
+
   useEffect(() => {
-    // Select 30 random cells
-    const totalCells = ROWS * gridColumns;
-    const randomCells = new Set();
+    const sectionsX = 4;
+    const sectionsY = 3;
+    const totalHighlights = 60;
+    const highlightedCells = new Set();
     
-    while (randomCells.size < 30) {
-      const randomCell = Math.floor(Math.random() * totalCells);
-      randomCells.add(randomCell);
+    // Calculate cells per section
+    const sectionWidth = Math.floor(gridColumns / sectionsX);
+    const sectionHeight = Math.floor(ROWS / sectionsY);
+    const highlightsPerSection = Math.floor(totalHighlights / (sectionsX * sectionsY));
+    
+    // Distribute highlights across sections
+    for (let sy = 0; sy < sectionsY; sy++) {
+      for (let sx = 0; sx < sectionsX; sx++) {
+        let attempts = 0;
+        let sectionHighlights = 0;
+        
+        while (sectionHighlights < highlightsPerSection && attempts < 100) {
+          const startX = sx * sectionWidth;
+          const startY = sy * sectionHeight;
+          const endX = startX + sectionWidth;
+          const endY = startY + sectionHeight;
+          
+          const x = startX + Math.floor(Math.random() * (endX - startX));
+          const y = startY + Math.floor(Math.random() * (endY - startY));
+          const cellId = y * gridColumns + x;
+          
+          // Check if the cell or any orthogonally adjacent cells are already highlighted
+          const adjacentCells = getAdjacentCells(cellId, gridColumns);
+          const hasAdjacentHighlight = adjacentCells.some(id => highlightedCells.has(id));
+          
+          if (!highlightedCells.has(cellId) && !hasAdjacentHighlight) {
+            highlightedCells.add(cellId);
+            sectionHighlights++;
+          }
+          
+          attempts++;
+        }
+      }
     }
     
-    setHighlightedCells(randomCells);
+    setHighlightedCells(highlightedCells);
   }, [gridColumns]);
 
   useEffect(() => {
@@ -194,25 +239,41 @@ const GridBg = ({
         }}
       />
 
-      {/* Fixed Line Segments */}
       {FIXED_LINE_SEGMENTS.map((segment, index) => (
-        <div
-          key={index}
-          className="absolute transition-opacity"
-          style={{
-            left: `calc(50% + ${segment.x * cellSize}px)`,
-            top: `calc(50% + ${segment.y * cellSize}px)`,
-            transform: 'translate(-50%, -50%)',
-            width: '1px',
-            height: `${cellSize * 2}px`,
-            zIndex: 5,
-            backgroundImage: 'linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.7) 50%, transparent 100%)',
-            mixBlendMode: 'lighten',
-            pointerEvents: 'none',
-            animation: `pulse ${7 - index}s ease-in-out infinite`,
-            animationDelay: `${ANIMATION_DELAYS[index]}s`
-          }}
-        />
+        <React.Fragment key={index}>
+          <div
+            className="absolute transition-opacity"
+            style={{
+              left: `calc(50% + ${segment.x * cellSize}px)`,
+              top: `calc(50% + ${segment.y * cellSize}px)`,
+              transform: 'translate(-50%, -50%)',
+              width: '1px',
+              height: `${cellSize * 2}px`,
+              zIndex: 5,
+              backgroundImage: 'linear-gradient(180deg, transparent 0%, rgba(30, 234, 252, 0.7) 50%, transparent 100%)',
+              mixBlendMode: 'lighten',
+              pointerEvents: 'none',
+              animation: `pulse ${7 - index}s ease-in-out infinite`,
+              animationDelay: `${ANIMATION_DELAYS[index]}s`
+            }}
+          />
+          <div
+            className="absolute transition-opacity"
+            style={{
+              left: `calc(50% + ${segment.x * cellSize}px)`,
+              top: `calc(50% + ${segment.y * cellSize}px)`,
+              transform: 'translate(-50%, -50%)',
+              width: `${cellSize / 6}px`,
+              height: '1px',
+              zIndex: 5,
+              backgroundImage: 'linear-gradient(90deg, transparent 0%, rgba(30, 234, 252, 0.4) 50%, transparent 100%)',
+              mixBlendMode: 'lighten',
+              pointerEvents: 'none',
+              animation: `pulse ${7 - index}s ease-in-out infinite`,
+              animationDelay: `${ANIMATION_DELAYS[index]}s`
+            }}
+          />
+        </React.Fragment>
       ))}
     </div>
   );

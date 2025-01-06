@@ -16,6 +16,7 @@ import { FloatingLabelTextarea } from '@/components/ui/floating-label-textarea';
 const EmailModal = () => {
   const [maxHeight, setMaxHeight] = useState(150);
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [isOpen, setIsOpen] = useState(false);
 
   React.useEffect(() => {
     const updateMaxHeight = () => {
@@ -55,8 +56,10 @@ const EmailModal = () => {
     }
   };
 
+  const isFormDisabled = status === 'submitting' || status === 'success';
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <button className="nav-link">Email</button>
       </DialogTrigger>
@@ -78,7 +81,7 @@ const EmailModal = () => {
               label="Name"
               autoComplete="name"
               required
-              disabled={status === 'submitting'}
+              disabled={isFormDisabled}
               labelClassName="peer-focus:text-neutral-300"
               className="rounded-sm"
             />
@@ -89,7 +92,7 @@ const EmailModal = () => {
               label="Email"
               autoComplete="email"
               required
-              disabled={status === 'submitting'}
+              disabled={isFormDisabled}
               labelClassName="peer-focus:text-neutral-300"
               className="rounded-sm"
             />
@@ -98,7 +101,7 @@ const EmailModal = () => {
               name="message"
               label="Message"
               required
-              disabled={status === 'submitting'}
+              disabled={isFormDisabled}
               minHeight={150}
               maxHeight={maxHeight}
               labelClassName="peer-focus:text-neutral-300"
@@ -107,7 +110,7 @@ const EmailModal = () => {
           </div>
 
           {status === 'success' && (
-            <p className="text-green-500">Message sent successfully!</p>
+            <p className="text-green-500">Message sent successfully! Thank you for reaching out.</p>
           )}
 
           {status === 'error' && (
@@ -117,11 +120,12 @@ const EmailModal = () => {
           <DialogFooter>
             <button 
               type="submit" 
-              disabled={status === 'submitting'}
+              disabled={isFormDisabled}
               className="group relative px-8 py-3 text-base font-semibold text-neutral-900 bg-neutral-300 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-neutral-700 w-full sm:w-auto disabled:opacity-50"
             >
               <span className="relative z-10">
-                {status === 'submitting' ? 'Sending...' : 'Send Message'}
+                {status === 'submitting' ? 'Sending...' : 
+                 status === 'success' ? 'Message Sent' : 'Send Message'}
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-neutral-200 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </button>

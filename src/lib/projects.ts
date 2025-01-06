@@ -1,13 +1,13 @@
 // Define the project type for better type safety
 export interface Project {
-    title: string;
-    description: string;
-    imageUrl: string;
-    liveLink: string;
-    repoLink: string;
-    skills: string[];
-  }
-  
+  title: string;
+  description: string;
+  imageUrl: string;
+  liveLink: string;
+  repoLink: string;
+  skills: string[];
+  videoUrl?: string; // Optional video URL for YouTube videos
+}
 export const projects: Project[] = [
   {
     title: "Full Stack Spotify Clone",
@@ -15,7 +15,8 @@ export const projects: Project[] = [
     imageUrl: "/images/spotifyCloneThumbnail.png",
     liveLink: "#",
     repoLink: "https://github.com/BradT615/Spotify-Clone",
-    skills: ["React", "OAuth 2.0", "REST API", "AJAX"]
+    skills: ["React", "OAuth 2.0", "REST API", "AJAX"],
+    videoUrl: "https://www.youtube.com/embed/JxVoxpzr56o?vq=hd1080&si=Uf2WXvw_tWpaWtWD"
   },
   {
     title: "Algorithm Visualizer",

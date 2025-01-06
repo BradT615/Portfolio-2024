@@ -1,16 +1,16 @@
 "use client";
 
-import React, { useState, ReactNode, useEffect } from "react";
+import React, { useState, ReactNode, useEffect, useRef } from "react";
 import Image from "next/image";
 import { FileIcon, FolderIcon, FolderOpenIcon, ChevronRight } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface FolderProps {
   name: string;
   children: ReactNode;
   activeSkills?: string[];
-  forceOpen?: boolean;
+  defaultOpen?: boolean;
 }
 
 interface FileProps {
@@ -59,31 +59,51 @@ const renderTechIcon = ({ type, path, font }: FileProps['icon']) => {
 
 export const File: React.FC<FileProps> = ({ name, icon, activeSkills = [] }) => {
   const isActive = activeSkills.includes(name);
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, x: -10 }}
-      animate={{ opacity: 1, x: 0 }}
-      whileHover={{ 
-        x: 4,
-        backgroundColor: "rgba(38, 38, 38, 0.8)",
-        transition: { duration: 0.1 }
-      }}
-      className={cn(
-        "flex items-center gap-2 p-1.5 text-sm rounded-sm transition-colors duration-200",
-        isActive ? "text-white" : "text-neutral-400"
-      )}
-    >
-      <FileIcon className="h-4 w-4" />
-      <div className="flex items-center gap-2">
-        {renderTechIcon(icon)}
-        <span>{name}</span>
-      </div>
-    </motion.div>
+    <div className="relative" data-skill-anchor={name}>
+      <motion.div 
+        data-skill={name}
+        initial={{ opacity: isActive ? 1 : 0.7, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+        whileHover={{ 
+          x: 2,
+          opacity: isActive ? 1 : 1,
+          transition: { duration: 0.1 }
+        }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={cn(
+          "flex items-center gap-2 p-1.5 text-sm rounded-sm relative group",
+          isActive ? "text-white" : "text-neutral-400",
+          isHovered && !isActive && "bg-neutral-800"
+        )}
+      >
+        {isActive && (
+          <div 
+            className="absolute inset-0 rounded-sm opacity-20 bg-gradient-to-r from-blue-500 via-purple-500 to-purple-600"
+            style={{
+              mixBlendMode: 'screen'
+            }}
+          />
+        )}
+        <FileIcon className={cn(
+          "h-4 w-4 relative z-10",
+          isActive && "text-purple-400"
+        )} />
+        <div className="flex items-center gap-2 relative z-10">
+          {renderTechIcon(icon)}
+          <span className={cn(
+            isActive && "bg-gradient-to-r from-blue-400 via-purple-400 to-purple-500 bg-clip-text text-transparent font-medium"
+          )}>{name}</span>
+        </div>
+      </motion.div>
+    </div>
   );
 };
 
-export const Folder: React.FC<FolderProps> = ({ name, children, activeSkills = [], forceOpen }) => {
+export const Folder: React.FC<FolderProps> = ({ name, children, activeSkills = [], defaultOpen }) => {
   const hasActiveSkills = React.Children.toArray(children).some((child) => {
     const element = child as FileOrFolderElement;
     if (element.type === File) {
@@ -92,14 +112,20 @@ export const Folder: React.FC<FolderProps> = ({ name, children, activeSkills = [
     return element.props.activeSkills?.some((skill: string) => activeSkills.includes(skill));
   });
 
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(defaultOpen ?? hasActiveSkills);
   const [isHovered, setIsHovered] = useState(false);
+  const wasManuallyToggled = useRef(false);
 
   useEffect(() => {
-    if (forceOpen !== undefined) {
-      setIsOpen(forceOpen && hasActiveSkills);
+    if (!wasManuallyToggled.current) {
+      setIsOpen(hasActiveSkills);
     }
-  }, [forceOpen, hasActiveSkills]);
+  }, [activeSkills, hasActiveSkills]);
+
+  const handleToggle = () => {
+    wasManuallyToggled.current = true;
+    setIsOpen(!isOpen);
+  };
 
   return (
     <motion.div 
@@ -111,14 +137,21 @@ export const Folder: React.FC<FolderProps> = ({ name, children, activeSkills = [
         className={cn(
           "flex items-center gap-2 p-1.5 text-sm cursor-pointer rounded-sm",
           isHovered && "bg-neutral-800",
-          activeSkills.length > 0 ? (
-            hasActiveSkills ? "text-white" : "text-neutral-400"
-          ) : "text-white"
+          hasActiveSkills ? "text-white" : "text-neutral-400"
         )}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggle}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        whileTap={{ scale: 0.98 }}
+        whileHover={{ 
+          x: 2,
+          opacity: hasActiveSkills ? 1 : 1,
+          transition: { duration: 0.1 }
+        }}
+        initial={{ opacity: hasActiveSkills ? 1 : 0.7 }}
+        whileTap={{ 
+          scale: 0.98,
+          transition: { duration: 0 }
+        }}
       >
         <motion.div
           initial={{ rotate: 0 }}

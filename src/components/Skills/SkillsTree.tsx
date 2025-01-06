@@ -9,19 +9,13 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
     const element = e.currentTarget;
     const { scrollTop, scrollHeight, clientHeight } = element;
     
-    // Calculate if there's room to scroll
     const canScrollUp = scrollTop > 0;
     const canScrollDown = scrollTop < scrollHeight - clientHeight;
 
-    // Always stop propagation if trying to scroll and there's room to scroll
     if ((e.deltaY > 0 && canScrollDown) || (e.deltaY < 0 && canScrollUp)) {
       e.stopPropagation();
     }
-    
-    // If we can't scroll in the direction the user is trying to scroll,
-    // let the event propagate to trigger the section change
   };
-
 
   return (
     <motion.div 
@@ -39,9 +33,9 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
           minHeight: "0"
         }}
       >
-        <Folder name="Skills" activeSkills={activeSkills} forceOpen={activeSkills.length > 0}>
-          <Folder name="Front-End" activeSkills={activeSkills} forceOpen={activeSkills.length > 0}>
-            <Folder name="Core" activeSkills={activeSkills} forceOpen={activeSkills.length > 0}>
+        <Folder name="Skills" activeSkills={activeSkills}>
+          <Folder name="Front-End" activeSkills={activeSkills}>
+            <Folder name="Core" activeSkills={activeSkills}>
               <File 
                 name="HTML5"
                 icon={{ type: 'devicon', path: "html5/html5-original.svg" }}
@@ -63,7 +57,7 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
                 activeSkills={activeSkills}
               />
             </Folder>
-            <Folder name="Frameworks" activeSkills={activeSkills} forceOpen={activeSkills.length > 0}>
+            <Folder name="Frameworks" activeSkills={activeSkills}>
               <File 
                 name="React"
                 icon={{ type: 'devicon', path: "react/react-original.svg" }}
@@ -85,7 +79,7 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
                 activeSkills={activeSkills}
               />
             </Folder>
-            <Folder name="Styling" activeSkills={activeSkills} forceOpen={activeSkills.length > 0}>
+            <Folder name="Styling" activeSkills={activeSkills}>
               <File 
                 name="Tailwind CSS"
                 icon={{ type: 'devicon', path: "tailwindcss/tailwindcss-original.svg" }}
@@ -97,7 +91,7 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
                 activeSkills={activeSkills}
               />
             </Folder>
-            <Folder name="APIs & Integration" activeSkills={activeSkills} forceOpen={activeSkills.length > 0}>
+            <Folder name="APIs & Integration" activeSkills={activeSkills}>
               <File 
                 name="REST API"
                 icon={{ type: 'font', font: { name: "api-plain", color: "#FFFFFF" } }}
@@ -120,8 +114,8 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
               />
             </Folder>
           </Folder>
-          <Folder name="Back-End" activeSkills={activeSkills} forceOpen={activeSkills.length > 0}>
-            <Folder name="Languages" activeSkills={activeSkills} forceOpen={activeSkills.length > 0}>
+          <Folder name="Back-End" activeSkills={activeSkills}>
+            <Folder name="Languages" activeSkills={activeSkills}>
               <File 
                 name="C#"
                 icon={{ type: 'devicon', path: "csharp/csharp-original.svg" }}
@@ -148,7 +142,7 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
                 activeSkills={activeSkills}
               />
             </Folder>
-            <Folder name="Databases" activeSkills={activeSkills} forceOpen={activeSkills.length > 0}>
+            <Folder name="Databases" activeSkills={activeSkills}>
               <File 
                 name="MongoDB"
                 icon={{ type: 'devicon', path: "mongodb/mongodb-original.svg" }}
@@ -170,7 +164,7 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
                 activeSkills={activeSkills}
               />
             </Folder>
-            <Folder name="Services & Authentication" activeSkills={activeSkills} forceOpen={activeSkills.length > 0}>
+            <Folder name="Services & Authentication" activeSkills={activeSkills}>
               <File 
                 name="Firebase"
                 icon={{ type: 'devicon', path: "firebase/firebase-plain.svg" }}
@@ -193,14 +187,14 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
               />
             </Folder>
           </Folder>
-          <Folder name="Cloud Services" activeSkills={activeSkills} forceOpen={activeSkills.length > 0}>
+          <Folder name="Cloud Services" activeSkills={activeSkills}>
             <File 
               name="Amazon Web Services"
               icon={{ type: 'devicon', path: "amazonwebservices/amazonwebservices-plain-wordmark.svg" }}
               activeSkills={activeSkills}
             />
           </Folder>
-          <Folder name="Computer Science" activeSkills={activeSkills} forceOpen={activeSkills.length > 0}>
+          <Folder name="Computer Science" activeSkills={activeSkills}>
             <File 
               name="Algorithms"
               icon={{ type: 'font', font: { name: "algorithm-plain", color: "#FFFFFF" } }}
