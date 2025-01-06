@@ -9,12 +9,19 @@ import { ImagePreloader } from '@/components/ImagePreloader';
 import { motion, AnimatePresence } from 'framer-motion';
 import { projects } from '@/lib/projects';
 
+declare global {
+  interface Window {
+    projectCarouselIndex: number;
+  }
+}
+
 export default function Home() {
   const [currentSection, setCurrentSection] = useState<'hero' | 'projects'>('hero');
   const [activeSkills, setActiveSkills] = useState<string[]>([]);
   const [hasScrolled, setHasScrolled] = useState(false);
   const [isInitialAnimationComplete, setIsInitialAnimationComplete] = useState(false);
   const [isProjectAnimationComplete, setIsProjectAnimationComplete] = useState(false);
+  const [isTransitioningFromHero, setIsTransitioningFromHero] = useState(false);
   const activeProjectRef = useRef<HTMLDivElement>(null);
   const scrollTimeoutRef = useRef<NodeJS.Timeout>();
   const isScrollingRef = useRef(false);
@@ -32,17 +39,19 @@ export default function Home() {
     
     isScrollingRef.current = true;
     setCurrentSection(newSection);
+    setIsTransitioningFromHero(true);
     setActiveSkills(newSection === 'projects' ? projects[0].skills : []);
     setHasScrolled(true);
-    setIsProjectAnimationComplete(false); // Reset when changing sections
+    setIsProjectAnimationComplete(false);
 
-    // Reset scrolling flag after animation completes
+    setTimeout(() => setIsTransitioningFromHero(false), 1000);
+
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current);
     }
     scrollTimeoutRef.current = setTimeout(() => {
       isScrollingRef.current = false;
-    }, 1000); // Match this with your animation duration
+    }, 1000);
   };
 
   const handleScroll = (e: React.WheelEvent) => {
@@ -53,12 +62,11 @@ export default function Home() {
     const delta = e.deltaY;
     if (delta > 0 && currentSection === 'hero') {
       handleSectionChange('projects');
-    } else if (delta < 0 && currentSection === 'projects') {
+    } else if (delta < 0 && currentSection === 'projects' && window.projectCarouselIndex === 0) {
       handleSectionChange('hero');
     }
   };
 
-  // Cleanup function
   useEffect(() => {
     return () => {
       if (scrollTimeoutRef.current) {
@@ -158,6 +166,7 @@ export default function Home() {
                   <ProjectSection 
                     onProjectChange={setActiveSkills}
                     projectRef={activeProjectRef}
+                    isTransitioningFromHero={isTransitioningFromHero}
                   />
                 </div>
                 

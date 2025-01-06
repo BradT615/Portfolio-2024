@@ -11,10 +11,15 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
     
     const canScrollUp = scrollTop > 0;
     const canScrollDown = scrollTop < scrollHeight - clientHeight;
-
-    if ((e.deltaY > 0 && canScrollDown) || (e.deltaY < 0 && canScrollUp)) {
-      e.stopPropagation();
-    }
+  
+    // Stop propagation always
+    e.stopPropagation();
+  
+    // Only scroll if we can
+    if (!canScrollUp && e.deltaY < 0) return;
+    if (!canScrollDown && e.deltaY > 0) return;
+    
+    element.scrollTop += e.deltaY;
   };
 
   return (

@@ -118,19 +118,20 @@ export const Folder: React.FC<FolderProps> = ({ name, children, activeSkills = [
   const [isOpen, setIsOpen] = useState(defaultOpen ?? hasActiveSkills);
   const [isHovered, setIsHovered] = useState(false);
   const wasManuallyToggled = useRef(false);
+  const prevActiveSkills = useRef(activeSkills);
 
   useEffect(() => {
+    // Reset manual toggle if skills array changes completely
+    if (
+      prevActiveSkills.current.length !== activeSkills.length ||
+      !prevActiveSkills.current.every(skill => activeSkills.includes(skill))
+    ) {
+      wasManuallyToggled.current = false;
+    }
+    prevActiveSkills.current = activeSkills;
+
     if (!wasManuallyToggled.current) {
-      if (hasActiveSkills) {
-        // Open immediately when skills become active
-        setIsOpen(true);
-      } else {
-        // Delay closing when skills become inactive
-        const timeout = setTimeout(() => {
-          setIsOpen(false);
-        }, 300); // Match this with your project card exit animation
-        return () => clearTimeout(timeout);
-      }
+      setIsOpen(hasActiveSkills);
     }
   }, [activeSkills, hasActiveSkills]);
 

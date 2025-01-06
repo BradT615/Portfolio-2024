@@ -1,11 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-interface Connection {
-  id: string;
-  path: string;
-}
-
 interface SkillConnectionsProps {
   activeSkills: string[];
   projectRef: React.RefObject<HTMLElement>;
@@ -14,7 +9,6 @@ interface SkillConnectionsProps {
 
 const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnectionsProps) => {
   const rafRef = useRef<number>();
-  const connectionsRef = useRef<Connection[]>([]);
   const pathRefs = useRef<Map<string, SVGPathElement>>(new Map());
 
   useEffect(() => {
@@ -27,7 +21,6 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
       const projectEndX = projectRect.left;
       const endPoints = calculateEndPoints(projectRect.height, activeSkills.length, projectRect.top);
 
-      // Sort the skills based on their vertical position to prevent crossing
       const skillPositions = activeSkills.map(skill => {
         const element = document.querySelector(`[data-skill-anchor="${skill}"]`);
         const rect = element?.getBoundingClientRect();
@@ -37,7 +30,6 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
         };
       }).sort((a, b) => a.y - b.y);
 
-      // Map sorted skills to sorted endpoints
       skillPositions.forEach((skillPos, index) => {
         const element = document.querySelector(`[data-skill-anchor="${skillPos.skill}"]`);
         const path = pathRefs.current.get(skillPos.skill);
@@ -48,7 +40,6 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
           const startY = rect.top + rect.height / 2;
           const endY = endPoints[index];
 
-          // Create bezier curve path
           const pathD = `M ${startX} ${startY} C ${startX + (projectEndX - startX) * 0.4} ${startY}, ${startX + (projectEndX - startX) * 0.6} ${endY}, ${projectEndX} ${endY}`;
           
           path.setAttribute('d', pathD);
@@ -94,10 +85,10 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
         </linearGradient>
       </defs>
       
-      <AnimatePresence mode="wait">
-        {isEnabled && activeSkills.map((skill) => (
+      <AnimatePresence mode="sync">
+        {isEnabled && activeSkills.map((skill, index) => (
           <motion.path
-            key={skill}
+            key={`${skill}-${activeSkills.join(',')}`}
             ref={(el) => {
               if (el) pathRefs.current.set(skill, el);
               else pathRefs.current.delete(skill);
@@ -115,13 +106,13 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
               pathOffset: 1,
               transition: { 
                 duration: 0.8,
-                delay: 0.2,
                 ease: "easeInOut"
               }
             }}
             transition={{ 
               duration: 0.8,
-              ease: "easeOut"
+              ease: "easeOut",
+              delay: 0.5
             }}
           />
         ))}
