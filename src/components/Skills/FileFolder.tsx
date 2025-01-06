@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, ReactNode, useEffect, useRef } from "react";
 import Image from "next/image";
 import { FileIcon, FolderIcon, FolderOpenIcon, ChevronRight } from "lucide-react";
@@ -79,6 +77,11 @@ export const File: React.FC<FileProps> = ({ name, icon, activeSkills = [] }) => 
           isActive ? "text-white" : "text-neutral-400",
           isHovered && !isActive && "bg-neutral-800"
         )}
+        layout
+        transition={{
+          layout: { duration: 0.3 },
+          opacity: { duration: 0.2 }
+        }}
       >
         {isActive && (
           <div 
@@ -118,7 +121,16 @@ export const Folder: React.FC<FolderProps> = ({ name, children, activeSkills = [
 
   useEffect(() => {
     if (!wasManuallyToggled.current) {
-      setIsOpen(hasActiveSkills);
+      if (hasActiveSkills) {
+        // Open immediately when skills become active
+        setIsOpen(true);
+      } else {
+        // Delay closing when skills become inactive
+        const timeout = setTimeout(() => {
+          setIsOpen(false);
+        }, 300); // Match this with your project card exit animation
+        return () => clearTimeout(timeout);
+      }
     }
   }, [activeSkills, hasActiveSkills]);
 
@@ -132,6 +144,7 @@ export const Folder: React.FC<FolderProps> = ({ name, children, activeSkills = [
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="flex flex-col"
+      layout
     >
       <motion.div 
         className={cn(
@@ -152,6 +165,7 @@ export const Folder: React.FC<FolderProps> = ({ name, children, activeSkills = [
           scale: 0.98,
           transition: { duration: 0 }
         }}
+        layout
       >
         <motion.div
           initial={{ rotate: 0 }}
