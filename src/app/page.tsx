@@ -1,30 +1,18 @@
 'use client'
-import { useState, useEffect, useRef } from 'react';
-import { SkillsTree } from '@/components/Skills/SkillsTree';
+import { useState, useRef, useEffect } from 'react';
 import ProjectSection from '@/components/ProjectSection';
-import SkillConnections from '@/components/Skills/SkillConnections';
-import HeroSection from '@/components/HeroSection';
 import Header from '@/components/Header';
 import { ImagePreloader } from '@/components/ImagePreloader';
+import GridBackground from '@/components/GridBackground';
+import HeroSection from '@/components/HeroSection';
 import { motion, AnimatePresence } from 'framer-motion';
-import { projects } from '@/lib/projects';
-
-declare global {
-  interface Window {
-    projectCarouselIndex: number;
-  }
-}
 
 export default function Home() {
   const [currentSection, setCurrentSection] = useState<'hero' | 'projects'>('hero');
-  const [activeSkills, setActiveSkills] = useState<string[]>([]);
   const [hasScrolled, setHasScrolled] = useState(false);
   const [isInitialAnimationComplete, setIsInitialAnimationComplete] = useState(false);
-  const [isProjectAnimationComplete, setIsProjectAnimationComplete] = useState(false);
-  const [isTransitioningFromHero, setIsTransitioningFromHero] = useState(false);
-  const activeProjectRef = useRef<HTMLDivElement>(null);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout>();
   const isScrollingRef = useRef(false);
+  const projectsSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -39,17 +27,9 @@ export default function Home() {
     
     isScrollingRef.current = true;
     setCurrentSection(newSection);
-    setIsTransitioningFromHero(true);
-    setActiveSkills(newSection === 'projects' ? projects[0].skills : []);
     setHasScrolled(true);
-    setIsProjectAnimationComplete(false);
 
-    setTimeout(() => setIsTransitioningFromHero(false), 1000);
-
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
-    }
-    scrollTimeoutRef.current = setTimeout(() => {
+    setTimeout(() => {
       isScrollingRef.current = false;
     }, 1000);
   };
@@ -57,57 +37,44 @@ export default function Home() {
   const handleScroll = (e: React.WheelEvent) => {
     if (!isInitialAnimationComplete || isScrollingRef.current) return;
     if (e.ctrlKey || e.metaKey) return;
-    if ((e.target as HTMLElement).closest('[data-scroll-container]')) return;
+    
+    // Get the scroll target
+    const target = e.target as HTMLElement;
+    const isInProjectsSection = target.closest('#projects');
+    
+    // If we're in the projects section, let it handle its own scroll
+    if (currentSection === 'projects' && isInProjectsSection) {
+      return;
+    }
 
+    // Handle page-level section changes
     const delta = e.deltaY;
     if (delta > 0 && currentSection === 'hero') {
       handleSectionChange('projects');
-    } else if (delta < 0 && currentSection === 'projects' && window.projectCarouselIndex === 0) {
-      handleSectionChange('hero');
+    } else if (delta < 0 && currentSection === 'projects') {
+      // Only change section if not in projects carousel
+      if (!isInProjectsSection) {
+        handleSectionChange('hero');
+      }
     }
   };
 
-  useEffect(() => {
-    return () => {
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
-    };
-  }, []);
-
   const heroVariants = {
-    initial: { 
-      y: hasScrolled ? '-100%' : 0, 
-      opacity: 0 
-    },
-    animate: { 
-      y: 0, 
-      opacity: 1 
-    },
-    exit: { 
-      y: '-100%', 
-      opacity: 0 
-    }
+    initial: { y: hasScrolled ? '-100%' : 0, opacity: 0 },
+    animate: { y: 0, opacity: 1 },
+    exit: { y: '-100%', opacity: 0 }
   };
 
   const projectsVariants = {
-    initial: { 
-      y: '100%', 
-      opacity: 0 
-    },
-    animate: { 
-      y: 0, 
-      opacity: 1 
-    },
-    exit: { 
-      y: '100%', 
-      opacity: 0 
-    }
+    initial: { y: '100%', opacity: 0 },
+    animate: { y: 0, opacity: 1 },
+    exit: { y: '100%', opacity: 0 }
   };
 
   return (
     <div className="flex flex-col h-screen relative overflow-hidden">
       <ImagePreloader />
+      <GridBackground />
       <Header currentSection={currentSection} />
 
       <main className="h-full w-full" onWheel={handleScroll}>
@@ -120,20 +87,14 @@ export default function Home() {
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                transition={
-                  isInitialAnimationComplete ? {
-                    duration: 1,
-                    ease: [0.16, 1, 0.3, 1],
-                    opacity: { duration: 0.5 }
-                  } : {
-                    duration: 3.8,
-                    ease: [0.16, 1, 0.3, 1],
-                    opacity: { 
-                      duration: 0.8,
-                      delay: 2.7
-                    }
+                transition={{
+                  duration: isInitialAnimationComplete ? 1 : 3.8,
+                  ease: [0.16, 1, 0.3, 1],
+                  opacity: { 
+                    duration: isInitialAnimationComplete ? 0.5 : 0.8,
+                    delay: isInitialAnimationComplete ? 0 : 2.7
                   }
-                }
+                }}
                 className="absolute inset-0 grid place-items-center"
               >
                 <HeroSection 
@@ -144,6 +105,7 @@ export default function Home() {
               </motion.div>
             ) : (
               <motion.div
+                ref={projectsSectionRef}
                 key="projects"
                 variants={projectsVariants}
                 initial="initial"
@@ -154,29 +116,11 @@ export default function Home() {
                   ease: [0.16, 1, 0.3, 1],
                   opacity: { duration: 0.5 }
                 }}
-                onAnimationComplete={() => {
-                  setIsProjectAnimationComplete(true);
-                }}
                 className="absolute inset-0 flex"
               >
-                <div className="w-80 shrink-0" data-scroll-container>
-                  <SkillsTree activeSkills={activeSkills} />
-                </div>
-                <div className="flex-1 overflow-hidden">
-                  <ProjectSection 
-                    onProjectChange={setActiveSkills}
-                    projectRef={activeProjectRef}
-                    isTransitioningFromHero={isTransitioningFromHero}
-                  />
-                </div>
-                
-                {currentSection === 'projects' && (
-                  <SkillConnections 
-                    activeSkills={activeSkills}
-                    projectRef={activeProjectRef}
-                    isEnabled={isProjectAnimationComplete}
-                  />
-                )}
+                <ProjectSection 
+                  onTopScroll={() => handleSectionChange('hero')}
+                />
               </motion.div>
             )}
           </AnimatePresence>

@@ -14,8 +14,16 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
   useEffect(() => {
     if (!isEnabled) return;
 
+    let isRunning = true;
+
     const updateConnections = () => {
-      if (!projectRef.current) return;
+      // Always schedule the next frame first to ensure loop continues
+      if (isRunning) {
+        rafRef.current = requestAnimationFrame(updateConnections);
+      }
+      
+      // Guard clause for ref - will try again next frame
+      if (!projectRef?.current) return;
 
       const projectRect = projectRef.current.getBoundingClientRect();
       const projectEndX = projectRect.left;
@@ -45,13 +53,13 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
           path.setAttribute('d', pathD);
         }
       });
-
-      rafRef.current = requestAnimationFrame(updateConnections);
     };
 
+    // Start the animation loop
     rafRef.current = requestAnimationFrame(updateConnections);
 
     return () => {
+      isRunning = false;
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current);
       }
@@ -86,7 +94,7 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
       </defs>
       
       <AnimatePresence mode="sync">
-        {isEnabled && activeSkills.map((skill, index) => (
+        {isEnabled && activeSkills.map((skill) => (
           <motion.path
             key={`${skill}-${activeSkills.join(',')}`}
             ref={(el) => {

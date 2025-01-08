@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, MapPin, X } from 'lucide-react';
 import { motion } from 'framer-motion';
-import GridBackground from './GridBackground';
 
 interface HeroSectionProps {
   onNavigateToProjects: () => void;
@@ -73,7 +72,6 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
 
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center">
-      <GridBackground />
       
       {/* Main Content */}
       <motion.div 
