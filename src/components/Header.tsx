@@ -7,9 +7,15 @@ import { useState, useEffect } from 'react';
 
 interface HeaderProps {
   currentSection?: 'hero' | 'projects';
+  onNavigateToHero?: () => void;
+  onNavigateToProjects?: () => void;
 }
 
-export default function Header({ currentSection = 'hero' }: HeaderProps) {
+export default function Header({ 
+  currentSection = 'hero', 
+  onNavigateToHero, 
+  onNavigateToProjects 
+}: HeaderProps) {
   const [animationComplete, setAnimationComplete] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -24,6 +30,22 @@ export default function Header({ currentSection = 'hero' }: HeaderProps) {
   useEffect(() => {
     setIsVisible(currentSection === 'projects');
   }, [currentSection]);
+
+  const handleLogoClick = () => {
+    if (currentSection === 'projects' && onNavigateToHero) {
+      onNavigateToHero();
+    }
+  };
+
+  const handleScroll = (e: React.WheelEvent) => {
+    e.stopPropagation(); // Prevent the main scroll handler from firing
+    
+    if (currentSection === 'projects' && onNavigateToHero && e.deltaY < 0) {
+      onNavigateToHero();
+    } else if (currentSection === 'hero' && onNavigateToProjects && e.deltaY > 0) {
+      onNavigateToProjects();
+    }
+  };
 
   return (
     <>
@@ -46,7 +68,12 @@ export default function Header({ currentSection = 'hero' }: HeaderProps) {
           ease: [0.25, 0.1, 0.6, 1]
         }}
       >
-        <Logo className={`${animationComplete ? 'h-12 w-12' : 'h-52 w-52'} transition-all duration-1000 ease-out delay-100`} />
+        <div 
+          onClick={handleLogoClick}
+          className={`cursor-${currentSection === 'projects' ? 'pointer' : 'default'}`}
+        >
+          <Logo className={`${animationComplete ? 'h-12 w-12' : 'h-52 w-52'} transition-all duration-1000 ease-out delay-100`} />
+        </div>
       </motion.div>
 
       <motion.header 
@@ -54,20 +81,21 @@ export default function Header({ currentSection = 'hero' }: HeaderProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.5 }}
+        onWheel={handleScroll}
       >
         <div className="flex items-center px-5 h-20 w-full">
           <div className={`${animationComplete ? 'h-12 w-12' : 'h-32 w-32'}`} />
           
           <AnimatePresence mode="wait">
-          <TextEffect 
-            key="projects-title"
-            per="char" 
-            preset="fade" 
-            className="pl-4 text-3xl text-neutral-400 font-light"
-            trigger={isVisible}
-          >
-            Projects
-          </TextEffect>
+            <TextEffect 
+              key="projects-title"
+              per="char" 
+              preset="fade" 
+              className="pl-4 text-3xl text-neutral-400 font-light"
+              trigger={isVisible}
+            >
+              Projects
+            </TextEffect>
           </AnimatePresence>
 
           <motion.nav 

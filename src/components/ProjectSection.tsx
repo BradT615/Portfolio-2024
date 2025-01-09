@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { SkillsTree } from './Skills/SkillsTree';
 import ProjectCard from './ProjectCard';
 import SkillConnections from './Skills/SkillConnections';
@@ -11,19 +11,27 @@ interface ProjectSectionProps {
 const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll }) => {
   const [activeSkills, setActiveSkills] = useState<string[]>(projects[0].skills);
   const [showConnections, setShowConnections] = useState(false);
+  const [currentProject, setCurrentProject] = useState(0);
   const projectRef = useRef<HTMLDivElement>(null);
-
-  const handleProjectChange = useCallback((skills: string[]) => {
+  
+  // Reset connections when currentProject changes
+  useEffect(() => {
     setShowConnections(false);
     
-    // Wait for the next frame to ensure DOM updates have happened
-    requestAnimationFrame(() => {
-      setActiveSkills(skills);
-      // Give the ProjectCard time to reposition
+    const timer = setTimeout(() => {
+      setActiveSkills(projects[currentProject].skills);
+      // Give the DOM time to update before showing new connections
       requestAnimationFrame(() => {
         setShowConnections(true);
       });
-    });
+    }, 400); // Match this with your animation duration
+    
+    return () => clearTimeout(timer);
+  }, [currentProject]);
+
+  const handleProjectChange = useCallback((skills: string[], projectIndex: number) => {
+    setShowConnections(false);
+    setCurrentProject(projectIndex);
   }, []);
 
   return (

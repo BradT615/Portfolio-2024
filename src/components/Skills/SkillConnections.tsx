@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface SkillConnectionsProps {
@@ -7,9 +7,26 @@ interface SkillConnectionsProps {
   isEnabled: boolean;
 }
 
+interface VisibleSkill {
+  path: string;
+  isVisible: boolean;
+  key: string; // Add a unique key for each animation instance
+}
+
 const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnectionsProps) => {
   const rafRef = useRef<number>();
   const pathRefs = useRef<Map<string, SVGPathElement>>(new Map());
+  const [visibleSkills, setVisibleSkills] = useState<Map<string, VisibleSkill>>(new Map());
+  const previousVisibleSkills = useRef<Map<string, VisibleSkill>>(new Map());
+  const isFirstRender = useRef(true);
+  const uniqueKeyCounter = useRef(0);
+
+  useEffect(() => {
+    // Increment the counter whenever isEnabled changes from true to false
+    if (!isEnabled) {
+      uniqueKeyCounter.current += 1;
+    }
+  }, [isEnabled]);
 
   useEffect(() => {
     if (!isEnabled) return;
@@ -17,45 +34,71 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
     let isRunning = true;
 
     const updateConnections = () => {
-      // Always schedule the next frame first to ensure loop continues
       if (isRunning) {
         rafRef.current = requestAnimationFrame(updateConnections);
       }
       
-      // Guard clause for ref - will try again next frame
       if (!projectRef?.current) return;
 
       const projectRect = projectRef.current.getBoundingClientRect();
       const projectEndX = projectRect.left;
-      const endPoints = calculateEndPoints(projectRect.height, activeSkills.length, projectRect.top);
-
-      const skillPositions = activeSkills.map(skill => {
+      
+      const currentlyVisibleSkills = activeSkills.filter(skill => {
         const element = document.querySelector(`[data-skill-anchor="${skill}"]`);
-        const rect = element?.getBoundingClientRect();
-        return {
-          skill,
-          y: rect ? rect.top + rect.height / 2 : 0
-        };
-      }).sort((a, b) => a.y - b.y);
+        if (!element) return false;
+        const rect = element.getBoundingClientRect();
+        return rect.height > 0;
+      });
 
+      const endPoints = calculateEndPoints(
+        projectRect.height, 
+        currentlyVisibleSkills.length, 
+        projectRect.top
+      );
+
+      const skillPositions = currentlyVisibleSkills
+        .map(skill => {
+          const element = document.querySelector(`[data-skill-anchor="${skill}"]`);
+          const rect = element?.getBoundingClientRect();
+          return {
+            skill,
+            y: rect ? rect.top + rect.height / 2 : 0
+          };
+        })
+        .sort((a, b) => a.y - b.y);
+
+      const newVisibleSkills = new Map<string, VisibleSkill>();
+      
       skillPositions.forEach((skillPos, index) => {
         const element = document.querySelector(`[data-skill-anchor="${skillPos.skill}"]`);
-        const path = pathRefs.current.get(skillPos.skill);
         
-        if (element && path) {
+        if (element) {
           const rect = element.getBoundingClientRect();
           const startX = rect.right;
           const startY = rect.top + rect.height / 2;
           const endY = endPoints[index];
-
+          
           const pathD = `M ${startX} ${startY} C ${startX + (projectEndX - startX) * 0.4} ${startY}, ${startX + (projectEndX - startX) * 0.6} ${endY}, ${projectEndX} ${endY}`;
           
-          path.setAttribute('d', pathD);
+          // Create a unique key that includes both the skill name and the current animation cycle
+          const uniqueKey = `${skillPos.skill}-${uniqueKeyCounter.current}`;
+          
+          newVisibleSkills.set(skillPos.skill, {
+            path: pathD,
+            isVisible: true,
+            key: uniqueKey
+          });
         }
       });
+
+      if (!isFirstRender.current) {
+        previousVisibleSkills.current = visibleSkills;
+        setVisibleSkills(newVisibleSkills);
+      } else {
+        isFirstRender.current = false;
+      }
     };
 
-    // Start the animation loop
     rafRef.current = requestAnimationFrame(updateConnections);
 
     return () => {
@@ -74,6 +117,11 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
     const startY = centerY - (spacing * (count - 1) / 2);
     return Array.from({ length: count }, (_, i) => startY + spacing * i);
   };
+
+  const visibleSkillsArray = Array.from(visibleSkills.entries()).map(([skill, state]) => ({
+    id: skill,
+    ...state
+  }));
 
   return (
     <svg
@@ -94,13 +142,14 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
       </defs>
       
       <AnimatePresence mode="sync">
-        {isEnabled && activeSkills.map((skill) => (
+        {isEnabled && visibleSkillsArray.map(({ id, path, key }) => (
           <motion.path
-            key={`${skill}-${activeSkills.join(',')}`}
+            key={key}
             ref={(el) => {
-              if (el) pathRefs.current.set(skill, el);
-              else pathRefs.current.delete(skill);
+              if (el) pathRefs.current.set(id, el);
+              else pathRefs.current.delete(id);
             }}
+            d={path}
             stroke="url(#lineGradient)"
             strokeWidth="2"
             fill="none"
@@ -113,14 +162,14 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
               pathLength: 0,
               pathOffset: 1,
               transition: { 
-                duration: 0.8,
+                duration: 0.4,
                 ease: "easeInOut"
               }
             }}
             transition={{ 
               duration: 0.8,
               ease: "easeOut",
-              delay: 0.5
+              delay: 0.2
             }}
           />
         ))}

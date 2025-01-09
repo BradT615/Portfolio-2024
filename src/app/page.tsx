@@ -75,7 +75,11 @@ export default function Home() {
     <div className="flex flex-col h-screen relative overflow-hidden">
       <ImagePreloader />
       <GridBackground />
-      <Header currentSection={currentSection} />
+      <Header 
+        currentSection={currentSection} 
+        onNavigateToHero={() => handleSectionChange('hero')}
+        onNavigateToProjects={() => handleSectionChange('projects')}
+      />
 
       <main className="h-full w-full" onWheel={handleScroll}>
         <div className="relative h-full">

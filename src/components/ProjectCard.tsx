@@ -6,9 +6,10 @@ import { Github, ExternalLink, Youtube } from 'lucide-react';
 import { projects } from '@/lib/projects';
 import { Spotlight } from '@/components/core/spotlight';
 import YoutubeModal from './YoutubeModal';
+import ProjectIndicator from './ProjectIndicator';
 
 interface ProjectCardProps {
-  onProjectChange?: (skills: string[]) => void;
+  onProjectChange?: (skills: string[], projectIndex: number) => void;
   projectRef?: React.RefObject<HTMLDivElement>;
   onAnimationComplete?: () => void;
   onTopScroll?: () => void;
@@ -31,7 +32,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   useEffect(() => {
     if (currentIndex !== prevIndex.current) {
       prevIndex.current = currentIndex;
-      onProjectChange?.(projects[currentIndex].skills);
+      onProjectChange?.(projects[currentIndex].skills, currentIndex);
     }
   }, [currentIndex, onProjectChange]);
 
@@ -46,13 +47,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       setScrollDirection('down');
       setCurrentIndex(prev => prev + 1);
     } else if (event.deltaY < 0) {
-      // Only handle upward scroll if not at first card
       if (!isAtFirstCard) {
         setIsScrolling(true);
         setScrollDirection('up');
         setCurrentIndex(prev => prev - 1);
       } else {
-        // Emit event to handle page-level scroll when at first card
         onTopScroll?.();
         return;
       }
@@ -88,6 +87,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       y: direction === 'down' ? '-100%' : '100%',
       opacity: 0,
     }),
+  };
+
+  const handleIndicatorClick = (index: number) => {
+    if (!isScrolling) {
+      setScrollDirection(index > currentIndex ? 'down' : 'up');
+      setCurrentIndex(index);
+    }
   };
 
   return (
@@ -187,19 +193,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
       </div>
 
-      <div className="relative flex flex-col justify-center p-8">
-        {projects.map((_, index) => (
-          <button
-            key={index}
-            className="relative h-8 w-14 group hover:w-16 mr-2 hover:mr-0"
-            onClick={() => !isScrolling && setCurrentIndex(index)}
-          >
-            <div className={`absolute left-0 top-1/2 -translate-y-1/2 h-3 w-14 rounded-lg transition-all duration-200 group-hover:h-4 group-hover:w-16 ${
-              index === currentIndex ? 'bg-blue-400' : 'bg-neutral-600 group-hover:bg-neutral-500'
-            }`}/>
-          </button>
-        ))}
-      </div>
+      <ProjectIndicator
+        totalProjects={projects.length}
+        currentIndex={currentIndex}
+        isScrolling={isScrolling}
+        onIndicatorClick={handleIndicatorClick}
+      />
 
       {projects[currentIndex].videoUrl && (
         <YoutubeModal
