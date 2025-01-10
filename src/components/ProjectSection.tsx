@@ -14,17 +14,15 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll }) => {
   const [currentProject, setCurrentProject] = useState(0);
   const projectRef = useRef<HTMLDivElement>(null);
   
-  // Reset connections when currentProject changes
   useEffect(() => {
     setShowConnections(false);
-    
+    setActiveSkills(projects[currentProject].skills);
     const timer = setTimeout(() => {
-      setActiveSkills(projects[currentProject].skills);
-      // Give the DOM time to update before showing new connections
+      
       requestAnimationFrame(() => {
         setShowConnections(true);
       });
-    }, 400); // Match this with your animation duration
+    }, 400);
     
     return () => clearTimeout(timer);
   }, [currentProject]);

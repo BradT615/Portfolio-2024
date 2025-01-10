@@ -10,7 +10,12 @@ interface SkillConnectionsProps {
 interface VisibleSkill {
   path: string;
   isVisible: boolean;
-  key: string; // Add a unique key for each animation instance
+  key: string;
+}
+
+interface EndPoint {
+  y: number;
+  index: number;
 }
 
 const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnectionsProps) => {
@@ -20,13 +25,42 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
   const previousVisibleSkills = useRef<Map<string, VisibleSkill>>(new Map());
   const isFirstRender = useRef(true);
   const uniqueKeyCounter = useRef(0);
+  const endPointsMap = useRef<Map<string, EndPoint>>(new Map());
+  const projectRectRef = useRef<DOMRect | null>(null);
+  const lastProjectId = useRef<string | null>(null);
 
   useEffect(() => {
-    // Increment the counter whenever isEnabled changes from true to false
     if (!isEnabled) {
       uniqueKeyCounter.current += 1;
+      // Clear endpoints when transitions start
+      endPointsMap.current.clear();
     }
   }, [isEnabled]);
+
+  const calculateEndPoints = (projectRect: DOMRect, visibleSkillElements: Array<{ skill: string, y: number }>) => {
+    const height = projectRect.height;
+    const offset = projectRect.top;
+    const effectiveHeight = height * 0.1;
+    const centerY = offset + (height / 2);
+    const count = activeSkills.length;
+    const spacing = effectiveHeight / (count > 1 ? count - 1 : 2);
+    const startY = centerY - (spacing * (count - 1) / 2);
+
+    // Sort skills by their vertical position
+    const sortedSkills = visibleSkillElements.sort((a, b) => a.y - b.y);
+    
+    // Assign or update endpoints for visible skills
+    sortedSkills.forEach((skillData, index) => {
+      if (!endPointsMap.current.has(skillData.skill)) {
+        endPointsMap.current.set(skillData.skill, {
+          y: startY + spacing * index,
+          index
+        });
+      }
+    });
+
+    return { startY, spacing };
+  };
 
   useEffect(() => {
     if (!isEnabled) return;
@@ -42,45 +76,46 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
 
       const projectRect = projectRef.current.getBoundingClientRect();
       const projectEndX = projectRect.left;
+      const currentProjectId = projectRef.current.id;
+      const hasProjectChanged = currentProjectId !== lastProjectId.current;
+
+      if (hasProjectChanged) {
+        lastProjectId.current = currentProjectId;
+        projectRectRef.current = projectRect;
+        endPointsMap.current.clear();
+      }
       
-      const currentlyVisibleSkills = activeSkills.filter(skill => {
-        const element = document.querySelector(`[data-skill-anchor="${skill}"]`);
-        if (!element) return false;
-        const rect = element.getBoundingClientRect();
-        return rect.height > 0;
-      });
-
-      const endPoints = calculateEndPoints(
-        projectRect.height, 
-        currentlyVisibleSkills.length, 
-        projectRect.top
-      );
-
-      const skillPositions = currentlyVisibleSkills
+      const currentlyVisibleSkills = activeSkills
         .map(skill => {
           const element = document.querySelector(`[data-skill-anchor="${skill}"]`);
-          const rect = element?.getBoundingClientRect();
+          if (!element) return null;
+          const rect = element.getBoundingClientRect();
+          if (rect.height === 0) return null;
           return {
             skill,
-            y: rect ? rect.top + rect.height / 2 : 0
+            y: rect.top + rect.height / 2
           };
         })
-        .sort((a, b) => a.y - b.y);
+        .filter((item): item is { skill: string; y: number } => item !== null);
+
+      if (currentlyVisibleSkills.length > 0) {
+        calculateEndPoints(projectRect, currentlyVisibleSkills);
+      }
 
       const newVisibleSkills = new Map<string, VisibleSkill>();
       
-      skillPositions.forEach((skillPos, index) => {
+      currentlyVisibleSkills.forEach((skillPos) => {
         const element = document.querySelector(`[data-skill-anchor="${skillPos.skill}"]`);
+        const endPoint = endPointsMap.current.get(skillPos.skill);
         
-        if (element) {
+        if (element && endPoint) {
           const rect = element.getBoundingClientRect();
           const startX = rect.right;
           const startY = rect.top + rect.height / 2;
-          const endY = endPoints[index];
+          const endY = endPoint.y;
           
           const pathD = `M ${startX} ${startY} C ${startX + (projectEndX - startX) * 0.4} ${startY}, ${startX + (projectEndX - startX) * 0.6} ${endY}, ${projectEndX} ${endY}`;
           
-          // Create a unique key that includes both the skill name and the current animation cycle
           const uniqueKey = `${skillPos.skill}-${uniqueKeyCounter.current}`;
           
           newVisibleSkills.set(skillPos.skill, {
@@ -108,15 +143,6 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
       }
     };
   }, [isEnabled, activeSkills, projectRef]);
-
-  const calculateEndPoints = (height: number, count: number, offset: number): number[] => {
-    if (count === 0) return [];
-    const effectiveHeight = height * 0.1;
-    const centerY = offset + (height / 2);
-    const spacing = effectiveHeight / (count > 1 ? count - 1 : 2);
-    const startY = centerY - (spacing * (count - 1) / 2);
-    return Array.from({ length: count }, (_, i) => startY + spacing * i);
-  };
 
   const visibleSkillsArray = Array.from(visibleSkills.entries()).map(([skill, state]) => ({
     id: skill,
