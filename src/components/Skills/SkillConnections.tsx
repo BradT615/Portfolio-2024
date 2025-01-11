@@ -16,6 +16,7 @@ interface VisibleSkill {
 interface EndPoint {
   y: number;
   index: number;
+  relativePosition: number; // Store position as percentage
 }
 
 const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnectionsProps) => {
@@ -28,11 +29,11 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
   const endPointsMap = useRef<Map<string, EndPoint>>(new Map());
   const projectRectRef = useRef<DOMRect | null>(null);
   const lastProjectId = useRef<string | null>(null);
+  const lastZoom = useRef<number>(window.devicePixelRatio);
 
   useEffect(() => {
     if (!isEnabled) {
       uniqueKeyCounter.current += 1;
-      // Clear endpoints when transitions start
       endPointsMap.current.clear();
     }
   }, [isEnabled]);
@@ -49,13 +50,21 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
     // Sort skills by their vertical position
     const sortedSkills = visibleSkillElements.sort((a, b) => a.y - b.y);
     
-    // Assign or update endpoints for visible skills
+    // For new skills, calculate their relative position within the container
     sortedSkills.forEach((skillData, index) => {
       if (!endPointsMap.current.has(skillData.skill)) {
+        // Store position as a percentage of the effective height
+        const relativePosition = index / (count > 1 ? count - 1 : 1);
         endPointsMap.current.set(skillData.skill, {
-          y: startY + spacing * index,
-          index
+          y: startY + spacing * index, // Current absolute position
+          index,
+          relativePosition
         });
+      } else {
+        // Update absolute Y position while maintaining relative position
+        const endpoint = endPointsMap.current.get(skillData.skill)!;
+        endpoint.y = startY + spacing * (endpoint.relativePosition * (count > 1 ? count - 1 : 1));
+        endpoint.index = index;
       }
     });
 
@@ -74,15 +83,22 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
       
       if (!projectRef?.current) return;
 
+      const currentZoom = window.devicePixelRatio;
       const projectRect = projectRef.current.getBoundingClientRect();
       const projectEndX = projectRect.left;
       const currentProjectId = projectRef.current.id;
       const hasProjectChanged = currentProjectId !== lastProjectId.current;
+      const hasZoomChanged = currentZoom !== lastZoom.current;
 
       if (hasProjectChanged) {
         lastProjectId.current = currentProjectId;
         projectRectRef.current = projectRect;
         endPointsMap.current.clear();
+      }
+
+      if (hasZoomChanged) {
+        lastZoom.current = currentZoom;
+        projectRectRef.current = projectRect;
       }
       
       const currentlyVisibleSkills = activeSkills
