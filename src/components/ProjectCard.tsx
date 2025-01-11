@@ -13,6 +13,7 @@ interface ProjectCardProps {
   projectRef?: React.RefObject<HTMLDivElement>;
   onAnimationComplete?: () => void;
   onTopScroll?: () => void;
+  currentIndex?: number; // New prop added
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ 

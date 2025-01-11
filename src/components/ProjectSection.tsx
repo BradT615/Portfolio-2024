@@ -6,9 +6,10 @@ import { projects } from '@/lib/projects';
 
 interface ProjectSectionProps {
   onTopScroll?: () => void;
+  onProjectChange?: (index: number) => void;
 }
 
-const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll }) => {
+const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectChange }) => {
   const [activeSkills, setActiveSkills] = useState<string[]>(projects[0].skills);
   const [showConnections, setShowConnections] = useState(false);
   const [currentProject, setCurrentProject] = useState(0);
@@ -18,7 +19,6 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll }) => {
     setShowConnections(false);
     setActiveSkills(projects[currentProject].skills);
     const timer = setTimeout(() => {
-      
       requestAnimationFrame(() => {
         setShowConnections(true);
       });
@@ -30,7 +30,15 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll }) => {
   const handleProjectChange = useCallback((skills: string[], projectIndex: number) => {
     setShowConnections(false);
     setCurrentProject(projectIndex);
-  }, []);
+    onProjectChange?.(projectIndex); // Call the parent's onProjectChange
+  }, [onProjectChange]);
+
+  // Create a handler for top scroll that only triggers when on first project
+  const handleTopScroll = useCallback(() => {
+    if (currentProject === 0) {
+      onTopScroll?.();
+    }
+  }, [currentProject, onTopScroll]);
 
   return (
     <>
@@ -43,7 +51,8 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll }) => {
           onProjectChange={handleProjectChange}
           projectRef={projectRef}
           onAnimationComplete={() => setShowConnections(true)}
-          onTopScroll={onTopScroll}
+          onTopScroll={handleTopScroll}
+          currentIndex={currentProject}
         />
       </div>
       

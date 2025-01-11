@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Home() {
   const [currentSection, setCurrentSection] = useState<'hero' | 'projects'>('hero');
+  const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
   const [hasScrolled, setHasScrolled] = useState(false);
   const [isInitialAnimationComplete, setIsInitialAnimationComplete] = useState(false);
   const isScrollingRef = useRef(false);
@@ -32,6 +33,10 @@ export default function Home() {
     setTimeout(() => {
       isScrollingRef.current = false;
     }, 1000);
+  };
+
+  const handleProjectChange = (index: number) => {
+    setCurrentProjectIndex(index);
   };
 
   const handleScroll = (e: React.WheelEvent) => {
@@ -79,6 +84,7 @@ export default function Home() {
         currentSection={currentSection} 
         onNavigateToHero={() => handleSectionChange('hero')}
         onNavigateToProjects={() => handleSectionChange('projects')}
+        currentProjectIndex={currentProjectIndex}
       />
 
       <main className="h-full w-full" onWheel={handleScroll}>
@@ -124,6 +130,7 @@ export default function Home() {
               >
                 <ProjectSection 
                   onTopScroll={() => handleSectionChange('hero')}
+                  onProjectChange={handleProjectChange}
                 />
               </motion.div>
             )}

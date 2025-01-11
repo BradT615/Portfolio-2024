@@ -9,12 +9,14 @@ interface HeaderProps {
   currentSection?: 'hero' | 'projects';
   onNavigateToHero?: () => void;
   onNavigateToProjects?: () => void;
+  currentProjectIndex?: number;
 }
 
 export default function Header({ 
   currentSection = 'hero', 
   onNavigateToHero, 
-  onNavigateToProjects 
+  onNavigateToProjects,
+  currentProjectIndex = 0
 }: HeaderProps) {
   const [animationComplete, setAnimationComplete] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -40,7 +42,8 @@ export default function Header({
   const handleScroll = (e: React.WheelEvent) => {
     e.stopPropagation(); // Prevent the main scroll handler from firing
     
-    if (currentSection === 'projects' && onNavigateToHero && e.deltaY < 0) {
+    // Only allow scroll to hero if we're at the first project
+    if (currentSection === 'projects' && onNavigateToHero && e.deltaY < 0 && currentProjectIndex === 0) {
       onNavigateToHero();
     } else if (currentSection === 'hero' && onNavigateToProjects && e.deltaY > 0) {
       onNavigateToProjects();
