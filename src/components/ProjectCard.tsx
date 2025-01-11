@@ -36,35 +36,43 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     }
   }, [currentIndex, onProjectChange]);
 
-  const handleScroll = useCallback((event: WheelEvent) => {
-    event.preventDefault();
-    if (isScrolling) return;
-    
-    const isAtFirstCard = currentIndex === 0;
-    
-    if (event.deltaY > 0 && currentIndex < projects.length - 1) {
+  // Update the handleScroll function in ProjectCard.tsx
+const handleScroll = useCallback((event: WheelEvent) => {
+  // If Control key is pressed, allow default zoom behavior
+  if (event.ctrlKey) {
+    return;
+  }
+  
+  // Prevent default scroll behavior for non-zoom scrolling
+  event.preventDefault();
+  
+  if (isScrolling) return;
+  
+  const isAtFirstCard = currentIndex === 0;
+  
+  if (event.deltaY > 0 && currentIndex < projects.length - 1) {
+    setIsScrolling(true);
+    setScrollDirection('down');
+    setCurrentIndex(prev => prev + 1);
+  } else if (event.deltaY < 0) {
+    if (!isAtFirstCard) {
       setIsScrolling(true);
-      setScrollDirection('down');
-      setCurrentIndex(prev => prev + 1);
-    } else if (event.deltaY < 0) {
-      if (!isAtFirstCard) {
-        setIsScrolling(true);
-        setScrollDirection('up');
-        setCurrentIndex(prev => prev - 1);
-      } else {
-        onTopScroll?.();
-        return;
-      }
+      setScrollDirection('up');
+      setCurrentIndex(prev => prev - 1);
+    } else {
+      onTopScroll?.();
+      return;
     }
+  }
 
-    if (scrollTimeout.current) {
-      clearTimeout(scrollTimeout.current);
-    }
+  if (scrollTimeout.current) {
+    clearTimeout(scrollTimeout.current);
+  }
 
-    scrollTimeout.current = setTimeout(() => {
-      setIsScrolling(false);
-    }, 800);
-  }, [currentIndex, isScrolling, onTopScroll]);
+  scrollTimeout.current = setTimeout(() => {
+    setIsScrolling(false);
+  }, 800);
+}, [currentIndex, isScrolling, onTopScroll]);
 
   useEffect(() => {
     const container = containerRef.current;
