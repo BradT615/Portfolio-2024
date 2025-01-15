@@ -20,6 +20,7 @@ export default function Header({
 }: HeaderProps) {
   const [animationComplete, setAnimationComplete] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -86,7 +87,7 @@ export default function Header({
         transition={{ duration: 0.5, delay: 0.5 }}
         onWheel={handleScroll}
       >
-        <div className="flex items-center px-5 h-20 w-full">
+        <div className="flex items-center px-5 h-20 w-full text-[#97a1b8]">
           <div className={`${animationComplete ? 'h-12 w-12' : 'h-32 w-32'}`} />
           
           <AnimatePresence mode="wait">
@@ -94,7 +95,7 @@ export default function Header({
               key="projects-title"
               per="char" 
               preset="fade" 
-              className="pl-4 text-3xl text-neutral-400 font-light"
+              className="pl-4 text-3xl font-light"
               trigger={isVisible}
             >
               Projects
@@ -109,26 +110,68 @@ export default function Header({
           >
             <Link 
               href="https://www.linkedin.com/in/bradt615/" 
-              className="nav-link hover:text-neutral-300 transition-colors pointer-events-auto" 
+              className="nav-link hover:text-white transition-colors pointer-events-auto" 
               target="_blank"
               rel="noopener noreferrer"
             >
-              LinkedIn
+              <TextEffect
+                per="char"
+                preset="fade"
+                trigger={animationComplete}
+                delay={0.5}
+              >
+                LinkedIn
+              </TextEffect>
             </Link>
-            <span className="mx-6 text-neutral-400">/</span>
+            <motion.span 
+              className="mx-6 "
+              initial={{ opacity: 0 }}
+              animate={{ opacity: animationComplete ? 1 : 0 }}
+              transition={{ duration: 0.3, delay: 1.2 }}
+            >
+              /
+            </motion.span>
             <Link 
               href="https://github.com/BradT615" 
-              className="nav-link hover:text-neutral-300 transition-colors pointer-events-auto" 
+              className="nav-link hover:text-white transition-colors pointer-events-auto" 
               target="_blank"
               rel="noopener noreferrer"
             >
-              Github
+              <TextEffect
+                per="char"
+                preset="fade"
+                trigger={animationComplete}
+                delay={1}
+              >
+                Github
+              </TextEffect>
             </Link>
-            <span className="mx-6 text-neutral-400">/</span>
-            <EmailModal />
+            <motion.span 
+              className="mx-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: animationComplete ? 1 : 0 }}
+              transition={{ duration: 0.3, delay: 1.5 }}
+            >
+              /
+            </motion.span>
+            <button 
+              onClick={() => setIsEmailModalOpen(true)}
+              className="nav-link hover:text-white transition-colors pointer-events-auto"
+            >
+              <TextEffect
+                per="char"
+                preset="fade"
+                trigger={animationComplete}
+                delay={1.3}
+              >
+                Email
+              </TextEffect>
+            </button>
           </motion.nav>
         </div>
       </motion.header>
+
+      <EmailModal open={isEmailModalOpen} onOpenChange={setIsEmailModalOpen} />
     </>
   );
 }

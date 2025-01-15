@@ -26,7 +26,7 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" 
         />
       </head>
-      <body className="min-h-full h-full text-neutral-400 bg-[#0e0e10]">
+      <body className="min-h-full h-full text-[#64748c] bg-[#080b23]">
         {children}
       </body>
     </html>

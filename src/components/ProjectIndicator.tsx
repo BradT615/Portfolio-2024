@@ -1,5 +1,3 @@
-import { motion } from 'framer-motion';
-
 interface ProjectIndicatorProps {
   totalProjects: number;
   currentIndex: number;
@@ -14,18 +12,16 @@ const ProjectIndicator: React.FC<ProjectIndicatorProps> = ({
   onIndicatorClick,
 }) => {
   return (
-    <div className="relative flex flex-col justify-center p-8 w-32">
-      <div className="relative">
-        {Array.from({ length: totalProjects }).map((_, index) => (
-          <IndicatorButton
-            key={index}
-            index={index}
-            isActive={index === currentIndex}
-            isScrolling={isScrolling}
-            onClick={() => onIndicatorClick(index)}
-          />
-        ))}
-      </div>
+    <div className="flex flex-col p-8 w-32">
+      {Array.from({ length: totalProjects }).map((_, index) => (
+        <IndicatorButton
+          key={index}
+          index={index}
+          isActive={index === currentIndex}
+          isScrolling={isScrolling}
+          onClick={() => onIndicatorClick(index)}
+        />
+      ))}
     </div>
   );
 };
@@ -38,7 +34,6 @@ interface IndicatorButtonProps {
 }
 
 const IndicatorButton: React.FC<IndicatorButtonProps> = ({
-  index,
   isActive,
   isScrolling,
   onClick,
@@ -50,48 +45,17 @@ const IndicatorButton: React.FC<IndicatorButtonProps> = ({
   };
 
   return (
-    <motion.button
-      className="relative h-8 flex items-center mb-1 group"
+    <button
+      className="h-10 flex items-center group appearance-none focus:outline-none"
       onClick={handleClick}
-      whileHover="hover"
     >
-      <motion.div
-        className={`h-3 rounded-lg transition-colors duration-200
-          ${isActive ? 'bg-blue-400 w-14' : 'bg-neutral-600 w-10'}`}
-        variants={{
-          hover: {
-            width: isActive ? 56 : 48,
-            height: 14,
-            transition: {
-              type: "spring",
-              stiffness: 400,
-              damping: 25
-            }
-          }
-        }}
-        animate={{
-          width: isActive ? 56 : 40,
-          height: isActive ? 12 : 10
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 400,
-          damping: 30
-        }}
-      >
-        {isActive && (
-          <motion.div
-            className="absolute inset-0 bg-blue-400/20 rounded-lg m-1 -mx-1 blur-sm"
-            animate={{ opacity: [0.5, 0.8, 0.5] }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
-        )}
-      </motion.div>
-    </motion.button>
+      <div
+        className={`
+          rounded-lg transition-all duration-200 ease-in-out
+          ${isActive ? 'bg-[#29c4de] w-14 h-3 group-hover:w-16 group-hover:h-4' : 'bg-[#5d6b83] hover:bg-[#788aa9] w-10 h-3 group-hover:w-12 group-hover:h-4'}
+        `}
+      />
+    </button>
   );
 };
 

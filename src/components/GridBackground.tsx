@@ -1,14 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-const FIXED_LINE_SEGMENTS = [
-  { x: -10.5, y: -3.5 },
-  { x: 9.5, y: -4.5 },
-  { x: 5.5, y: -1.5 },
-  { x: -5.5, y: 0.5 }
-];
-
-const ANIMATION_DELAYS = [0, 0.7, 1.4, 2.1];
-
 const ROWS = 15;
 
 // Custom hook to track mouse position relative to a container
@@ -53,8 +44,8 @@ const useMousePosition = (containerRef: React.RefObject<HTMLDivElement>) => {
 };
 
 const GridBg = ({
-  baseColor = 'rgba(255, 255, 255, 0.1)',
-  highlightColor = 'rgba(30, 234, 252, 0.4)',
+  baseColor = 'rgb(31, 34, 60)',
+  highlightColor = 'rgba(41, 196, 222, 0.4)',
   className = ''
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -180,7 +171,7 @@ const GridBg = ({
           }
 
           .grid-cell.highlighted {
-            background: rgba(255, 255, 255, 0.01);
+            background: rgba(17, 16, 48, 0.3);
           }
 
           .grid-cell:nth-child(${gridColumns}n) {
@@ -238,43 +229,6 @@ const GridBg = ({
           zIndex: 10
         }}
       />
-
-      {FIXED_LINE_SEGMENTS.map((segment, index) => (
-        <React.Fragment key={index}>
-          <div
-            className="absolute transition-opacity"
-            style={{
-              left: `calc(50% + ${segment.x * cellSize}px)`,
-              top: `calc(50% + ${segment.y * cellSize}px)`,
-              transform: 'translate(-50%, -50%)',
-              width: '1px',
-              height: `${cellSize * 2}px`,
-              zIndex: 5,
-              backgroundImage: 'linear-gradient(180deg, transparent 0%, rgba(30, 234, 252, 0.7) 50%, transparent 100%)',
-              mixBlendMode: 'lighten',
-              pointerEvents: 'none',
-              animation: `pulse ${7 - index}s ease-in-out infinite`,
-              animationDelay: `${ANIMATION_DELAYS[index]}s`
-            }}
-          />
-          <div
-            className="absolute transition-opacity"
-            style={{
-              left: `calc(50% + ${segment.x * cellSize}px)`,
-              top: `calc(50% + ${segment.y * cellSize}px)`,
-              transform: 'translate(-50%, -50%)',
-              width: `${cellSize / 6}px`,
-              height: '1px',
-              zIndex: 5,
-              backgroundImage: 'linear-gradient(90deg, transparent 0%, rgba(30, 234, 252, 0.4) 50%, transparent 100%)',
-              mixBlendMode: 'lighten',
-              pointerEvents: 'none',
-              animation: `pulse ${7 - index}s ease-in-out infinite`,
-              animationDelay: `${ANIMATION_DELAYS[index]}s`
-            }}
-          />
-        </React.Fragment>
-      ))}
     </div>
   );
 };

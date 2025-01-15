@@ -4,31 +4,39 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Github, ExternalLink, Youtube } from 'lucide-react';
 import { projects } from '@/lib/projects';
-import { Spotlight } from '@/components/core/spotlight';
 import YoutubeModal from './YoutubeModal';
 import ProjectIndicator from './ProjectIndicator';
+import ProjectSpotlight from './ProjectSpotlight';
 
 interface ProjectCardProps {
   onProjectChange?: (skills: string[], projectIndex: number) => void;
   projectRef?: React.RefObject<HTMLDivElement>;
   onAnimationComplete?: () => void;
   onTopScroll?: () => void;
-  currentIndex?: number; // New prop added
+  currentIndex?: number;
+  isSkillsConnected?: boolean;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ 
   onProjectChange, 
   projectRef,
   onAnimationComplete,
-  onTopScroll
+  onTopScroll,
+  currentIndex: initialIndex = 0,
+  isSkillsConnected = false
 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('down');
+  const [isFirstRender, setIsFirstRender] = useState(true);
   const prevIndex = useRef(currentIndex);
   const scrollTimeout = useRef<NodeJS.Timeout>();
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setIsFirstRender(false);
+  }, []);
 
   useEffect(() => {
     if (currentIndex !== prevIndex.current) {
@@ -37,43 +45,38 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     }
   }, [currentIndex, onProjectChange]);
 
-  // Update the handleScroll function in ProjectCard.tsx
-const handleScroll = useCallback((event: WheelEvent) => {
-  // If Control key is pressed, allow default zoom behavior
-  if (event.ctrlKey) {
-    return;
-  }
-  
-  // Prevent default scroll behavior for non-zoom scrolling
-  event.preventDefault();
-  
-  if (isScrolling) return;
-  
-  const isAtFirstCard = currentIndex === 0;
-  
-  if (event.deltaY > 0 && currentIndex < projects.length - 1) {
-    setIsScrolling(true);
-    setScrollDirection('down');
-    setCurrentIndex(prev => prev + 1);
-  } else if (event.deltaY < 0) {
-    if (!isAtFirstCard) {
+  const handleScroll = useCallback((event: WheelEvent) => {
+    if (event.ctrlKey) return;
+    
+    event.preventDefault();
+    
+    if (isScrolling) return;
+    
+    const isAtFirstCard = currentIndex === 0;
+    
+    if (event.deltaY > 0 && currentIndex < projects.length - 1) {
       setIsScrolling(true);
-      setScrollDirection('up');
-      setCurrentIndex(prev => prev - 1);
-    } else {
-      onTopScroll?.();
-      return;
+      setScrollDirection('down');
+      setCurrentIndex(prev => prev + 1);
+    } else if (event.deltaY < 0) {
+      if (!isAtFirstCard) {
+        setIsScrolling(true);
+        setScrollDirection('up');
+        setCurrentIndex(prev => prev - 1);
+      } else {
+        onTopScroll?.();
+        return;
+      }
     }
-  }
 
-  if (scrollTimeout.current) {
-    clearTimeout(scrollTimeout.current);
-  }
+    if (scrollTimeout.current) {
+      clearTimeout(scrollTimeout.current);
+    }
 
-  scrollTimeout.current = setTimeout(() => {
-    setIsScrolling(false);
-  }, 800);
-}, [currentIndex, isScrolling, onTopScroll]);
+    scrollTimeout.current = setTimeout(() => {
+      setIsScrolling(false);
+    }, 800);
+  }, [currentIndex, isScrolling, onTopScroll]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -121,27 +124,21 @@ const handleScroll = useCallback((event: WheelEvent) => {
               key={projects[currentIndex].title}
               custom={scrollDirection}
               variants={slideVariants}
-              initial="enter"
+              initial={isFirstRender ? "center" : "enter"}
               animate="center"
               exit="exit"
               onAnimationComplete={onAnimationComplete}
               transition={{
-                duration: 0.4,
+                duration: isFirstRender ? 0 : 0.4,
                 ease: "easeInOut",
                 opacity: {
-                  duration: 0.3,
-                  delay: 0.2
+                  duration: isFirstRender ? 0 : 0.3,
+                  delay: isFirstRender ? 0 : 0.2
                 }
               }}
             >
-              <div className="relative aspect-[1.3] overflow-hidden rounded-xl p-[1px]">
-                <Spotlight
-                  className="from-neutral-100/50 via-neutral-300/50 to-neutral-100/50"
-                  size={600}
-                />
-                <div 
-                  className="relative h-full w-full rounded-xl bg-[#2f2f36] overflow-hidden"
-                >
+              <div className="relative aspect-[1.3] overflow-hidden rounded-xl">
+                <div className="relative h-full w-full rounded-xl bg-[#141535] border-2 border-[#222441] overflow-hidden">
                   <div className="relative h-3/5">
                     <Image 
                       src={projects[currentIndex].imageUrl} 
@@ -199,6 +196,11 @@ const handleScroll = useCallback((event: WheelEvent) => {
               </div>
             </motion.div>
           </AnimatePresence>
+
+          <ProjectSpotlight
+            isEnabled={isSkillsConnected}
+            projectRef={projectRef!}
+          />
         </div>
       </div>
 

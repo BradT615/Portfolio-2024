@@ -79,7 +79,17 @@ export default function Home() {
   return (
     <div className="flex flex-col h-screen relative overflow-hidden">
       <ImagePreloader />
-      <GridBackground />
+      <AnimatePresence>
+        {isInitialAnimationComplete && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <GridBackground />
+          </motion.div>
+        )}
+      </AnimatePresence>
       <Header 
         currentSection={currentSection} 
         onNavigateToHero={() => handleSectionChange('hero')}
@@ -89,7 +99,7 @@ export default function Home() {
 
       <main className="h-full w-full" onWheel={handleScroll}>
         <div className="relative h-full">
-          <AnimatePresence mode="sync">
+          <AnimatePresence>
             {currentSection === 'hero' ? (
               <motion.div
                 key="hero"

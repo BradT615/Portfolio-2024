@@ -13,10 +13,12 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
   const [activeSkills, setActiveSkills] = useState<string[]>(projects[0].skills);
   const [showConnections, setShowConnections] = useState(false);
   const [currentProject, setCurrentProject] = useState(0);
+  const [skillsConnected, setSkillsConnected] = useState(false);
   const projectRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     setShowConnections(false);
+    setSkillsConnected(false);
     setActiveSkills(projects[currentProject].skills);
     const timer = setTimeout(() => {
       requestAnimationFrame(() => {
@@ -29,16 +31,23 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
 
   const handleProjectChange = useCallback((skills: string[], projectIndex: number) => {
     setShowConnections(false);
+    setSkillsConnected(false);
     setCurrentProject(projectIndex);
-    onProjectChange?.(projectIndex); // Call the parent's onProjectChange
+    onProjectChange?.(projectIndex);
   }, [onProjectChange]);
 
-  // Create a handler for top scroll that only triggers when on first project
   const handleTopScroll = useCallback(() => {
     if (currentProject === 0) {
       onTopScroll?.();
     }
   }, [currentProject, onTopScroll]);
+
+  const handleConnectionsComplete = useCallback(() => {
+    // Wait for connections animation to complete (0.8s) before triggering spotlight
+    setTimeout(() => {
+      setSkillsConnected(true);
+    }, 800);
+  }, []);
 
   return (
     <>
@@ -53,6 +62,7 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
           onAnimationComplete={() => setShowConnections(true)}
           onTopScroll={handleTopScroll}
           currentIndex={currentProject}
+          isSkillsConnected={skillsConnected}
         />
       </div>
       
@@ -60,6 +70,7 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
         activeSkills={activeSkills}
         projectRef={projectRef}
         isEnabled={showConnections}
+        onConnectionsComplete={handleConnectionsComplete}
       />
     </>
   );

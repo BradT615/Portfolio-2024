@@ -82,26 +82,25 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
         transition={contentTransition}
       >
         <div className="space-y-4">
-          <h1 className="text-8xl font-bold text-neutral-200">
+          <h1 className="text-8xl font-bold text-white">
             Brad Titus
           </h1>
-          <h2 className="text-4xl text-neutral-400 font-light">
+          <h2 className="text-4xl text-[#97a1b8] font-light">
             Full Stack Developer
           </h2>
           <div className="flex justify-center items-center gap-2">
             <MapPin size={18} strokeWidth={1.25} />
-            <h3 className="text-xl text-neutral-400 font-light">
+            <h3 className="text-xl text-[#97a1b8] font-light">
               Tampa, FL
             </h3>
           </div>
 
           <div className="flex gap-8 justify-center pt-12">
             <button 
-              className={`group relative px-8 py-4 text-lg font-semibold text-neutral-900 bg-neutral-300 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-neutral-700 ${!isEnabled && 'pointer-events-none'}`}
+              className={`group relative px-8 py-4 text-lg font-semibold text-[#faf9fd] hover:text-white bg-[#4a37b9] rounded-lg overflow-hidden ${!isEnabled && 'pointer-events-none'}`}
               onClick={() => isEnabled && setIsResumeOpen(true)}
             >
               <span className="relative z-10">Resume</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-neutral-200 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </button>
             
             <button 

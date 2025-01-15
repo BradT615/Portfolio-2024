@@ -213,8 +213,8 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
           </Folder>
         </Folder>
       </div>
-      <div className="absolute top-16 left-0 right-0 h-8 bg-gradient-to-b from-[#0e0e10] to-transparent pointer-events-none z-10 transition-opacity duration-200" />
-      <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#0e0e10] to-transparent pointer-events-none z-10 transition-opacity duration-200" />
+      <div className="absolute top-16 left-0 right-0 w-11/12 h-8 bg-gradient-to-b from-[#080b23] to-transparent pointer-events-none z-10 transition-opacity duration-200" />
+      <div className="absolute bottom-0 left-0 right-0 w-11/12 h-8 bg-gradient-to-t from-[#080b23] to-transparent pointer-events-none z-10 transition-opacity duration-200" />
     </motion.div>
   );
 };

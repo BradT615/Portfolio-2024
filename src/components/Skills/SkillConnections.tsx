@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface SkillConnectionsProps {
   activeSkills: string[];
   projectRef: React.RefObject<HTMLElement>;
   isEnabled: boolean;
+  onConnectionsComplete?: () => void;
 }
 
 interface VisibleSkill {
@@ -16,10 +17,15 @@ interface VisibleSkill {
 interface EndPoint {
   y: number;
   index: number;
-  relativePosition: number; // Store position as percentage
+  relativePosition: number;
 }
 
-const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnectionsProps) => {
+const SkillConnections = ({ 
+  activeSkills, 
+  projectRef, 
+  isEnabled,
+  onConnectionsComplete 
+}: SkillConnectionsProps) => {
   const rafRef = useRef<number>();
   const pathRefs = useRef<Map<string, SVGPathElement>>(new Map());
   const [visibleSkills, setVisibleSkills] = useState<Map<string, VisibleSkill>>(new Map());
@@ -30,15 +36,17 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
   const projectRectRef = useRef<DOMRect | null>(null);
   const lastProjectId = useRef<string | null>(null);
   const lastZoom = useRef<number>(window.devicePixelRatio);
+  const connectionsDrawn = useRef<boolean>(false);
 
   useEffect(() => {
     if (!isEnabled) {
       uniqueKeyCounter.current += 1;
       endPointsMap.current.clear();
+      connectionsDrawn.current = false;
     }
   }, [isEnabled]);
 
-  const calculateEndPoints = (projectRect: DOMRect, visibleSkillElements: Array<{ skill: string, y: number }>) => {
+  const calculateEndPoints = useCallback((projectRect: DOMRect, visibleSkillElements: Array<{ skill: string, y: number }>) => {
     const height = projectRect.height;
     const offset = projectRect.top;
     const effectiveHeight = height * 0.1;
@@ -47,21 +55,17 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
     const spacing = effectiveHeight / (count > 1 ? count - 1 : 2);
     const startY = centerY - (spacing * (count - 1) / 2);
 
-    // Sort skills by their vertical position
     const sortedSkills = visibleSkillElements.sort((a, b) => a.y - b.y);
     
-    // For new skills, calculate their relative position within the container
     sortedSkills.forEach((skillData, index) => {
       if (!endPointsMap.current.has(skillData.skill)) {
-        // Store position as a percentage of the effective height
         const relativePosition = index / (count > 1 ? count - 1 : 1);
         endPointsMap.current.set(skillData.skill, {
-          y: startY + spacing * index, // Current absolute position
+          y: startY + spacing * index,
           index,
           relativePosition
         });
       } else {
-        // Update absolute Y position while maintaining relative position
         const endpoint = endPointsMap.current.get(skillData.skill)!;
         endpoint.y = startY + spacing * (endpoint.relativePosition * (count > 1 ? count - 1 : 1));
         endpoint.index = index;
@@ -69,7 +73,7 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
     });
 
     return { startY, spacing };
-  };
+  }, [activeSkills]);
 
   useEffect(() => {
     if (!isEnabled) return;
@@ -142,6 +146,11 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
         }
       });
 
+      if (currentlyVisibleSkills.length === activeSkills.length && !connectionsDrawn.current) {
+        connectionsDrawn.current = true;
+        onConnectionsComplete?.();
+      }
+
       if (!isFirstRender.current) {
         previousVisibleSkills.current = visibleSkills;
         setVisibleSkills(newVisibleSkills);
@@ -158,7 +167,7 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
         cancelAnimationFrame(rafRef.current);
       }
     };
-  }, [isEnabled, activeSkills, projectRef]);
+  }, [isEnabled, activeSkills, projectRef, onConnectionsComplete, calculateEndPoints, visibleSkills]);
 
   const visibleSkillsArray = Array.from(visibleSkills.entries()).map(([skill, state]) => ({
     id: skill,
@@ -177,9 +186,9 @@ const SkillConnections = ({ activeSkills, projectRef, isEnabled }: SkillConnecti
     >
       <defs>
         <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="rgba(59, 130, 246, 0.5)" />
-          <stop offset="95%" stopColor="rgba(139, 92, 246, 0.7)" />
-          <stop offset="100%" stopColor="rgba(139, 92, 246, 0.5)" />
+          <stop offset="0%" stopColor="rgba(74, 55, 185, 0.4)" />
+          <stop offset="20%" stopColor="rgba(109, 43, 252, 0.7)" />
+          <stop offset="100%" stopColor="rgba(41, 196, 222, 1)" />
         </linearGradient>
       </defs>
       

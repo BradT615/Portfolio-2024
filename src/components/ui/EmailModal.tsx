@@ -7,16 +7,19 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from '@/components/ui/dialog';
 import { FloatingLabelInput } from '@/components/ui/floating-label-input';
 import { FloatingLabelTextarea } from '@/components/ui/floating-label-textarea';
 
-const EmailModal = () => {
+interface EmailModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+const EmailModal = ({ open, onOpenChange }: EmailModalProps) => {
   const [maxHeight, setMaxHeight] = useState(150);
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
-  const [isOpen, setIsOpen] = useState(false);
 
   React.useEffect(() => {
     const updateMaxHeight = () => {
@@ -59,10 +62,7 @@ const EmailModal = () => {
   const isFormDisabled = status === 'submitting' || status === 'success';
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <button className="nav-link">Email</button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px] bg-neutral-900 border border-neutral-700 text-neutral-200">
         <DialogHeader>
           <DialogTitle className="text-2xl">

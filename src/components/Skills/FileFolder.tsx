@@ -63,42 +63,37 @@ export const File: React.FC<FileProps> = ({ name, icon, activeSkills = [] }) => 
     <div className="relative" data-skill-anchor={name}>
       <motion.div 
         data-skill={name}
-        initial={{ opacity: isActive ? 1 : 0.7, x: -10 }}
-        animate={{ opacity: 1, x: 0 }}
+        initial={{ x: -10 }}
+        animate={{ x: 0 }}
         whileHover={{ 
           x: 2,
-          opacity: isActive ? 1 : 1,
           transition: { duration: 0.1 }
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         className={cn(
           "flex items-center gap-2 p-1.5 text-sm rounded-sm relative group",
-          isActive ? "text-white" : "text-neutral-400",
-          isHovered && !isActive && "bg-neutral-800"
+          isActive ? "text-white" : "",
+          isHovered && !isActive && "text-[#97a1b8]"
         )}
         layout
         transition={{
-          layout: { duration: 0.3 },
-          opacity: { duration: 0.2 }
+          layout: { duration: 0.3 }
         }}
       >
         {isActive && (
           <div 
-            className="absolute inset-0 rounded-sm opacity-20 bg-gradient-to-r from-blue-500 via-purple-500 to-purple-600"
-            style={{
-              mixBlendMode: 'screen'
-            }}
+            className="absolute inset-0 rounded-sm bg-[#4a37b9] opacity-40"
           />
         )}
         <FileIcon className={cn(
           "h-4 w-4 relative z-10",
-          isActive && "text-purple-400"
+          isActive && "text-white"
         )} />
         <div className="flex items-center gap-2 relative z-10">
           {renderTechIcon(icon)}
           <span className={cn(
-            isActive && "bg-gradient-to-r from-blue-400 via-purple-400 to-purple-500 bg-clip-text text-transparent font-medium"
+            isActive && "text-white font-medium"
           )}>{name}</span>
         </div>
       </motion.div>
@@ -150,8 +145,8 @@ export const Folder: React.FC<FolderProps> = ({ name, children, activeSkills = [
       <motion.div 
         className={cn(
           "flex items-center gap-2 p-1.5 text-sm cursor-pointer rounded-sm",
-          isHovered && "bg-neutral-800",
-          hasActiveSkills ? "text-white" : "text-neutral-400"
+          isHovered && "",
+          (hasActiveSkills || isOpen) ? "text-[#d1dfff]" : ""
         )}
         onClick={handleToggle}
         onMouseEnter={() => setIsHovered(true)}
