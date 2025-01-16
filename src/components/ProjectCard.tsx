@@ -7,6 +7,18 @@ import { projects } from '@/lib/projects';
 import YoutubeModal from './YoutubeModal';
 import ProjectIndicator from './ProjectIndicator';
 import ProjectSpotlight from './ProjectSpotlight';
+import { TextShimmer } from './core/text-shimmer';
+
+interface Project {
+  title: string;
+  repoLink: string;
+  liveLink?: string;
+  videoUrl?: string;
+  imageUrl?: string;
+  description?: string;
+  skills: string[];
+  isGithubCard?: boolean;
+}
 
 interface ProjectCardProps {
   onProjectChange?: (skills: string[], projectIndex: number) => void;
@@ -108,6 +120,114 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     }
   };
 
+  const renderCardContent = (project: Project) => {
+    const cardBaseClasses = "relative aspect-[1.1] overflow-hidden rounded-xl w-[700px] border-2 border-[#222441] shadow-2xl";
+    const cardInnerClasses = "relative z-10 h-full w-full rounded-xl overflow-hidden";
+    const contentWrapperClasses = "h-2/5 px-6 pb-6 pt-2 flex flex-col";
+    const titleWrapperClasses = "flex justify-between items-start";
+    const titleClasses = "text-2xl font-semibold text-[#97a1b8]";
+    const dividerClasses = "h-0.5 w-full self-center bg-[#222441] mt-2 mb-4";
+    const skillsWrapperClasses = "flex flex-wrap gap-2 mt-auto";
+    const skillClasses = "px-3 py-1.5 text-sm bg-neutral-800 rounded-full text-neutral-300";
+
+    if (project.isGithubCard) {
+      return (
+        <div className={cardBaseClasses}>
+          <div className="absolute inset-0 bg-neutral-600 backdrop-filter backdrop-blur-md bg-opacity-10"></div>
+          
+          <div className={cardInnerClasses}>
+            <div className="relative h-3/5 p-4 flex items-center justify-center">
+              <div className='border-2 border-[#222441] rounded-full p-6'>
+                <Github size={150} strokeWidth={0.5} />
+              </div>
+            </div>
+            <div className="h-full p-4 flex flex-col items-center">
+              <button className='bg-[#222441] w-fit text-[#97a1b8] py-2 px-6 rounded-full hover:bg-[#1a1d2f] transition-colors'>
+                <Link
+                  href={project.repoLink} 
+                  target="_blank"
+                >
+                  <TextShimmer 
+                    className='font-mono text-lg' 
+                    duration={2}
+                    repeat={Infinity}
+                    delay={3}
+                    spread={4}
+                  >
+                    View my GitHub
+                  </TextShimmer>
+                </Link>
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className={cardBaseClasses}>
+        <div className="absolute inset-0 bg-neutral-600 backdrop-filter backdrop-blur-md bg-opacity-10"></div>
+        
+        <div className={cardInnerClasses}>
+          <div className="relative h-3/5 p-2">
+            <Image 
+              src={project.imageUrl!} 
+              alt={project.title}
+              width={500}
+              height={300}
+              className="w-full h-full rounded-lg object-fit border-[1px] border-[#222441]"
+            />
+          </div>
+          
+          <div className={contentWrapperClasses}>
+            <div className={titleWrapperClasses}>
+              <h3 className={titleClasses}>{project.title}</h3>
+              <div className="flex gap-3">
+                <Link 
+                  href={project.repoLink} 
+                  className="hover:text-[#97a1b8] transition-colors p-2" 
+                  target="_blank"
+                >
+                  <Github size={24} />
+                </Link>
+                {project.videoUrl ? (
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="hover:text-[#97a1b8] transition-colors p-2"
+                  >
+                    <Youtube size={24} />
+                  </button>
+                ) : project.liveLink && (
+                  <Link 
+                    href={project.liveLink} 
+                    className="hover:text-[#97a1b8] transition-colors p-2" 
+                    target="_blank"
+                  >
+                    <ExternalLink size={24} />
+                  </Link>
+                )}
+              </div>
+            </div>
+            <div className={dividerClasses}></div>
+            <p className="text-neutral-400 text-base mb-4 leading-relaxed overflow-y-auto flex-1">
+              {project.description}
+            </p>
+            <div className={skillsWrapperClasses}>
+              {project.skills.map((skill, skillIndex) => (
+                <span 
+                  key={skillIndex}
+                  className={skillClasses}
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div 
       ref={containerRef}
@@ -137,63 +257,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                 }
               }}
             >
-              <div className="relative aspect-[1.3] overflow-hidden rounded-xl">
-                <div className="relative h-full w-full rounded-xl bg-[#141535] border-2 border-[#222441] overflow-hidden">
-                  <div className="relative h-3/5">
-                    <Image 
-                      src={projects[currentIndex].imageUrl} 
-                      alt={projects[currentIndex].title}
-                      width={500}
-                      height={300}
-                      className="absolute inset-0 w-full h-full object-cover object-top"
-                    />
-                  </div>
-                  
-                  <div className="h-2/5 p-6 flex flex-col">
-                    <div className="flex justify-between items-start mb-4">
-                      <h3 className="text-2xl font-semibold">{projects[currentIndex].title}</h3>
-                      <div className="flex gap-3">
-                        <Link 
-                          href={projects[currentIndex].repoLink} 
-                          className="hover:text-neutral-400 transition-colors p-2 rounded-full hover:bg-neutral-800" 
-                          target="_blank"
-                        >
-                          <Github size={24} />
-                        </Link>
-                        {projects[currentIndex].videoUrl ? (
-                          <button
-                            onClick={() => setIsModalOpen(true)}
-                            className="hover:text-neutral-400 transition-colors p-2 rounded-full hover:bg-neutral-800"
-                          >
-                            <Youtube size={24} />
-                          </button>
-                        ) : (
-                          <Link 
-                            href={projects[currentIndex].liveLink} 
-                            className="hover:text-neutral-400 transition-colors p-2 rounded-full hover:bg-neutral-800" 
-                            target="_blank"
-                          >
-                            <ExternalLink size={24} />
-                          </Link>
-                        )}
-                      </div>
-                    </div>
-                    <p className="text-neutral-400 text-base mb-4 leading-relaxed overflow-y-auto flex-1">
-                      {projects[currentIndex].description}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {projects[currentIndex].skills.map((skill, skillIndex) => (
-                        <span 
-                          key={skillIndex}
-                          className="px-3 py-1.5 text-sm bg-neutral-800 rounded-full text-neutral-300"
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              {renderCardContent(projects[currentIndex])}
             </motion.div>
           </AnimatePresence>
 

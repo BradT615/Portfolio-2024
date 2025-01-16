@@ -43,10 +43,10 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
   }, [currentProject, onTopScroll]);
 
   const handleConnectionsComplete = useCallback(() => {
-    // Wait for connections animation to complete (0.8s) before triggering spotlight
+    // Wait for connections animation to complete (1s) before triggering spotlight
     setTimeout(() => {
       setSkillsConnected(true);
-    }, 800);
+    }, 1000);
   }, []);
 
   return (

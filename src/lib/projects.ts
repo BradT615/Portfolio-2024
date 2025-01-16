@@ -1,17 +1,18 @@
-// Define the project type for better type safety
 export interface Project {
   title: string;
-  description: string;
-  imageUrl: string;
-  liveLink: string;
+  description?: string;
+  imageUrl?: string;
+  liveLink?: string;
   repoLink: string;
   skills: string[];
-  videoUrl?: string; // Optional video URL for YouTube videos
+  videoUrl?: string;
+  isGithubCard?: boolean;
 }
+
 export const projects: Project[] = [
   {
     title: "Full Stack Spotify Clone",
-    description: "A web app built using the Spotify API and SDK. It integrates OAuth 2.0 for authentication, employs RESTful services, and uses AJAX for real-time data interactions, delivering a dynamic user experience reminiscent of the original platform.",
+    description: "A web app built using the Spotify API and SDK. It integrates OAuth 2.0 for authentication, RESTful services, and uses AJAX for real-time data interactions.",
     imageUrl: "/images/spotifyCloneThumbnail.png",
     liveLink: "#",
     repoLink: "https://github.com/BradT615/Spotify-Clone",
@@ -20,7 +21,7 @@ export const projects: Project[] = [
   },
   {
     title: "Algorithm Visualizer",
-    description: "A React-based web application showcasing 16 unique sorting algorithms with interactive visualizations, offering an engaging, user-friendly experience for learning and exploring algorithm dynamics.",
+    description: "A React-based web application showcasing 16 unique sorting algorithms with interactive visualizations.",
     imageUrl: "/images/AlgorithmThumbnail.png",
     liveLink: "https://bradt615algorithm.netlify.app/",
     repoLink: "https://github.com/BradT615/Algorithm-Visualizer",
@@ -28,7 +29,7 @@ export const projects: Project[] = [
   },
   {
     title: "Habit Tracker",
-    description: "A React-powered habit tracking app, deployed using Firebase, leveraging robust Firebase authentication and efficient Firestore integration for secure user management and real-time data synchronization.",
+    description: "A React habit tracker app with Firebase, featuring secure authentication and real-time Firestore data syncing.",
     imageUrl: "/images/StreakThumbnail.png",
     liveLink: "https://bradt615-streaks.web.app/",
     repoLink: "https://github.com/BradT615/Streaks",
@@ -36,7 +37,7 @@ export const projects: Project[] = [
   },
   {
     title: "Sudoku Game",
-    description: "A dynamic web platform that generates Sudoku puzzles using a sophisticated recursive algorithm. This ensures diverse and challenging puzzles for users. Tailored for optimal user experience, the site offers both puzzle creation and advanced solving tools.",
+    description: "A web platform for generating Sudoku puzzles with a recursive algorithm, offering diverse challenges and advanced solving tools for an optimal user experience.",
     imageUrl: "/images/sudokuThumbnail.png",
     liveLink: "https://bradt615sudoku.netlify.app",
     repoLink: "https://github.com/BradT615/Sudoku",
@@ -49,5 +50,11 @@ export const projects: Project[] = [
     liveLink: "https://bradt615movie.netlify.app",
     repoLink: "https://github.com/BradT615/MovieDatabase",
     skills: ["React", "TMDb API", "REST API", "Tailwind CSS"]
+  },
+  {
+    title: "More Projects on GitHub",
+    repoLink: "https://github.com/BradT615",
+    skills: ["C", "C#", "Rust", "Java", "Python", "AWS", "MongoDB"],
+    isGithubCard: true
   }
 ];
