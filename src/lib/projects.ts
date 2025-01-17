@@ -54,7 +54,7 @@ export const projects: Project[] = [
   {
     title: "More Projects on GitHub",
     repoLink: "https://github.com/BradT615",
-    skills: ["C", "C#", "Rust", "Java", "Python", "AWS", "MongoDB"],
+    skills: ["C#", "C", "Rust", "Python", "Java", "MySQL", "Amazon Web Services"],
     isGithubCard: true
   }
 ];

@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 
 const ROWS = 15;
 
-// Custom hook to track mouse position relative to a container
 const useMousePosition = (containerRef: React.RefObject<HTMLDivElement>) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isWithinBounds, setIsWithinBounds] = useState(false);
@@ -46,15 +45,16 @@ const useMousePosition = (containerRef: React.RefObject<HTMLDivElement>) => {
 const GridBg = ({
   baseColor = 'rgb(31, 34, 60)',
   highlightColor = 'rgba(41, 196, 222, 0.4)',
+  currentSection = 'hero',
   className = ''
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef(null);
   const { position: mousePosition, isHovering } = useMousePosition(containerRef);
   const [cellSize, setCellSize] = useState(0);
   const [gridColumns, setGridColumns] = useState(ROWS);
   const [highlightedCells, setHighlightedCells] = useState(new Set());
 
-  // Create a grid array that covers the full viewport
+  // Create grid rows
   const rows = Array.from({ length: ROWS }, (_, rowIndex) =>
     Array.from({ length: gridColumns }, (_, colIndex) => ({
       id: rowIndex * gridColumns + colIndex
@@ -63,10 +63,10 @@ const GridBg = ({
 
   const getAdjacentCells = (cellId: number, columns: number) => {
     return [
-      cellId - columns, // top
-      cellId + columns, // bottom
-      cellId - 1, // left
-      cellId + 1  // right
+      cellId - columns,
+      cellId + columns,
+      cellId - 1,
+      cellId + 1
     ].filter(id => {
       if (id < 0 || id >= ROWS * columns) return false;
       const currentRow = Math.floor(cellId / columns);
@@ -75,18 +75,17 @@ const GridBg = ({
     });
   };
 
+  // Handle initial cell highlighting
   useEffect(() => {
     const sectionsX = 4;
     const sectionsY = 3;
     const totalHighlights = 60;
     const highlightedCells = new Set();
     
-    // Calculate cells per section
     const sectionWidth = Math.floor(gridColumns / sectionsX);
     const sectionHeight = Math.floor(ROWS / sectionsY);
     const highlightsPerSection = Math.floor(totalHighlights / (sectionsX * sectionsY));
     
-    // Distribute highlights across sections
     for (let sy = 0; sy < sectionsY; sy++) {
       for (let sx = 0; sx < sectionsX; sx++) {
         let attempts = 0;
@@ -102,7 +101,6 @@ const GridBg = ({
           const y = startY + Math.floor(Math.random() * (endY - startY));
           const cellId = y * gridColumns + x;
           
-          // Check if the cell or any orthogonally adjacent cells are already highlighted
           const adjacentCells = getAdjacentCells(cellId, gridColumns);
           const hasAdjacentHighlight = adjacentCells.some(id => highlightedCells.has(id));
           
@@ -119,6 +117,7 @@ const GridBg = ({
     setHighlightedCells(highlightedCells);
   }, [gridColumns]);
 
+  // Handle resize
   useEffect(() => {
     const updateSize = () => {
       if (!containerRef.current) return;
@@ -134,11 +133,11 @@ const GridBg = ({
 
     updateSize();
     window.addEventListener('resize', updateSize);
-
-    return () => {
-      window.removeEventListener('resize', updateSize);
-    };
+    return () => window.removeEventListener('resize', updateSize);
   }, []);
+
+  // Get the current gradient value based on section
+  const gradientStart = currentSection === 'projects' ? '30%' : '10%';
 
   return (
     <div 
@@ -171,7 +170,7 @@ const GridBg = ({
           }
 
           .grid-cell.highlighted {
-            background: rgba(17, 16, 48, 0.3);
+            background: rgb(11, 13, 38);
           }
 
           .grid-cell:nth-child(${gridColumns}n) {
@@ -181,15 +180,9 @@ const GridBg = ({
           .grid-cell:nth-child(n+${gridColumns * ROWS}) {
             border-bottom: none;
           }
-
-          @keyframes pulse {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 0.9; }
-          }
         `}
       </style>
 
-      {/* Main Grid */}
       <div className="grid-container">
         {rows.map((row, rowIndex) =>
           row.map(({ id }, colIndex) => (
@@ -202,7 +195,6 @@ const GridBg = ({
         )}
       </div>
 
-      {/* Highlight Layer */}
       <div 
         className="absolute inset-0 transition-opacity duration-600"
         style={{
@@ -216,12 +208,12 @@ const GridBg = ({
           maskImage: mousePosition ? `
             radial-gradient(circle ${cellSize * 1.5}px at ${mousePosition.x}px ${mousePosition.y}px, black, transparent),
             linear-gradient(to bottom, transparent, black 30%, black 70%, transparent),
-            linear-gradient(to right, transparent, black 10%, black 90%, transparent)
+            linear-gradient(to right, transparent, black ${gradientStart}, black 90%, transparent)
           ` : '',
           WebkitMaskImage: mousePosition ? `
             radial-gradient(circle ${cellSize * 1.5}px at ${mousePosition.x}px ${mousePosition.y}px, black, transparent),
             linear-gradient(to bottom, transparent, black 30%, black 70%, transparent),
-            linear-gradient(to right, transparent, black 10%, black 90%, transparent)
+            linear-gradient(to right, transparent, black ${gradientStart}, black 90%, transparent)
           ` : '',
           maskComposite: 'intersect',
           WebkitMaskComposite: 'source-in',

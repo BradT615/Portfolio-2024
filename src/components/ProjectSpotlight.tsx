@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ProjectSpotlightProps {
@@ -10,6 +10,7 @@ const ProjectSpotlight: React.FC<ProjectSpotlightProps> = ({
   isEnabled,
   projectRef,
 }) => {
+  console.log("eggs");
   const [paths, setPaths] = useState<{ top: string; bottom: string }>({
     top: '',
     bottom: '',
@@ -20,13 +21,12 @@ const ProjectSpotlight: React.FC<ProjectSpotlightProps> = ({
   }>({ top: 0, bottom: 0 });
   const [isReady, setIsReady] = useState(false);
   const rafRef = useRef<number>();
-  const uniqueKeyRef = useRef(0);
+  console.log(rafRef);
   const topPathRef = useRef<SVGPathElement>(null);
   const bottomPathRef = useRef<SVGPathElement>(null);
 
   useEffect(() => {
     if (!isEnabled) {
-      uniqueKeyRef.current += 1;
       setIsReady(false);
       return;
     }
@@ -121,7 +121,7 @@ const ProjectSpotlight: React.FC<ProjectSpotlightProps> = ({
         {isEnabled && isReady && (
           <>
             <motion.path
-              key={`top-${uniqueKeyRef.current}`}
+              
               d={paths.top}
               stroke="rgba(41, 196, 222, 1)"
               strokeWidth="2"
@@ -148,7 +148,7 @@ const ProjectSpotlight: React.FC<ProjectSpotlightProps> = ({
               exit={{ opacity: 0 }}
             />
             <motion.path
-              key={`bottom-${uniqueKeyRef.current}`}
+              
               d={paths.bottom}
               stroke="rgba(41, 196, 222, 1)"
               strokeWidth="2"

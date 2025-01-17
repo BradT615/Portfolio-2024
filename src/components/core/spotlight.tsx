@@ -1,57 +1,76 @@
-'use client';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
+import { motion, useSpring, useTransform } from 'motion/react';
 import { cn } from '@/lib/utils';
 
-type SpotlightProps = {
+interface SpotlightProps {
   className?: string;
   size?: number;
-};
+  springOptions?: { bounce: number };
+}
 
-export function Spotlight({ className, size = 800 }: SpotlightProps) {
+export function Spotlight({
+  className,
+  size = 200,
+  springOptions = { bounce: 0 },
+}: SpotlightProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
+  const [parentElement, setParentElement] = useState<HTMLElement | null>(null);
+  const mouseX = useSpring(0, springOptions);
+  const mouseY = useSpring(0, springOptions);
+  const spotlightLeft = useTransform(mouseX, (x) => `${x - size / 2}px`);
+  const spotlightTop = useTransform(mouseY, (y) => `${y - size / 2}px`);
 
   useEffect(() => {
-    const parent = containerRef.current?.parentElement;
-    if (!parent) return;
-    
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = parent.getBoundingClientRect();
-      setPosition({
-        x: e.clientX - rect.left - size / 2,
-        y: e.clientY - rect.top - size / 2
-      });
-    };
+    if (containerRef.current) {
+      const parent = containerRef.current.parentElement;
+      if (parent) {
+        parent.style.position = 'relative';
+        parent.style.overflow = 'hidden';
+        setParentElement(parent);
+      }
+    }
+  }, []);
 
-    const handleMouseEnter = () => setIsHovered(true);
-    const handleMouseLeave = () => setIsHovered(false);
+  const handleMouseMove = useCallback(
+    (event: MouseEvent) => {
+      if (!parentElement) return;
+      const { left, top } = parentElement.getBoundingClientRect();
+      mouseX.set(event.clientX - left);
+      mouseY.set(event.clientY - top);
+    },
+    [mouseX, mouseY, parentElement]
+  );
 
-    parent.addEventListener('mousemove', handleMouseMove);
-    parent.addEventListener('mouseenter', handleMouseEnter);
-    parent.addEventListener('mouseleave', handleMouseLeave);
-
+  useEffect(() => {
+    if (!parentElement) return;
+    parentElement.addEventListener('mousemove', handleMouseMove);
+    parentElement.addEventListener('mouseenter', () => setIsHovered(true));
+    parentElement.addEventListener('mouseleave', () => setIsHovered(false));
     return () => {
-      parent.removeEventListener('mousemove', handleMouseMove);
-      parent.removeEventListener('mouseenter', handleMouseEnter);
-      parent.removeEventListener('mouseleave', handleMouseLeave);
+      parentElement.removeEventListener('mousemove', handleMouseMove);
+      parentElement.removeEventListener('mouseenter', () => setIsHovered(true));
+      parentElement.removeEventListener('mouseleave', () => setIsHovered(false));
     };
-  }, [size]);
+  }, [parentElement, handleMouseMove]);
 
   return (
-    <div
+    <motion.div
       ref={containerRef}
       className={cn(
-        'pointer-events-none absolute rounded-full bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops),transparent_100%)] blur-2xl',
+        'pointer-events-none absolute rounded-full transition-opacity duration-200',
+        'bg-gradient-to-r',
         isHovered ? 'opacity-100' : 'opacity-0',
         className
       )}
       style={{
         width: size,
         height: size,
-        left: position.x,
-        top: position.y,
-        transition: 'opacity 0.2s'
+        left: spotlightLeft,
+        top: spotlightTop,
+        background: 'radial-gradient(circle at center, var(--tw-gradient-stops))',
+        mask: 'radial-gradient(circle at center, transparent 40%, black 70%)',
+        WebkitMask: 'radial-gradient(circle at center, transparent 40%, black 70%)'
       }}
     />
   );
