@@ -75,7 +75,7 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
       
       {/* Main Content */}
       <motion.div 
-        className="text-center flex flex-col justify-center items-center z-10 pb-10"
+        className="text-center flex flex-col justify-center items-center pb-10"
         initial="hidden"
         animate="visible"
         variants={contentVariants}
@@ -100,14 +100,14 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
               className={`group relative px-8 py-4 text-lg font-semibold text-[#faf9fd] hover:text-white bg-[#4a37b9] rounded-lg overflow-hidden ${!isEnabled && 'pointer-events-none'}`}
               onClick={() => isEnabled && setIsResumeOpen(true)}
             >
-              <span className="relative z-10">Resume</span>
+              <span className="relative">Resume</span>
             </button>
             
             <button 
               className={`group px-8 py-4 text-lg font-semibold text-neutral-300 border-2 border-neutral-300 rounded-lg overflow-hidden relative transition-all duration-300 hover:border-white hover:text-white hover:shadow-lg hover:shadow-neutral-800/50 ${!isEnabled && 'pointer-events-none'}`}
               onClick={handleClick}
             >
-              <span className="relative z-10">Projects</span>
+              <span className="relative">Projects</span>
               <div className="absolute inset-0 bg-neutral-800 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
             </button>
           </div>
@@ -116,7 +116,7 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
 
       {/* Chevron Navigation */}
       <motion.div 
-        className={`cursor-pointer w-fit fixed bottom-16 left-1/2 transform -translate-x-1/2 z-10 ${!isEnabled && 'pointer-events-none'}`}
+        className={`cursor-pointer w-fit fixed bottom-16 left-1/2 transform -translate-x-1/2 ${!isEnabled && 'pointer-events-none'}`}
         initial="hidden"
         animate="visible"
         variants={chevronVariants}

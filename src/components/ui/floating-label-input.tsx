@@ -1,7 +1,5 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 
 export type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
@@ -61,14 +59,16 @@ const FloatingInput = React.forwardRef<HTMLInputElement, InputProps>(
     }, [defaultValue]);
 
     return (
-      <Input
+      <input
         placeholder=" "
         className={cn(
-          'peer w-full border border-neutral-700',
-          'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-600 focus-visible:border-neutral-600',
-          'focus:outline-none focus:ring-1 focus:ring-neutral-600 focus:border-neutral-600',
-          '[&::-webkit-autofill]:border-neutral-600',
-          'px-3 py-2',
+          'peer w-full rounded-md bg-[#0a0c22] border border-[#97a1b8]',
+          'h-9 px-3 py-1 text-base md:text-sm',
+          'shadow-sm transition-colors',
+          'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#97a1b8] focus-visible:border-[#97a1b8]',
+          'focus:outline-none focus:ring-1 focus:ring-[#97a1b8] focus:border-[#97a1b8]',
+          '[&::-webkit-autofill]:border-[#97a1b8]',
+          'disabled:cursor-not-allowed disabled:opacity-50',
           hasContent && 'not-empty',
           isAutofilling && 'animate-autofill',
           className
@@ -95,14 +95,14 @@ const FloatingInput = React.forwardRef<HTMLInputElement, InputProps>(
 FloatingInput.displayName = 'FloatingInput';
 
 const FloatingLabel = React.forwardRef<
-  React.ElementRef<typeof Label>,
-  React.ComponentPropsWithoutRef<typeof Label>
+  HTMLLabelElement,
+  React.LabelHTMLAttributes<HTMLLabelElement>
 >(({ className, ...props }, ref) => {
   return (
-    <Label
+    <label
       className={cn(
         'absolute start-2 top-2 z-10 origin-[0] transform',
-        'text-sm font-thin text-neutral-300 duration-300 cursor-text bg-neutral-900',
+        'text-sm font-thin text-[#b6c2de] duration-300 cursor-text bg-[#0a0c22]',
         'top-1/2 -translate-y-1/2 scale-100',
         'peer-[.not-empty]:top-2 peer-[.not-empty]:-translate-y-[18px] peer-[.not-empty]:scale-75 peer-[.not-empty]:px-1',
         'peer-focus:top-2 peer-focus:-translate-y-[18px] peer-focus:scale-75 peer-focus:px-1',

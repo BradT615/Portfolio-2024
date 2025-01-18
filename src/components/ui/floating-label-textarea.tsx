@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { Label } from '@/components/ui/label';
 import { useAutosizeTextArea } from '@/components/ui/autosize-textarea';
 
 export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -52,10 +51,10 @@ const FloatingTextarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         defaultValue={defaultValue}
         placeholder=" "
         className={cn(
-          'peer w-full bg-neutral-900 border border-neutral-700',
-          'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-600 focus-visible:border-neutral-600',
-          'focus:outline-none focus:ring-1 focus:ring-neutral-600 focus:border-neutral-600',
-          '[&::-webkit-autofill]:border-neutral-600',
+          'peer w-full bg-[#0a0c22] border border-[#97a1b8] rounded-md',
+          'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#97a1b8] focus-visible:border-[#97a1b8]',
+          'focus:outline-none focus:ring-1 focus:ring-[#97a1b8] focus:border-[#97a1b8]',
+          '[&::-webkit-autofill]:border-[#97a1b8]',
           'px-3 py-2',
           hasContent && 'not-empty',
           className
@@ -69,14 +68,14 @@ const FloatingTextarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 FloatingTextarea.displayName = 'FloatingTextarea';
 
 const FloatingLabel = React.forwardRef<
-  React.ElementRef<typeof Label>,
-  React.ComponentPropsWithoutRef<typeof Label>
+  HTMLLabelElement,
+  React.LabelHTMLAttributes<HTMLLabelElement>
 >(({ className, ...props }, ref) => {
   return (
-    <Label
+    <label
       className={cn(
         'absolute start-2 z-10 origin-[0] transform',
-        'text-sm font-thin text-neutral-300 duration-300 cursor-text bg-neutral-900',
+        'text-sm font-thin text-[#b6c2de] duration-300 cursor-text bg-[#0a0c22]',
         'top-3 scale-100',
         'peer-[.not-empty]:top-0 peer-[.not-empty]:-translate-y-1/2 peer-[.not-empty]:scale-75 peer-[.not-empty]:px-1',
         'peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:scale-75 peer-focus:px-1',
@@ -99,7 +98,7 @@ type FloatingLabelTextareaProps = TextareaProps & {
 };
 
 const FloatingLabelTextarea = React.forwardRef<
-  React.ElementRef<typeof FloatingTextarea>,
+  HTMLTextAreaElement,
   React.PropsWithoutRef<FloatingLabelTextareaProps>
 >(({ id, label, labelClassName, className, ...props }, ref) => {
   return (

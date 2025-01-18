@@ -1,6 +1,5 @@
 'use client';
 import * as React from 'react';
-import { cn } from '@/lib/utils';
 import { useImperativeHandle } from 'react';
 
 interface UseAutosizeTextAreaProps {
@@ -113,13 +112,6 @@ export const AutosizeTextarea = React.forwardRef<AutosizeTextAreaRef, AutosizeTe
         {...props}
         value={value}
         ref={textAreaRef}
-        className={cn(
-          'peer w-full rounded-md border border-neutral-700 bg-background px-3 py-2 text-sm',
-          'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-600 focus-visible:border-neutral-600',
-          'focus:outline-none focus:ring-1 focus:ring-neutral-600 focus:border-neutral-600',
-          'placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
-          className,
-        )}
         onChange={(e) => {
           setTriggerAutoSize(e.target.value);
           onChange?.(e);
