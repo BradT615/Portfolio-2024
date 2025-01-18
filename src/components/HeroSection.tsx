@@ -16,19 +16,20 @@ interface ResumeModalProps {
 const ResumeModal = ({ isOpen, onClose }: ResumeModalProps) => {
   if (!isOpen) return null;
 
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
-      <div className="w-full max-w-5xl flex flex-col">
-        <div className="flex justify-end mb-2">
-          <button
-            onClick={onClose}
-            className="p-2 rounded-full bg-white hover:bg-neutral-100 transition-colors"
-          >
-            <X className="w-6 h-6 text-neutral-600" />
-          </button>
-        </div>
-        
-        <div className="bg-white rounded-lg h-[85vh]">
+    <div 
+      className="fixed inset-0 z-30 bg-black/20 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 flex items-center justify-center"
+      onClick={handleBackdropClick}
+      data-state={isOpen ? 'open' : 'closed'}
+    >
+      <div className="w-full max-w-7xl flex flex-col mx-4">
+        <div className="rounded-lg h-[85vh]">
           <iframe
             src="/BradleyTitus_Resume.pdf"
             className="w-full h-full rounded-lg"
@@ -72,7 +73,6 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
 
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center">
-      
       {/* Main Content */}
       <motion.div 
         className="text-center flex flex-col justify-center items-center pb-10"
@@ -81,34 +81,34 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
         variants={contentVariants}
         transition={contentTransition}
       >
-        <div className="space-y-4">
-          <h1 className="text-8xl font-bold text-white">
+        <div className="space-y-2 sm:space-y-4">
+          <h1 className="text-6xl sm:text-8xl font-bold text-[#d1dbff]">
             Brad Titus
           </h1>
-          <h2 className="text-4xl text-[#97a1b8] font-light">
+          <h2 className="text-2xl sm:text-4xl text-[#97a1b8] font-light">
             Full Stack Developer
           </h2>
           <div className="flex justify-center items-center gap-2">
             <MapPin size={18} strokeWidth={1.25} />
-            <h3 className="text-xl text-[#97a1b8] font-light">
+            <h3 className="text-lg sm:text-xl text-[#97a1b8] font-light">
               Tampa, FL
             </h3>
           </div>
 
-          <div className="flex gap-8 justify-center pt-12">
+          <div className="flex gap-8 justify-center pt-32 sm:pt-12">
             <button 
-              className={`group relative px-8 py-4 text-lg font-semibold text-[#faf9fd] hover:text-white bg-[#4a37b9] rounded-lg overflow-hidden ${!isEnabled && 'pointer-events-none'}`}
+              className={`group relative w-32 sm:w-40 py-3 sm:py-4 text-base sm:text-lg shadow-xl bg-[#1a1a50] hover:bg-[#262676] text-[#d1dbff] border-[2px] border-[#6d7484] hover:text-white hover:border-[#97a1b8] transition-all duration-300 rounded-lg overflow-hidden ${!isEnabled && 'pointer-events-none'}`}
               onClick={() => isEnabled && setIsResumeOpen(true)}
             >
               <span className="relative">Resume</span>
             </button>
             
             <button 
-              className={`group px-8 py-4 text-lg font-semibold text-neutral-300 border-2 border-neutral-300 rounded-lg overflow-hidden relative transition-all duration-300 hover:border-white hover:text-white hover:shadow-lg hover:shadow-neutral-800/50 ${!isEnabled && 'pointer-events-none'}`}
+              className={`relative w-32 sm:w-40 py-3 sm:py-4 text-base sm:text-lg shadow-xl text-[#d1dbff] border-[2px] border-[#6d7484] hover:text-white hover:border-[#97a1b8] transition-all duration-300 rounded-lg overflow-hidden ${!isEnabled && 'pointer-events-none'}`}
               onClick={handleClick}
             >
+              <div className="absolute inset-0 bg-neutral-400 bg-opacity-10 backdrop-blur-sm backdrop-filter" />
               <span className="relative">Projects</span>
-              <div className="absolute inset-0 bg-neutral-800 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
             </button>
           </div>
         </div>
@@ -116,7 +116,7 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
 
       {/* Chevron Navigation */}
       <motion.div 
-        className={`cursor-pointer w-fit fixed bottom-16 left-1/2 transform -translate-x-1/2 ${!isEnabled && 'pointer-events-none'}`}
+        className={`fixed bottom-8 left-1/2 -translate-x-1/2 ${!isEnabled && 'pointer-events-none'}`}
         initial="hidden"
         animate="visible"
         variants={chevronVariants}
@@ -125,7 +125,7 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
       >
         <ChevronDown 
           size={45} 
-          className="text-neutral-400 transition-all animate-[bounce_1.5s_ease-in-out_infinite] hover:text-white"
+          className="cursor-pointer transition-all animate-[bounce_1.5s_ease-in-out_infinite] hover:text-[#97a1b8]"
         />
       </motion.div>
 

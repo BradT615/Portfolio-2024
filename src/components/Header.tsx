@@ -75,7 +75,7 @@ export default function Header({
           onClick={handleLogoClick}
           className={`cursor-${currentSection === 'projects' ? 'pointer' : 'default'}`}
         >
-          <Logo className={`${animationComplete ? 'h-12 w-12' : 'h-52 w-52'} transition-all duration-1000 ease-out delay-100`} />
+          <Logo className={`${animationComplete ? 'h-10 w-10 sm:h-12 sm:w-12 -m-1' : 'h-52 w-52'} transition-all duration-1000 ease-out delay-100`} />
         </div>
       </motion.div>
 
@@ -86,7 +86,7 @@ export default function Header({
         transition={{ duration: 0.5, delay: 0.5 }}
         onWheel={handleScroll}
       >
-        <div className="flex items-center px-5 h-20 w-full text-[#97a1b8]">
+        <div className="flex items-center px-2 sm:px-10 h-16 sm:h-20 w-full text-[#97a1b8]">
           <div className={`${animationComplete ? 'h-12 w-12' : 'h-32 w-32'}`} />
           
           <AnimatePresence mode="wait">
@@ -102,7 +102,7 @@ export default function Header({
           </AnimatePresence>
 
           <motion.nav 
-            className="flex items-center text-lg ml-auto"
+            className="flex items-center text-base sm:text-lg ml-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: animationComplete ? 1 : 0 }}
             transition={{ duration: 0.3 }}
@@ -123,7 +123,7 @@ export default function Header({
               </TextEffect>
             </Link>
             <motion.span 
-              className="mx-6"
+              className="mx-2 sm:mx-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: animationComplete ? 1 : 0 }}
               transition={{ duration: 0.3, delay: 1.2 }}
@@ -146,7 +146,7 @@ export default function Header({
               </TextEffect>
             </Link>
             <motion.span 
-              className="mx-6"
+              className="mx-2 sm:mx-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: animationComplete ? 1 : 0 }}
               transition={{ duration: 0.3, delay: 1.5 }}
