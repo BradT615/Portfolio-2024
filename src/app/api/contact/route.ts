@@ -5,7 +5,9 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const MY_EMAIL = 'bradtitus615@gmail.com';
 const FROM_EMAIL = 'noreply@bradtitus.dev';
-const LOGO_URL = 'https://bradtitus.dev/Logo.svg';
+
+// Use hosted logo image
+const LOGO_IMG = `<img src="https://bradtitus.dev/Logo.png" alt="Logo" style="width: 100px; height: auto;" />`;
 
 // Shared email styles
 const emailStyle = `
@@ -40,7 +42,7 @@ export async function POST(req: Request) {
       html: `
         <div style="${emailStyle}">
           <div style="${headerStyle}">
-            <img src="${LOGO_URL}" alt="Brad Titus Logo" style="max-width: 200px; height: auto;" />
+            ${LOGO_IMG}
             <h2 style="color: #2563eb; margin-top: 15px;">New Contact Form Submission</h2>
           </div>
           <div style="${contentStyle}">
@@ -64,7 +66,7 @@ export async function POST(req: Request) {
       html: `
         <div style="${emailStyle}">
           <div style="${headerStyle}">
-            <img src="${LOGO_URL}" alt="Brad Titus Logo" style="max-width: 200px; height: auto;" />
+            ${LOGO_IMG}
             <h2 style="color: #2563eb; margin-top: 15px;">Thank you for your message!</h2>
           </div>
           <p>Hi ${name},</p>
