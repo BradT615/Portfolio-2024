@@ -41,9 +41,8 @@ export default function Header({
   };
 
   const handleScroll = (e: React.WheelEvent) => {
-    e.stopPropagation(); // Prevent the main scroll handler from firing
+    e.stopPropagation();
     
-    // Only allow scroll to hero if we're at the first project
     if (currentSection === 'projects' && onNavigateToHero && e.deltaY < 0 && currentProjectIndex === 0) {
       onNavigateToHero();
     } else if (currentSection === 'hero' && onNavigateToProjects && e.deltaY > 0) {
@@ -124,7 +123,7 @@ export default function Header({
               </TextEffect>
             </Link>
             <motion.span 
-              className="mx-6 "
+              className="mx-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: animationComplete ? 1 : 0 }}
               transition={{ duration: 0.3, delay: 1.2 }}
@@ -171,7 +170,10 @@ export default function Header({
         </div>
       </motion.header>
 
-      <EmailModal open={isEmailModalOpen} onOpenChange={setIsEmailModalOpen} />
+      <EmailModal 
+        open={isEmailModalOpen} 
+        onOpenChange={setIsEmailModalOpen}
+      />
     </>
   );
 }

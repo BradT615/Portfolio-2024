@@ -116,7 +116,7 @@ const EmailModal = ({ open, onOpenChange }: EmailModalProps) => {
       form.reset();
       setTimeout(() => onOpenChange(false), 1000);
     } catch (error) {
-      showToast('Failed to send message. Please try again.', 'error');
+      showToast(`Failed to send message: ${(error as Error).message}`, 'error');
     } finally {
       setIsSubmitting(false);
     }
