@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 const ROWS = 15;
+const ANIMATION_DURATION = 150;
 
 const useMousePosition = (containerRef: React.RefObject<HTMLDivElement>) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -42,7 +43,7 @@ const useMousePosition = (containerRef: React.RefObject<HTMLDivElement>) => {
   return { position: mousePosition, isHovering: isWithinBounds };
 };
 
-const GridBg = ({
+const AnimatedInteractiveGrid = ({
   baseColor = 'rgb(31, 34, 60)',
   highlightColor = 'rgba(41, 196, 222, 0.4)',
   currentSection = 'hero',
@@ -53,13 +54,7 @@ const GridBg = ({
   const [cellSize, setCellSize] = useState(0);
   const [gridColumns, setGridColumns] = useState(ROWS);
   const [highlightedCells, setHighlightedCells] = useState(new Set());
-
-  // Create grid rows
-  const rows = Array.from({ length: ROWS }, (_, rowIndex) =>
-    Array.from({ length: gridColumns }, (_, colIndex) => ({
-      id: rowIndex * gridColumns + colIndex
-    }))
-  );
+  const [animationProgress, setAnimationProgress] = useState(0);
 
   const getAdjacentCells = (cellId: number, columns: number) => {
     return [
@@ -74,6 +69,27 @@ const GridBg = ({
       return Math.abs(currentRow - adjacentRow) <= 1;
     });
   };
+
+  // Animation progress tracking
+  useEffect(() => {
+    let startTime = performance.now();
+    let animationFrameId: number;
+
+    const updateProgress = (currentTime: number) => {
+      const elapsed = (currentTime - startTime) / 1000; // Convert to seconds
+      const progress = (elapsed % ANIMATION_DURATION) / ANIMATION_DURATION;
+      setAnimationProgress(progress);
+      animationFrameId = requestAnimationFrame(updateProgress);
+    };
+
+    animationFrameId = requestAnimationFrame(updateProgress);
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, []);
 
   // Handle initial cell highlighting
   useEffect(() => {
@@ -125,7 +141,7 @@ const GridBg = ({
       const viewportHeight = window.innerHeight;
       
       const newCellSize = Math.ceil(viewportHeight / ROWS);
-      const columnsNeeded = Math.ceil(viewportWidth / newCellSize);
+      const columnsNeeded = Math.ceil(viewportWidth / newCellSize) + 1;
       
       setCellSize(newCellSize);
       setGridColumns(columnsNeeded);
@@ -139,18 +155,76 @@ const GridBg = ({
   // Get the current gradient value based on section
   const gradientStart = currentSection === 'projects' ? '30%' : '10%';
 
+  // Create grid rows with animation clone
+  const createGridRows = (offset = 0) => {
+    return Array.from({ length: ROWS }, (_, rowIndex) =>
+      Array.from({ length: gridColumns }, (_, colIndex) => ({
+        id: (rowIndex * gridColumns + colIndex + offset)
+      }))
+    );
+  };
+
+  // Calculate adjusted mouse position based on animation progress
+  const getAdjustedMousePosition = () => {
+    if (!mousePosition) return { x: 0, y: 0 };
+    
+    const gridWidth = cellSize * gridColumns;
+    const offsetX = gridWidth * animationProgress;
+    
+    return {
+      x: mousePosition.x - offsetX,
+      y: mousePosition.y
+    };
+  };
+
+  const adjustedPosition = getAdjustedMousePosition();
+
   return (
     <div 
       ref={containerRef}
-      className={`fixed inset-0 flex items-center justify-center overflow-hidden pointer-events-none ${className}`}
+      className={`fixed inset-0 flex items-center justify-center overflow-hidden ${className}`}
     >
       <style>
         {`
           .grid-container {
+            display: flex;
+            animation: slideLeft ${ANIMATION_DURATION}s linear infinite;
+          }
+
+          .grid-section {
             display: grid;
             grid-template-columns: repeat(${gridColumns}, ${cellSize}px);
             grid-template-rows: repeat(${ROWS}, ${cellSize}px);
             position: relative;
+          }
+
+          @keyframes slideLeft {
+            from { transform: translateX(0); }
+            to { transform: translateX(-${cellSize * gridColumns}px); }
+          }
+
+          .grid-cell {
+            border-right: 1px solid ${baseColor};
+            border-bottom: 1px solid ${baseColor};
+            position: relative;
+            width: ${cellSize}px;
+            height: ${cellSize}px;
+            transition: background-color 0.3s ease;
+          }
+
+          .grid-cell.highlighted {
+            background: rgb(11, 13, 38);
+          }
+
+          .grid-section:last-child .grid-cell:nth-child(${gridColumns}n) {
+            border-right: none;
+          }
+
+          .grid-cell:nth-child(n+${gridColumns * ROWS}) {
+            border-bottom: none;
+          }
+
+          .mask-container {
             mask-image: 
               linear-gradient(to bottom, transparent, black 30%, black 70%, transparent),
               linear-gradient(to right, transparent, black 10%, black 90%, transparent);
@@ -160,69 +234,55 @@ const GridBg = ({
             mask-composite: intersect;
             -webkit-mask-composite: source-in;
           }
-
-          .grid-cell {
-            border-right: 1px solid ${baseColor};
-            border-bottom: 1px solid ${baseColor};
-            position: relative;
-            width: ${cellSize}px;
-            height: ${cellSize}px;
-          }
-
-          .grid-cell.highlighted {
-            background: rgb(11, 13, 38);
-          }
-
-          .grid-cell:nth-child(${gridColumns}n) {
-            border-right: none;
-          }
-
-          .grid-cell:nth-child(n+${gridColumns * ROWS}) {
-            border-bottom: none;
-          }
         `}
       </style>
 
-      <div className="grid-container">
-        {rows.map((row, rowIndex) =>
-          row.map(({ id }, colIndex) => (
-            <div
-              key={`${rowIndex}-${colIndex}`}
-              className={`grid-cell ${highlightedCells.has(id) ? 'highlighted' : ''}`}
-              data-cell-id={id}
-            />
-          ))
-        )}
-      </div>
+      <div className="mask-container w-full h-full">
+        <div className="grid-container">
+          {[0, 1].map((gridIndex) => (
+            <div key={gridIndex} className="grid-section">
+              {createGridRows(gridIndex * gridColumns * ROWS).map((row, rowIndex) =>
+                row.map(({ id }, colIndex) => (
+                  <div
+                    key={`${gridIndex}-${rowIndex}-${colIndex}`}
+                    className={`grid-cell ${highlightedCells.has(id % (gridColumns * ROWS)) ? 'highlighted' : ''}`}
+                    data-cell-id={id}
+                  />
+                ))
+              )}
+            </div>
+          ))}
+        </div>
 
-      <div 
-        className="absolute inset-0 transition-opacity duration-600"
-        style={{
-          opacity: isHovering ? 1 : 0,
-          backgroundImage: `
-            linear-gradient(${highlightColor} 1px, transparent 1px),
-            linear-gradient(90deg, ${highlightColor} 1px, transparent 1px)
-          `,
-          backgroundSize: `${cellSize}px ${cellSize}px`,
-          backgroundPosition: 'center center',
-          maskImage: mousePosition ? `
-            radial-gradient(circle ${cellSize * 1.5}px at ${mousePosition.x}px ${mousePosition.y}px, black, transparent),
-            linear-gradient(to bottom, transparent, black 30%, black 70%, transparent),
-            linear-gradient(to right, transparent, black ${gradientStart}, black 90%, transparent)
-          ` : '',
-          WebkitMaskImage: mousePosition ? `
-            radial-gradient(circle ${cellSize * 1.5}px at ${mousePosition.x}px ${mousePosition.y}px, black, transparent),
-            linear-gradient(to bottom, transparent, black 30%, black 70%, transparent),
-            linear-gradient(to right, transparent, black ${gradientStart}, black 90%, transparent)
-          ` : '',
-          maskComposite: 'intersect',
-          WebkitMaskComposite: 'source-in',
-          mixBlendMode: 'lighten',
-          zIndex: 10
-        }}
-      />
+        <div 
+          className="absolute inset-0 transition-opacity duration-600"
+          style={{
+            opacity: isHovering ? 1 : 0,
+            backgroundImage: `
+              linear-gradient(${highlightColor} 1px, transparent 1px),
+              linear-gradient(90deg, ${highlightColor} 1px, transparent 1px)
+            `,
+            backgroundSize: `${cellSize}px ${cellSize}px`,
+            backgroundPosition: `${(-animationProgress * cellSize * gridColumns) - 1}px -1px`,
+            maskImage: mousePosition ? `
+              radial-gradient(circle ${cellSize * 1.5}px at ${mousePosition.x}px ${mousePosition.y}px, black, transparent),
+              linear-gradient(to bottom, transparent, black 30%, black 70%, transparent),
+              linear-gradient(to right, transparent, black ${gradientStart}, black 90%, transparent)
+            ` : '',
+            WebkitMaskImage: mousePosition ? `
+              radial-gradient(circle ${cellSize * 1.5}px at ${mousePosition.x}px ${mousePosition.y}px, black, transparent),
+              linear-gradient(to bottom, transparent, black 30%, black 70%, transparent),
+              linear-gradient(to right, transparent, black ${gradientStart}, black 90%, transparent)
+            ` : '',
+            maskComposite: 'intersect',
+            WebkitMaskComposite: 'source-in',
+            mixBlendMode: 'lighten',
+            zIndex: 10
+          }}
+        />
+      </div>
     </div>
   );
 };
 
-export default GridBg;
+export default AnimatedInteractiveGrid;

@@ -10,7 +10,6 @@ const ProjectSpotlight: React.FC<ProjectSpotlightProps> = ({
   isEnabled,
   projectRef,
 }) => {
-  console.log("eggs");
   const [paths, setPaths] = useState<{ top: string; bottom: string }>({
     top: '',
     bottom: '',
@@ -21,7 +20,6 @@ const ProjectSpotlight: React.FC<ProjectSpotlightProps> = ({
   }>({ top: 0, bottom: 0 });
   const [isReady, setIsReady] = useState(false);
   const rafRef = useRef<number>();
-  console.log(rafRef);
   const topPathRef = useRef<SVGPathElement>(null);
   const bottomPathRef = useRef<SVGPathElement>(null);
 

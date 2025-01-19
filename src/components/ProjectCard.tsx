@@ -118,7 +118,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
   const renderCardContent = (project: Project) => (
     <div className="relative w-[700px] min-h-[400px] aspect-[1.1] overflow-hidden rounded-xl border-2 border-[#222441] shadow-2xl">
-      <div className="absolute inset-0 bg-neutral-600 bg-opacity-10 backdrop-blur-md backdrop-filter" />
+      <div className="absolute inset-0 bg-neutral-600 bg-opacity-10 backdrop-blur-xl" />
       <div className="relative z-10 h-full w-full rounded-xl overflow-hidden">
         {project.isGithubCard ? (
           // GitHub card: top area is a large GitHub icon, bottom is a single "View my GitHub" button
