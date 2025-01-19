@@ -72,7 +72,7 @@ const AnimatedInteractiveGrid = ({
 
   // Animation progress tracking
   useEffect(() => {
-    let startTime = performance.now();
+    const startTime = performance.now();
     let animationFrameId: number;
 
     const updateProgress = (currentTime: number) => {
@@ -164,20 +164,8 @@ const AnimatedInteractiveGrid = ({
     );
   };
 
-  // Calculate adjusted mouse position based on animation progress
-  const getAdjustedMousePosition = () => {
-    if (!mousePosition) return { x: 0, y: 0 };
-    
-    const gridWidth = cellSize * gridColumns;
-    const offsetX = gridWidth * animationProgress;
-    
-    return {
-      x: mousePosition.x - offsetX,
-      y: mousePosition.y
-    };
-  };
 
-  const adjustedPosition = getAdjustedMousePosition();
+
 
   return (
     <div 

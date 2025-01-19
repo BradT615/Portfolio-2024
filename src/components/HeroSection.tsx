@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, MapPin, X } from 'lucide-react';
+import { ChevronDown, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface HeroSectionProps {
