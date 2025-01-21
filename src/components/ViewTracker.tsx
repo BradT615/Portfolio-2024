@@ -7,7 +7,7 @@ export default function ViewTracker() {
     const trackPageView = async () => {
       try {
         // Check if this view has already been tracked in this session
-        const hasTracked = sessionStorage.getItem('viewTracked');
+        const hasTracked = localStorage.getItem('viewTracked');
         if (hasTracked) return;
 
         await fetch('/api/track-view', {
@@ -15,7 +15,7 @@ export default function ViewTracker() {
         });
         
         // Mark this session as tracked
-        sessionStorage.setItem('viewTracked', 'true');
+        localStorage.setItem('viewTracked', 'true');
       } catch (error) {
         console.error('Error tracking view:', error);
       }
