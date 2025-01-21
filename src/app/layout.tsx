@@ -1,6 +1,7 @@
 // app/layout.tsx
 import type { Metadata } from "next";
 import { Roboto_Mono } from 'next/font/google';
+import ViewTracker from '@/components/ViewTracker';
 import "./globals.css";
 
 const robotoMono = Roboto_Mono({
@@ -27,6 +28,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full h-full text-[#64748c] bg-[#080b23]">
+        <ViewTracker />
         {children}
       </body>
     </html>
