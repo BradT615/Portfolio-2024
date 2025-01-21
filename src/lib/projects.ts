@@ -25,7 +25,7 @@ export const projects: Project[] = [
     imageUrl: "/images/AlgorithmThumbnail.png",
     liveLink: "https://bradt615algorithm.netlify.app/",
     repoLink: "https://github.com/BradT615/Algorithm-Visualizer",
-    skills: ["React", "Tailwind CSS`", "Algorithms", "Data Structures"]
+    skills: ["React", "Tailwind CSS", "Algorithms", "Data Structures"]
   },
   {
     title: "Habit Tracker",

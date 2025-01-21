@@ -160,7 +160,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       <div className="relative z-10 h-full w-full rounded-xl">
         {project.isGithubCard ? (
           <>
-            <div className="flex flex-col h-full items-center justify-center gap-8 p-4">
+            <div className="flex flex-col h-[60vh] items-center justify-center gap-8 p-4">
               <IoLogoGithub size={200} />
               <button className="w-fit rounded-full border-[1px] border-[#222441] px-6 py-2 text-[#97a1b8] hover:border-[#97a1b8] transition-colors">
                 <Link href={project.repoLink} target="_blank">

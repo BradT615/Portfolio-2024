@@ -46,15 +46,15 @@ const IndicatorButton: React.FC<IndicatorButtonProps> = ({
 
   return (
     <button
-      className="h-8 lg:h-10 flex items-center group appearance-none focus:outline-none w-8 lg:w-14 justify-center"
+      className="h-10 flex items-center group appearance-none focus:outline-none w-8 lg:w-16"
       onClick={handleClick}
     >
       <div
         className={`
           transition-all duration-200 ease-in-out
           ${isActive 
-            ? 'bg-[#29c4de] rounded-full lg:rounded-lg w-4 h-4 lg:w-14 lg:h-3 group-hover:w-5 group-hover:h-5 lg:group-hover:w-16 lg:group-hover:h-4' 
-            : 'bg-[#5d6b83] hover:bg-[#788aa9] rounded-full lg:rounded-lg w-3 h-3 lg:w-10 lg:h-3 group-hover:w-4 group-hover:h-4 lg:group-hover:w-12 lg:group-hover:h-4'
+            ? 'bg-cyan-400 rounded-lg h-3 w-12 group-hover:h-4 group-hover:w-16' 
+            : 'bg-slate-600 group-hover:bg-slate-500 rounded-lg h-3 w-10 group-hover:h-4 group-hover:w-12'
           }
         `}
       />

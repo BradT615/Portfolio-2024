@@ -100,7 +100,7 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
   return (
     <div className="relative w-full">
       {/* Skills tree container with fixed position and scrollable content */}
-      <div className="fixed left-8 w-80 hidden lg:block h-screen">
+      <div className="fixed w-80 hidden lg:block h-screen">
         <div className="h-full overflow-y-auto pr-4 text-xs xl:text-sm">
           <SkillsTree activeSkills={activeSkills} />
         </div>

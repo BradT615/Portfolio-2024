@@ -75,7 +75,7 @@ export default function Header({
           onClick={handleLogoClick}
           className={`cursor-${currentSection === 'projects' ? 'pointer' : 'default'}`}
         >
-          <Logo className={`${animationComplete ? 'h-10 w-10 sm:h-12 sm:w-12 -m-1' : 'h-52 w-52'} transition-all duration-1000 ease-out delay-100`} />
+          <Logo className={`${animationComplete ? 'h-10 w-10 sm:h-12 sm:w-12 -mt-1' : 'h-52 w-52'} transition-all duration-1000 ease-out delay-100`} />
         </div>
       </motion.div>
 
