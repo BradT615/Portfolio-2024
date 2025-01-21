@@ -22,27 +22,18 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
   const connectionsTimer = useRef<NodeJS.Timeout>();
   const spotlightTimer = useRef<NodeJS.Timeout>();
   
-  // Keep currentProjectRef in sync with state
   useEffect(() => {
     currentProjectRef.current = currentProject;
   }, [currentProject]);
 
-  // Handle project changes
   useEffect(() => {
-    // Clear any existing timers
-    if (connectionsTimer.current) {
-      clearTimeout(connectionsTimer.current);
-    }
-    if (spotlightTimer.current) {
-      clearTimeout(spotlightTimer.current);
-    }
+    if (connectionsTimer.current) clearTimeout(connectionsTimer.current);
+    if (spotlightTimer.current) clearTimeout(spotlightTimer.current);
 
-    // Reset states
     setShowConnections(false);
     setSkillsConnected(false);
     setActiveSkills(projects[currentProject].skills);
 
-    // Set up new connections timer
     connectionsTimer.current = setTimeout(() => {
       requestAnimationFrame(() => {
         if (currentProjectRef.current === currentProject) {
@@ -51,14 +42,9 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
       });
     }, 400);
     
-    // Cleanup function
     return () => {
-      if (connectionsTimer.current) {
-        clearTimeout(connectionsTimer.current);
-      }
-      if (spotlightTimer.current) {
-        clearTimeout(spotlightTimer.current);
-      }
+      if (connectionsTimer.current) clearTimeout(connectionsTimer.current);
+      if (spotlightTimer.current) clearTimeout(spotlightTimer.current);
     };
   }, [currentProject]);
 
@@ -76,32 +62,24 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
   }, [currentProject, onTopScroll]);
 
   const handleConnectionsComplete = useCallback(() => {
-    // Clear any existing spotlight timer
-    if (spotlightTimer.current) {
-      clearTimeout(spotlightTimer.current);
-    }
+    if (spotlightTimer.current) clearTimeout(spotlightTimer.current);
 
-    // Set up new spotlight timer
     spotlightTimer.current = setTimeout(() => {
-      // Only trigger spotlight if project hasn't changed
       if (currentProjectRef.current === currentProject) {
         setSkillsConnected(true);
       }
     }, 1000);
 
-    // Cleanup function
     return () => {
-      if (spotlightTimer.current) {
-        clearTimeout(spotlightTimer.current);
-      }
+      if (spotlightTimer.current) clearTimeout(spotlightTimer.current);
     };
   }, [currentProject]);
 
   return (
-    <div className="relative w-full">
-      {/* Skills tree container with fixed position and scrollable content */}
-      <div className="fixed w-80 h-screen">
-        <div className="h-full overflow-y-auto pr-4 text-xs xl:text-sm">
+    <div className="relative w-full min-h-screen flex flex-col lg:flex-row">
+      {/* Skills tree - Responsive layout */}
+      <div className="lg:w-80 w-full lg:h-screen h-48 lg:fixed relative">
+        <div className="h-full overflow-y-auto lg:pr-4 px-2 text-xs xl:text-sm">
           <SkillsTree activeSkills={activeSkills} />
         </div>
       </div>
@@ -116,20 +94,22 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
         />
       </div>
       
-      {/* Centered project cards */}
-      <div className="w-full h-full max-w-4xl xl:max-w-5xl max-[1800px]:ml-auto min-[1800px]:mx-auto px-4 border-2">
-        <ProjectCard 
-          onProjectChange={handleProjectChange}
-          projectRef={projectRef}
-          onAnimationComplete={() => {
-            if (currentProjectRef.current === currentProject) {
-              setShowConnections(true);
-            }
-          }}
-          onTopScroll={handleTopScroll}
-          currentIndex={currentProject}
-          isSkillsConnected={skillsConnected}
-        />
+      {/* Project cards container with responsive layout */}
+      <div className="flex-1 ml-80">
+        <div className="w-full h-full max-w-4xl mx-auto px-2">
+          <ProjectCard 
+            onProjectChange={handleProjectChange}
+            projectRef={projectRef}
+            onAnimationComplete={() => {
+              if (currentProjectRef.current === currentProject) {
+                setShowConnections(true);
+              }
+            }}
+            onTopScroll={handleTopScroll}
+            currentIndex={currentProject}
+            isSkillsConnected={skillsConnected}
+          />
+        </div>
       </div>
     </div>
   );

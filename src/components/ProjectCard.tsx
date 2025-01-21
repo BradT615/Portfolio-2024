@@ -123,7 +123,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         alt={project.title}
         width={500}
         height={300}
-        className="h-full w-full rounded-md border-[1px] border-[#222441] transition-opacity hover:opacity-80 cursor-pointer"
+        className="h-full w-full rounded-lg border-[1px] border-[#222441] hover:border-[#363967] transition-opacity hover:opacity-80 cursor-pointer"
       />
     );
 
@@ -156,7 +156,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   };
 
   const renderCardContent = (project: Project) => (
-    <div className="relative w-[95vw] h-fit lg:w-[50vw] xl:w-[40vw] max-w-[700px] max-h-[80vh] max-lg:mt-16 bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl">
+    <div className="relative bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl">
       <div className="relative z-10 h-full w-full rounded-xl">
         {project.isGithubCard ? (
           <>
@@ -179,28 +179,28 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </>
         ) : (
           <>
-            <div className="relative h-3/5 p-2">
+            <div className="relative mx-2 mt-2">
               {renderProjectImage(project)}
             </div>
-            <div className="flex h-2/5 flex-col px-[3%] pb-2">
-              <div className="flex items-center justify-between min-h-12 pb-2">
-                <h3 className="text:lg min-[450px]:text-xl lg:text-2xl lg:font-semibold text-[#97a1b8]">
+            <div className="flex flex-col px-4">
+              <div className="flex items-center justify-between m-2">
+                <h3 className="text-2xl font-semibold text-[#97a1b8]">
                   {project.title}
                 </h3>
-                <div className="flex gap-2 lg:gap-3">
+                <div className="flex items-center gap-4">
                   <Link
                     href={project.repoLink}
                     target="_blank"
-                    className="p-1.5 lg:p-2 transition-colors hover:text-[#b6c2de]"
+                    className="transition-colors hover:text-[#b6c2de]"
                   >
-                    <Github strokeWidth="1.5" className="w-5 h-5 lg:w-6 lg:h-6" />
+                    <Github strokeWidth="1.5" className="w-5 h-5 lg:w-7 lg:h-7" />
                   </Link>
                   {project.videoUrl ? (
                     <button
                       onClick={() => setIsModalOpen(true)}
-                      className="p-1.5 lg:p-2 transition-colors hover:text-[#b6c2de]"
+                      className="transition-colors hover:text-[#b6c2de]"
                     >
-                      <Youtube strokeWidth="1.5" className="w-5 h-5 lg:w-6 lg:h-6" />
+                      <Youtube strokeWidth="1.5" className="w-5 h-5 lg:w-7 lg:h-7" />
                     </button>
                   ) : (
                     project.liveLink && (
@@ -209,25 +209,25 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                         target="_blank"
                         className="p-1.5 lg:p-2 transition-colors hover:text-[#97a1b8]"
                       >
-                        <ExternalLink strokeWidth="1.5" className="w-5 h-5 lg:w-6 lg:h-6" />
+                        <ExternalLink strokeWidth="1.5" className="w-5 h-5 lg:w-7 lg:h-7" />
                       </Link>
                     )
                   )}
                 </div>
               </div>
-              <div className="mb-4 h-0.5 w-full self-center bg-[#222441]" />
-              <p className="mb-4 flex-1 overflow-y-auto min-h-24 text-sm lg:text-base leading-relaxed text-[#81899c]">
-                {project.description}
-              </p>
-              <div className="flex flex-wrap gap-2 py-2 items-center">
-                {project.skills.map((skill, i) => (
-                  <span key={i} className="text-xs lg:text-sm">
-                    <div className="w-full rounded-full bg-gray-400 bg-opacity-10 p-2 px-3 py-1.5 text-[#97a1b8] backdrop-blur-sm backdrop-filter">
-                      {skill}
-                    </div>
-                  </span>
-                ))}
-              </div>
+              <div className="h-0.5 w-full self-center bg-[#222441]" />
+                <p className="flex-1 my-4 mx-1 text-sm lg:text-base text-[#81899c]">
+                  {project.description}
+                </p>
+                <div className="flex flex-wrap gap-2 my-4 items-center">
+                  {project.skills.map((skill, i) => (
+                    <span key={i} className="text-xs lg:text-sm">
+                      <div className="w-full rounded-full bg-gray-400 bg-opacity-10 p-2 px-3 py-1.5 text-[#97a1b8] backdrop-blur-sm backdrop-filter">
+                        {skill}
+                      </div>
+                    </span>
+                  ))}
+                </div>
             </div>
           </>
         )}
@@ -269,7 +269,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         />
       </div>
 
-      <div className="absolute right-8 top-1/2 -translate-y-1/2">
+      <div className="ml-4 lg:ml-8">
         <ProjectIndicator
           totalProjects={projects.length}
           currentIndex={currentIndex}

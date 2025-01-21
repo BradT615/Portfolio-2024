@@ -53,7 +53,7 @@ const IndicatorButton: React.FC<IndicatorButtonProps> = ({
         className={`
           transition-all duration-200 ease-in-out
           ${isActive 
-            ? 'bg-cyan-400 rounded-lg h-3 w-12 group-hover:h-4 group-hover:w-16' 
+            ? 'bg-cyan-400 rounded-lg h-3 w-12 group-hover:h-4 group-hover:w-14' 
             : 'bg-slate-600 group-hover:bg-slate-500 rounded-lg h-3 w-10 group-hover:h-4 group-hover:w-12'
           }
         `}
