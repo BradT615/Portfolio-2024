@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import { ImagePreloader } from '@/components/ImagePreloader';
 import GridBackground from '@/components/GridBackground';
 import HeroSection from '@/components/HeroSection';
+import OrientationHandler from '@/components/OrientationHandler';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Home() {
@@ -70,7 +71,7 @@ export default function Home() {
 
     const touchEnd = e.changedTouches[0].clientY;
     const deltaY = touchStartRef.current - touchEnd;
-    const minSwipeDistance = 50; // Minimum distance for a swipe to be registered
+    const minSwipeDistance = 50;
 
     const target = e.target as HTMLElement;
     const isInProjectsSection = target.closest('#projects');
@@ -81,10 +82,8 @@ export default function Home() {
 
     if (Math.abs(deltaY) >= minSwipeDistance) {
       if (deltaY > 0 && currentSection === 'hero') {
-        // Swipe up
         handleSectionChange('projects');
       } else if (deltaY < 0 && currentSection === 'projects') {
-        // Swipe down
         if (!isInProjectsSection) {
           handleSectionChange('hero');
         }
@@ -111,6 +110,10 @@ export default function Home() {
       onTouchEnd={handleTouchEnd}
     >
       <ImagePreloader />
+      <OrientationHandler 
+        isProjectSection={currentSection === 'projects'} 
+        onNavigateToHero={() => handleSectionChange('hero')}
+      />
       <AnimatePresence>
         {isInitialAnimationComplete && (
           <motion.div
@@ -122,6 +125,7 @@ export default function Home() {
           </motion.div>
         )}
       </AnimatePresence>
+      
       <Header 
         currentSection={currentSection} 
         onNavigateToHero={() => handleSectionChange('hero')}

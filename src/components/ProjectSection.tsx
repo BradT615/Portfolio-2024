@@ -100,7 +100,7 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
   return (
     <div className="relative w-full">
       {/* Skills tree container with fixed position and scrollable content */}
-      <div className="fixed w-80 hidden lg:block h-screen">
+      <div className="fixed w-80 h-screen">
         <div className="h-full overflow-y-auto pr-4 text-xs xl:text-sm">
           <SkillsTree activeSkills={activeSkills} />
         </div>
@@ -117,7 +117,7 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
       </div>
       
       {/* Centered project cards */}
-      <div className="w-full h-full max-w-5xl mx-auto px-4">
+      <div className="w-full h-full max-w-4xl xl:max-w-5xl max-[1800px]:ml-auto min-[1800px]:mx-auto px-4 border-2">
         <ProjectCard 
           onProjectChange={handleProjectChange}
           projectRef={projectRef}
