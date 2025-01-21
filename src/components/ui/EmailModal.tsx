@@ -132,7 +132,7 @@ const EmailModal = ({ open, onOpenChange }: EmailModalProps) => {
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[425px] bg-[#0a0c22] border-[1px] border-[#97a1b8] text-[#97a1b8]  z-30">
+        <DialogContent className="sm:max-w-[425px] bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl text-[#97a1b8]  z-30">
           <DialogHeader>
             <DialogTitle className="text-2xl text-[#b6c2de]">
               Get in Touch
@@ -182,9 +182,7 @@ const EmailModal = ({ open, onOpenChange }: EmailModalProps) => {
               <button 
                 type="submit" 
                 disabled={isSubmitting || alreadySubmitted}
-                className="group relative px-5 py-3 font-semibold overflow-hidden 
-                  transition-all duration-300 w-full sm:w-auto disabled:opacity-50 
-                  border-[1px] border-[#97a1b8] rounded-md"
+                className="w-full py-2 bg-[#101328] border disabled:border-[#6d7484] border-[#868fa6] hover:border-[#b6c2de] rounded-md text-[#97a1b8] hover:text-[#b6c2de]"
               >
                 <span className="relative z-10">
                   {getButtonText()}

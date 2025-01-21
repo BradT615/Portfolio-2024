@@ -51,7 +51,7 @@ const FloatingTextarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         defaultValue={defaultValue}
         placeholder=" "
         className={cn(
-          'peer w-full bg-[#0a0c22] border border-[#97a1b8] rounded-md',
+          'peer w-full bg-[#101328] border border-[#97a1b8] rounded-md',
           'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#97a1b8] focus-visible:border-[#97a1b8]',
           'focus:outline-none focus:ring-1 focus:ring-[#97a1b8] focus:border-[#97a1b8]',
           '[&::-webkit-autofill]:border-[#97a1b8]',
@@ -75,7 +75,7 @@ const FloatingLabel = React.forwardRef<
     <label
       className={cn(
         'absolute start-2 z-10 origin-[0] transform',
-        'text-sm font-thin text-[#b6c2de] duration-300 cursor-text bg-[#0a0c22]',
+        'text-sm font-thin text-[#b6c2de] duration-300 cursor-text bg-[#101328]',
         'top-3 scale-100',
         'peer-[.not-empty]:top-0 peer-[.not-empty]:-translate-y-1/2 peer-[.not-empty]:scale-75 peer-[.not-empty]:px-1',
         'peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:scale-75 peer-focus:px-1',

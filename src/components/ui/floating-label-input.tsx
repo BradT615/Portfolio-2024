@@ -62,7 +62,7 @@ const FloatingInput = React.forwardRef<HTMLInputElement, InputProps>(
       <input
         placeholder=" "
         className={cn(
-          'peer w-full rounded-md bg-[#0a0c22] border border-[#97a1b8]',
+          'peer w-full rounded-md bg-[#101328] border border-[#97a1b8]',
           'h-9 px-3 py-1 text-base md:text-sm',
           'shadow-sm transition-colors',
           'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#97a1b8] focus-visible:border-[#97a1b8]',
@@ -102,7 +102,7 @@ const FloatingLabel = React.forwardRef<
     <label
       className={cn(
         'absolute start-2 top-2 z-10 origin-[0] transform',
-        'text-sm font-thin text-[#b6c2de] duration-300 cursor-text bg-[#0a0c22]',
+        'text-sm font-thin text-[#b6c2de] duration-300 cursor-text bg-[#101328]',
         'top-1/2 -translate-y-1/2 scale-100',
         'peer-[.not-empty]:top-2 peer-[.not-empty]:-translate-y-[18px] peer-[.not-empty]:scale-75 peer-[.not-empty]:px-1',
         'peer-focus:top-2 peer-focus:-translate-y-[18px] peer-focus:scale-75 peer-focus:px-1',
