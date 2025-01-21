@@ -98,12 +98,26 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
   }, [currentProject]);
 
   return (
-    <>
-      <div className="w-80 shrink-0" data-scroll-container>
-        <SkillsTree activeSkills={activeSkills} />
+    <div className="relative w-full">
+      {/* Skills tree container with fixed position and scrollable content */}
+      <div className="fixed left-8 w-80 hidden lg:block h-screen">
+        <div className="h-full overflow-y-auto pr-4 text-xs xl:text-sm">
+          <SkillsTree activeSkills={activeSkills} />
+        </div>
       </div>
       
-      <div className="flex-1 overflow-hidden">
+      {/* Connections layer */}
+      <div className="fixed inset-0 pointer-events-none">
+        <SkillConnections
+          activeSkills={activeSkills}
+          projectRef={projectRef}
+          isEnabled={showConnections}
+          onConnectionsComplete={handleConnectionsComplete}
+        />
+      </div>
+      
+      {/* Centered project cards */}
+      <div className="w-full h-full max-w-5xl mx-auto px-4">
         <ProjectCard 
           onProjectChange={handleProjectChange}
           projectRef={projectRef}
@@ -117,14 +131,7 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
           isSkillsConnected={skillsConnected}
         />
       </div>
-      
-      <SkillConnections 
-        activeSkills={activeSkills}
-        projectRef={projectRef}
-        isEnabled={showConnections}
-        onConnectionsComplete={handleConnectionsComplete}
-      />
-    </>
+    </div>
   );
 };
 

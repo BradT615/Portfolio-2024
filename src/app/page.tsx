@@ -14,6 +14,7 @@ export default function Home() {
   const [isInitialAnimationComplete, setIsInitialAnimationComplete] = useState(false);
   const isScrollingRef = useRef(false);
   const projectsSectionRef = useRef<HTMLDivElement>(null);
+  const touchStartRef = useRef<number>(0);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -43,23 +44,50 @@ export default function Home() {
     if (!isInitialAnimationComplete || isScrollingRef.current) return;
     if (e.ctrlKey || e.metaKey) return;
     
-    // Get the scroll target
     const target = e.target as HTMLElement;
     const isInProjectsSection = target.closest('#projects');
     
-    // If we're in the projects section, let it handle its own scroll
     if (currentSection === 'projects' && isInProjectsSection) {
       return;
     }
 
-    // Handle page-level section changes
     const delta = e.deltaY;
     if (delta > 0 && currentSection === 'hero') {
       handleSectionChange('projects');
     } else if (delta < 0 && currentSection === 'projects') {
-      // Only change section if not in projects carousel
       if (!isInProjectsSection) {
         handleSectionChange('hero');
+      }
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartRef.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!isInitialAnimationComplete || isScrollingRef.current) return;
+
+    const touchEnd = e.changedTouches[0].clientY;
+    const deltaY = touchStartRef.current - touchEnd;
+    const minSwipeDistance = 50; // Minimum distance for a swipe to be registered
+
+    const target = e.target as HTMLElement;
+    const isInProjectsSection = target.closest('#projects');
+
+    if (currentSection === 'projects' && isInProjectsSection) {
+      return;
+    }
+
+    if (Math.abs(deltaY) >= minSwipeDistance) {
+      if (deltaY > 0 && currentSection === 'hero') {
+        // Swipe up
+        handleSectionChange('projects');
+      } else if (deltaY < 0 && currentSection === 'projects') {
+        // Swipe down
+        if (!isInProjectsSection) {
+          handleSectionChange('hero');
+        }
       }
     }
   };
@@ -77,7 +105,11 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col h-screen relative overflow-hidden">
+    <div 
+      className="flex flex-col h-screen relative overflow-hidden"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       <ImagePreloader />
       <AnimatePresence>
         {isInitialAnimationComplete && (

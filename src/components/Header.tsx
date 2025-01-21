@@ -94,7 +94,7 @@ export default function Header({
               key="projects-title"
               per="char" 
               preset="fade" 
-              className="pl-4 text-3xl font-light"
+              className="hidden lg:block text-3xl font-light"
               trigger={isVisible}
             >
               Projects
@@ -123,7 +123,7 @@ export default function Header({
               </TextEffect>
             </Link>
             <motion.span 
-              className="mx-2 sm:mx-6"
+              className="mx-1 sm:mx-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: animationComplete ? 1 : 0 }}
               transition={{ duration: 0.3, delay: 1.2 }}
@@ -146,7 +146,7 @@ export default function Header({
               </TextEffect>
             </Link>
             <motion.span 
-              className="mx-2 sm:mx-6"
+              className="mx-1 sm:mx-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: animationComplete ? 1 : 0 }}
               transition={{ duration: 0.3, delay: 1.5 }}

@@ -132,7 +132,7 @@ const EmailModal = ({ open, onOpenChange }: EmailModalProps) => {
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[425px] bg-[#0a0c22] border-[1px] border-[#97a1b8] text-[#97a1b8] rounded-2xl z-30">
+        <DialogContent className="sm:max-w-[425px] bg-[#0a0c22] border-[1px] border-[#97a1b8] text-[#97a1b8]  z-30">
           <DialogHeader>
             <DialogTitle className="text-2xl text-[#b6c2de]">
               Get in Touch

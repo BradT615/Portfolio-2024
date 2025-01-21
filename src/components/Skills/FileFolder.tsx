@@ -72,7 +72,7 @@ export const File: React.FC<FileProps> = ({ name, icon, activeSkills = [] }) => 
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         className={cn(
-          "flex items-center gap-2 p-1.5 text-sm rounded-sm relative group",
+          "flex items-center gap-2 p-1.5 rounded-sm relative group",
           isActive ? "text-white" : "",
           isHovered && !isActive && "text-[#97a1b8]"
         )}
@@ -144,7 +144,7 @@ export const Folder: React.FC<FolderProps> = ({ name, children, activeSkills = [
     >
       <motion.div 
         className={cn(
-          "flex items-center gap-2 p-1.5 text-sm cursor-pointer rounded-sm",
+          "flex items-center gap-2 p-1.5 cursor-pointer rounded-sm",
           isHovered && "",
           (hasActiveSkills || isOpen) ? "text-[#d1dfff]" : ""
         )}

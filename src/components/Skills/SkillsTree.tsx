@@ -98,23 +98,18 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
             </Folder>
             <Folder name="APIs & Integration" activeSkills={activeSkills}>
               <File 
-                name="REST API"
-                icon={{ type: 'font', font: { name: "api-plain", color: "#FFFFFF" } }}
-                activeSkills={activeSkills}
-              />
-              <File 
-                name="Spotify API"
-                icon={{ type: 'font', font: { name: "spotify-plain", color: "#1DB954" } }}
-                activeSkills={activeSkills}
-              />
-              <File 
-                name="TMDb API"
-                icon={{ type: 'font', font: { name: "api-plain", color: "#FFFFFF" } }}
+                name="jQuery"
+                icon={{ type: 'devicon', path: "jquery/jquery-original.svg" }}
                 activeSkills={activeSkills}
               />
               <File 
                 name="AJAX"
                 icon={{ type: 'font', font: { name: "ajax-plain", color: "#FFFFFF" } }}
+                activeSkills={activeSkills}
+              />
+              <File 
+                name="REST API"
+                icon={{ type: 'font', font: { name: "api-plain", color: "#FFFFFF" } }}
                 activeSkills={activeSkills}
               />
             </Folder>
@@ -170,11 +165,6 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
               />
             </Folder>
             <Folder name="Services & Authentication" activeSkills={activeSkills}>
-              <File 
-                name="Firebase"
-                icon={{ type: 'devicon', path: "firebase/firebase-plain.svg" }}
-                activeSkills={activeSkills}
-              />
               <File 
                 name="Firestore"
                 icon={{ type: 'devicon', path: "firebase/firebase-plain.svg" }}

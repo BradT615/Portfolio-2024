@@ -82,10 +82,10 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
         transition={contentTransition}
       >
         <div className="space-y-2 sm:space-y-4">
-          <h1 className="text-6xl sm:text-8xl font-bold text-[#d1dbff]">
+          <h1 className="text-5xl min-[380px]:text-6xl sm:text-8xl font-bold text-[#d1dbff]">
             Brad Titus
           </h1>
-          <h2 className="text-2xl sm:text-4xl text-[#97a1b8] font-light">
+          <h2 className="text-xl min-[380px]:text-2xl sm:text-4xl text-[#97a1b8] font-light">
             Full Stack Developer
           </h2>
           <div className="flex justify-center items-center gap-2">
@@ -95,7 +95,7 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
             </h3>
           </div>
 
-          <div className="flex gap-8 justify-center pt-32 sm:pt-12">
+          <div className="flex gap-4 sm:gap-8 justify-center pt-32 sm:pt-12">
             <button 
               className={`group relative w-32 sm:w-40 py-3 sm:py-4 text-base sm:text-lg shadow-xl bg-[#1a1a50] hover:bg-[#262676] text-[#d1dbff] border-[2px] border-[#6d7484] hover:text-white hover:border-[#97a1b8] transition-all duration-300 rounded-lg overflow-hidden ${!isEnabled && 'pointer-events-none'}`}
               onClick={() => isEnabled && setIsResumeOpen(true)}

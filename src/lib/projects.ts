@@ -16,7 +16,7 @@ export const projects: Project[] = [
     imageUrl: "/images/spotifyCloneThumbnail.png",
     liveLink: "#",
     repoLink: "https://github.com/BradT615/Spotify-Clone",
-    skills: ["React", "OAuth 2.0", "REST API", "AJAX"],
+    skills: ["HTML5", "CSS3", "JavaScript", "jQuery", "REST API", "Supabase", "OAuth 2.0"],
     videoUrl: "https://www.youtube.com/embed/JxVoxpzr56o?vq=hd1080&si=Uf2WXvw_tWpaWtWD"
   },
   {
@@ -25,7 +25,7 @@ export const projects: Project[] = [
     imageUrl: "/images/AlgorithmThumbnail.png",
     liveLink: "https://bradt615algorithm.netlify.app/",
     repoLink: "https://github.com/BradT615/Algorithm-Visualizer",
-    skills: ["React", "JavaScript", "Algorithms", "Data Structures"]
+    skills: ["React", "Tailwind CSS`", "Algorithms", "Data Structures"]
   },
   {
     title: "Habit Tracker",
@@ -33,7 +33,7 @@ export const projects: Project[] = [
     imageUrl: "/images/StreakThumbnail.png",
     liveLink: "https://bradt615-streaks.web.app/",
     repoLink: "https://github.com/BradT615/Streaks",
-    skills: ["React", "Firebase", "Firestore", "Authentication"]
+    skills: ["React", "Tailwind CSS", "Firebase", "Firestore", "Authentication"]
   },
   {
     title: "Sudoku Game",
@@ -41,7 +41,7 @@ export const projects: Project[] = [
     imageUrl: "/images/sudokuThumbnail.png",
     liveLink: "https://bradt615sudoku.netlify.app",
     repoLink: "https://github.com/BradT615/Sudoku",
-    skills: ["JavaScript", "Algorithms", "HTML5", "CSS3"]
+    skills: ["HTML5", "CSS3", "JavaScript", "Bootstrap", "Algorithms"]
   },
   {
     title: "Movie Database",
@@ -49,12 +49,12 @@ export const projects: Project[] = [
     imageUrl: "/images/movieDatabaseThumbnail.png",
     liveLink: "https://bradt615movie.netlify.app",
     repoLink: "https://github.com/BradT615/MovieDatabase",
-    skills: ["React", "TMDb API", "REST API", "Tailwind CSS"]
+    skills: ["HTML5", "CSS3", "JavaScript", "Bootstrap", "REST API"]
   },
   {
     title: "More Projects on GitHub",
     repoLink: "https://github.com/BradT615",
-    skills: ["C#", "C", "Rust", "Python", "Java", "MySQL", "Amazon Web Services"],
+    skills: ["TypeScript", "Next.js", "C#", "C", "Python", "Rust", "Java", "MongoDB", "MySQL", "Amazon Web Services"],
     isGithubCard: true
   }
 ];
