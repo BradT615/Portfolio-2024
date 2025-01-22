@@ -219,6 +219,23 @@
     }
   }
 
+  @media (max-height: 700px) {
+    .landscape-div {
+      display: block;
+    }
+    .vertical-div {
+      display: none;
+    }
+  }
+  @media (min-height: 700px) {
+    .landscape-div {
+      display: none;
+    }
+    .vertical-div {
+      display: block;
+    }
+  }
+
   @supports (-webkit-overflow-scrolling: touch) {
     .custom-scrollbar {
       -webkit-overflow-scrolling: touch;

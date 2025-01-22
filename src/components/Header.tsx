@@ -21,6 +21,17 @@ export default function Header({
   const [animationComplete, setAnimationComplete] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+  const [isCompact, setIsCompact] = useState(false);
+
+  useEffect(() => {
+    const checkSize = () => {
+      setIsCompact(window.innerHeight <= 700);
+    };
+
+    checkSize();
+    window.addEventListener('resize', checkSize);
+    return () => window.removeEventListener('resize', checkSize);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -50,6 +61,13 @@ export default function Header({
     }
   };
 
+  const headerHeight = isCompact ? 'fixed h-12 sm:h-14' : 'sticky h-16 sm:h-20';
+  const logoSize = isCompact ? 
+    `${animationComplete ? 'h-8 w-8 sm:h-10 sm:w-10' : 'h-40 w-40'}` : 
+    `${animationComplete ? 'h-10 w-10 sm:h-12 sm:w-12' : 'h-52 w-52'}`;
+  const navFontSize = isCompact ? 'text-sm sm:text-base' : 'text-base sm:text-lg';
+  const navSpacing = isCompact ? 'mx-1 sm:mx-4' : 'mx-1 sm:mx-6';
+
   return (
     <>
       <motion.div 
@@ -62,7 +80,7 @@ export default function Header({
         }}
         animate={animationComplete ? { 
           left: "16px",
-          top: "16px",
+          top: isCompact ? "12px" : "16px",
           x: "0%",
           y: "0%",
         } : {}}
@@ -75,18 +93,18 @@ export default function Header({
           onClick={handleLogoClick}
           className={`cursor-${currentSection === 'projects' ? 'pointer' : 'default'}`}
         >
-          <Logo className={`${animationComplete ? 'h-10 w-10 sm:h-12 sm:w-12 -mt-1' : 'h-52 w-52'} transition-all duration-1000 ease-out delay-100`} />
+          <Logo className={`${logoSize} -mt-1 transition-all duration-1000 ease-out delay-100`} />
         </div>
       </motion.div>
 
       <motion.header 
-        className="fixed w-full z-10"
+        className={`w-full z-10 ${headerHeight}`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.5 }}
         onWheel={handleScroll}
       >
-        <div className="flex items-center px-2 sm:px-10 h-16 sm:h-20 w-full text-[#97a1b8]">
+        <div className="flex items-center px-2 sm:px-10 h-full w-full text-[#97a1b8]">
           <div className={`${animationComplete ? 'h-12 w-12' : 'h-32 w-32'}`} />
           
           <AnimatePresence mode="wait">
@@ -94,7 +112,7 @@ export default function Header({
               key="projects-title"
               per="char" 
               preset="fade" 
-              className="hidden lg:block text-3xl font-light"
+              className={`hidden lg:block ${isCompact ? 'text-2xl' : 'text-3xl'} font-light`}
               trigger={isVisible}
             >
               Projects
@@ -102,7 +120,7 @@ export default function Header({
           </AnimatePresence>
 
           <motion.nav 
-            className="flex items-center text-base sm:text-lg ml-auto"
+            className={`flex items-center ${navFontSize} ml-auto`}
             initial={{ opacity: 0 }}
             animate={{ opacity: animationComplete ? 1 : 0 }}
             transition={{ duration: 0.3 }}
@@ -123,7 +141,7 @@ export default function Header({
               </TextEffect>
             </Link>
             <motion.span 
-              className="mx-1 sm:mx-6"
+              className={navSpacing}
               initial={{ opacity: 0 }}
               animate={{ opacity: animationComplete ? 1 : 0 }}
               transition={{ duration: 0.3, delay: 1.2 }}
@@ -146,7 +164,7 @@ export default function Header({
               </TextEffect>
             </Link>
             <motion.span 
-              className="mx-1 sm:mx-6"
+              className={navSpacing}
               initial={{ opacity: 0 }}
               animate={{ opacity: animationComplete ? 1 : 0 }}
               transition={{ duration: 0.3, delay: 1.5 }}

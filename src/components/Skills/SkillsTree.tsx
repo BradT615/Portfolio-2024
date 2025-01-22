@@ -31,7 +31,7 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
       onWheel={handleScroll}
     >
       <div 
-        className="flex-1 px-4 py-6 custom-scrollbar overflow-y-auto relative mt-16"
+        className="flex-1 px-2 lg:px-4 py-6 custom-scrollbar overflow-y-auto relative mt-14 lg:mt-16"
         style={{
           paddingTop: "2rem",
           paddingBottom: "2rem",
@@ -203,7 +203,7 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
           </Folder>
         </Folder>
       </div>
-      <div className="absolute top-16 left-0 right-0 w-11/12 h-8 bg-gradient-to-b from-[#080b23] to-transparent pointer-events-none z-10 transition-opacity duration-200" />
+      <div className="absolute top-12 lg:top-16 left-0 right-0 w-11/12 h-8 bg-gradient-to-b from-[#080b23] to-transparent pointer-events-none z-10 transition-opacity duration-200" />
       <div className="absolute bottom-0 left-0 right-0 w-11/12 h-8 bg-gradient-to-t from-[#080b23] to-transparent pointer-events-none z-10 transition-opacity duration-200" />
     </motion.div>
   );

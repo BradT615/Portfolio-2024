@@ -76,10 +76,10 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
   }, [currentProject]);
 
   return (
-    <div className="relative w-full min-h-screen flex flex-col lg:flex-row">
+    <div className="relative w-full min-h-screen flex">
       {/* Skills tree - Responsive layout */}
-      <div className="lg:w-80 w-full lg:h-screen h-48 lg:fixed relative">
-        <div className="h-full overflow-y-auto lg:pr-4 px-2 text-xs xl:text-sm">
+      <div className="w-64 lg:w-80 h-screen fixed border-2">
+        <div className="h-full text-xs xl:text-sm">
           <SkillsTree activeSkills={activeSkills} />
         </div>
       </div>
@@ -95,21 +95,19 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
       </div>
       
       {/* Project cards container with responsive layout */}
-      <div className="flex-1 ml-80">
-        <div className="w-full h-full max-w-4xl mx-auto px-2">
-          <ProjectCard 
-            onProjectChange={handleProjectChange}
-            projectRef={projectRef}
-            onAnimationComplete={() => {
-              if (currentProjectRef.current === currentProject) {
-                setShowConnections(true);
-              }
-            }}
-            onTopScroll={handleTopScroll}
-            currentIndex={currentProject}
-            isSkillsConnected={skillsConnected}
-          />
-        </div>
+      <div className="flex-1 ml-96">
+        <ProjectCard 
+          onProjectChange={handleProjectChange}
+          projectRef={projectRef}
+          onAnimationComplete={() => {
+            if (currentProjectRef.current === currentProject) {
+              setShowConnections(true);
+            }
+          }}
+          onTopScroll={handleTopScroll}
+          currentIndex={currentProject}
+          isSkillsConnected={skillsConnected}
+        />
       </div>
     </div>
   );

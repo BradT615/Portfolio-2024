@@ -12,7 +12,7 @@ const ProjectIndicator: React.FC<ProjectIndicatorProps> = ({
   onIndicatorClick,
 }) => {
   return (
-    <div className="flex flex-row lg:flex-col items-center lg:items-start gap-1">
+    <div className="flex flex-col items-start gap-1">
       {Array.from({ length: totalProjects }).map((_, index) => (
         <IndicatorButton
           key={index}
@@ -46,7 +46,7 @@ const IndicatorButton: React.FC<IndicatorButtonProps> = ({
 
   return (
     <button
-      className="h-10 flex items-center group appearance-none focus:outline-none w-8 lg:w-16"
+      className="h-10 flex items-center group appearance-none focus:outline-none w-16"
       onClick={handleClick}
     >
       <div

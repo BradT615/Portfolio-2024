@@ -116,14 +116,15 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     }
   };
 
-  const renderProjectImage = (project: Project) => {
+  const renderProjectImage = (project: Project, isLandscape: boolean) => {
     const imageComponent = (
       <Image
         src={project.imageUrl!}
         alt={project.title}
         width={500}
         height={300}
-        className="h-full w-full rounded-lg border-[1px] border-[#222441] hover:border-[#363967] transition-opacity hover:opacity-80 cursor-pointer"
+        className={`w-full object-fit rounded-lg border-[1px] border-[#222441] 
+          ${isLandscape ? 'max-h-[40vh]' : 'max-h-[30vh]'}`}
       />
     );
 
@@ -155,34 +156,35 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     return imageComponent;
   };
 
-  const renderCardContent = (project: Project) => (
-    <div className="relative bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl">
-      <div className="relative z-10 h-full w-full rounded-xl">
+  const renderCardContent = (project: Project, isLandscape: boolean) => (
+    <div className={`relative bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl overflow-hidden flex flex-col
+      ${isLandscape ? 'max-w-4xl max-h-[90vh]' : 'max-w-2xl max-h-[70vh]'}`}>
+      <div className="relative z-10 h-full w-full rounded-xl flex flex-col">
         {project.isGithubCard ? (
-          <>
-            <div className="flex flex-col h-[60vh] items-center justify-center gap-8 p-4">
-              <IoLogoGithub size={200} />
-              <button className="w-fit rounded-full border-[1px] border-[#222441] px-6 py-2 text-[#97a1b8] hover:border-[#97a1b8] transition-colors">
-                <Link href={project.repoLink} target="_blank">
-                  <TextShimmer
-                    className="font-mono text-lg"
-                    duration={1}
-                    repeat={Infinity}
-                    delay={2}
-                    spread={3}
-                  >
-                    View my GitHub
-                  </TextShimmer>
-                </Link>
-              </button>
-            </div>
-          </>
+          <div className="flex flex-col h-[60vh] items-center justify-center gap-8 p-4">
+            <IoLogoGithub size={200} />
+            <button className="w-fit rounded-full border-[1px] border-[#222441] px-6 py-2 text-[#97a1b8] hover:border-[#97a1b8] transition-colors">
+              <Link href={project.repoLink} target="_blank">
+                <TextShimmer
+                  className="font-mono text-lg"
+                  duration={1}
+                  repeat={Infinity}
+                  delay={2}
+                  spread={3}
+                >
+                  View my GitHub
+                </TextShimmer>
+              </Link>
+            </button>
+          </div>
         ) : (
           <>
-            <div className="relative mx-2 mt-2">
-              {renderProjectImage(project)}
+            <div className={`relative mx-2 mt-2 flex-shrink-0 
+              ${isLandscape ? 'max-h-[40vh]' : ''}`}>
+              {renderProjectImage(project, isLandscape)}
             </div>
-            <div className="flex flex-col px-4">
+            <div className={`flex flex-col px-4 flex-1 min-h-0 overflow-y-auto border-2
+              ${isLandscape ? 'max-h-[45vh]' : ''}`}>
               <div className="flex items-center justify-between m-2">
                 <h3 className="text-2xl font-semibold text-[#97a1b8]">
                   {project.title}
@@ -216,18 +218,18 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                 </div>
               </div>
               <div className="h-0.5 w-full self-center bg-[#222441]" />
-                <p className="flex-1 my-4 mx-1 text-sm lg:text-base text-[#81899c]">
-                  {project.description}
-                </p>
-                <div className="flex flex-wrap gap-2 my-4 items-center">
-                  {project.skills.map((skill, i) => (
-                    <span key={i} className="text-xs lg:text-sm">
-                      <div className="w-full rounded-full bg-gray-400 bg-opacity-10 p-2 px-3 py-1.5 text-[#97a1b8] backdrop-blur-sm backdrop-filter">
-                        {skill}
-                      </div>
-                    </span>
-                  ))}
-                </div>
+              <p className="flex-1 my-4 mx-1 text-sm lg:text-base text-[#81899c]">
+                {project.description}
+              </p>
+              <div className="flex flex-wrap gap-2 my-4 items-center">
+                {project.skills.map((skill, i) => (
+                  <span key={i} className="text-xs lg:text-sm">
+                    <div className="w-full rounded-full bg-gray-400 bg-opacity-10 p-2 px-3 py-1.5 text-[#97a1b8] backdrop-blur-sm backdrop-filter">
+                      {skill}
+                    </div>
+                  </span>
+                ))}
+              </div>
             </div>
           </>
         )}
@@ -243,25 +245,43 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     >
       <div ref={projectRef} className="relative">
         <AnimatePresence mode="popLayout" custom={scrollDirection}>
-          <motion.div
-            key={projects[currentIndex].title}
-            custom={scrollDirection}
-            variants={slideVariants}
-            initial={isFirstRender ? 'center' : 'enter'}
-            animate="center"
-            exit="exit"
-            onAnimationComplete={onAnimationComplete}
-            transition={{
-              duration: isFirstRender ? 0 : 0.4,
-              ease: 'easeInOut',
-              opacity: {
-                duration: isFirstRender ? 0 : 0.3,
-                delay: isFirstRender ? 0 : 0.2,
-              },
-            }}
-          >
-            {renderCardContent(projects[currentIndex])}
-          </motion.div>
+          <div className="landscape-div">
+            <motion.div
+              key={`landscape-${projects[currentIndex].title}`}
+              custom={scrollDirection}
+              variants={slideVariants}
+              initial={isFirstRender ? 'center' : 'enter'}
+              animate="center"
+              exit="exit"
+              onAnimationComplete={onAnimationComplete}
+              transition={{
+                duration: isFirstRender ? 0 : 0.4,
+                ease: 'easeInOut',
+                opacity: { duration: isFirstRender ? 0 : 0.3, delay: isFirstRender ? 0 : 0.2 },
+              }}
+            >
+              {renderCardContent(projects[currentIndex], true)}
+            </motion.div>
+          </div>
+
+          <div className="vertical-div">
+            <motion.div
+              key={`vertical-${projects[currentIndex].title}`}
+              custom={scrollDirection}
+              variants={slideVariants}
+              initial={isFirstRender ? 'center' : 'enter'}
+              animate="center"
+              exit="exit"
+              onAnimationComplete={onAnimationComplete}
+              transition={{
+                duration: isFirstRender ? 0 : 0.4,
+                ease: 'easeInOut',
+                opacity: { duration: isFirstRender ? 0 : 0.3, delay: isFirstRender ? 0 : 0.2 },
+              }}
+            >
+              {renderCardContent(projects[currentIndex], false)}
+            </motion.div>
+          </div>
         </AnimatePresence>
         <ProjectSpotlight
           isEnabled={isSkillsConnected}

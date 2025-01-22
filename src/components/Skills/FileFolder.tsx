@@ -144,7 +144,7 @@ export const Folder: React.FC<FolderProps> = ({ name, children, activeSkills = [
     >
       <motion.div 
         className={cn(
-          "flex items-center gap-2 p-1.5 cursor-pointer rounded-sm",
+          "flex items-center gap-1 lg:gap-2 p-1 lg:p-1.5 cursor-pointer rounded-sm",
           isHovered && "",
           (hasActiveSkills || isOpen) ? "text-[#d1dfff]" : ""
         )}
