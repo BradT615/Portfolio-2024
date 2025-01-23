@@ -61,7 +61,7 @@ export default function Header({
     }
   };
 
-  const headerHeight = isCompact ? 'fixed h-12 sm:h-14' : 'sticky h-16 sm:h-20';
+  const headerHeight = isCompact ? 'h-12 sm:h-14' : 'h-16 sm:h-20';
   const logoSize = isCompact ? 
     `${animationComplete ? 'h-8 w-8 sm:h-10 sm:w-10' : 'h-40 w-40'}` : 
     `${animationComplete ? 'h-10 w-10 sm:h-12 sm:w-12' : 'h-52 w-52'}`;

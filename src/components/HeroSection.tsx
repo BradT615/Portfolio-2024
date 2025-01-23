@@ -87,13 +87,13 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
   const locationSize = isCompact ? 'text-lg' : 'text-lg sm:text-xl';
   const buttonSize = isCompact ? 'text-base w-28' : 'text-base sm:text-lg w-28 sm:w-36';
   const buttonPadding = isCompact ? 'py-2' : 'py-3 sm:py-4';
-  const contentHeight = isCompact ? 'mb' : 'mb-[15vh]';
+  const contentHeight = isCompact ? 'justify-start mt-[10vh]' : 'justify-center mb-[15vh]';
   const chevronPosition = isCompact ? 'bottom-2' : 'bottom-8';
 
   return (
-    <div className={`w-full h-full flex justify-center items-center text-center`}>
+    <div className={`w-full h-full flex justify-center text-center`}>
       <motion.div 
-        className={`${contentHeight} flex flex-col justify-center`}
+        className={`${contentHeight} flex flex-col`}
         initial="hidden"
         animate="visible"
         variants={contentVariants}

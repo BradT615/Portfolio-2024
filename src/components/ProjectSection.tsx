@@ -10,18 +10,23 @@ interface ProjectSectionProps {
 }
 
 const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectChange }) => {
-  // State management
+  const [windowHeight, setWindowHeight] = useState(typeof window !== 'undefined' ? window.innerHeight : 701);
   const [activeSkills, setActiveSkills] = useState<string[]>(projects[0].skills);
   const [showConnections, setShowConnections] = useState(false);
   const [currentProject, setCurrentProject] = useState(0);
   const [skillsConnected, setSkillsConnected] = useState(false);
   
-  // Refs
   const projectRef = useRef<HTMLDivElement>(null);
   const currentProjectRef = useRef(currentProject);
   const connectionsTimer = useRef<NodeJS.Timeout>();
   const spotlightTimer = useRef<NodeJS.Timeout>();
   
+  useEffect(() => {
+    const handleResize = () => setWindowHeight(window.innerHeight);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     currentProjectRef.current = currentProject;
   }, [currentProject]);
@@ -40,7 +45,7 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
           setShowConnections(true);
         }
       });
-    }, 400);
+    }, 500);
     
     return () => {
       if (connectionsTimer.current) clearTimeout(connectionsTimer.current);
@@ -76,15 +81,18 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
   }, [currentProject]);
 
   return (
-    <div className="relative w-full min-h-screen flex">
-      {/* Skills tree - Responsive layout */}
-      <div className="w-64 lg:w-80 h-screen fixed border-2">
-        <div className="h-full text-xs xl:text-sm">
+    <div className="relative w-full flex">
+      <div className={`${
+        windowHeight <= 400 ? 'w-48' : 
+        windowHeight <= 600 ? 'w-56 font-light' : 
+        windowHeight <= 700 ? 'w-64 font-light' : 
+        'w-64 lg:w-80 font-normal'
+      }`}>
+        <div className="h-full font-normal">
           <SkillsTree activeSkills={activeSkills} />
         </div>
       </div>
       
-      {/* Connections layer */}
       <div className="fixed inset-0 pointer-events-none">
         <SkillConnections
           activeSkills={activeSkills}
@@ -94,8 +102,7 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
         />
       </div>
       
-      {/* Project cards container with responsive layout */}
-      <div className="flex-1 ml-96">
+      <div className="flex-1">
         <ProjectCard 
           onProjectChange={handleProjectChange}
           projectRef={projectRef}

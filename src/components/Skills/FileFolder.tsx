@@ -26,13 +26,37 @@ interface FileProps {
 
 type FileOrFolderElement = React.ReactElement<FileProps | FolderProps>;
 
-const renderTechIcon = ({ type, path, font }: FileProps['icon']) => {
+const useWindowHeight = () => {
+  const [windowHeight, setWindowHeight] = useState(typeof window !== 'undefined' ? window.innerHeight : 701);
+  
+  useEffect(() => {
+    const handleResize = () => setWindowHeight(window.innerHeight);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  return windowHeight;
+};
+
+const getResponsiveClasses = (windowHeight: number) => ({
+  iconSize: windowHeight <= 500 ? 'h-2.5 w-2.5' : windowHeight <= 600 ? 'h-3 w-3' : windowHeight <= 700 ? 'h-3.5 w-3.5' : 'h-4 w-4',
+  gap: windowHeight <= 500 ? 'gap-0.5' : windowHeight <= 700 ? 'gap-1' : 'gap-2',
+  padding: windowHeight <= 500 ? 'p-0.5' : windowHeight <= 600 ? 'p-1' : windowHeight <= 700 ? 'p-1' : 'p-1.5',
+  indent: windowHeight <= 500 ? 'pl-3' : windowHeight <= 700 ? 'pl-4' : 'pl-6',
+  fontSize: windowHeight <= 500 ? 'text-[8px]' : windowHeight <= 600 ? 'text-[10px]' : windowHeight <= 700 ? 'text-[11px]' : 'text-xs xl:text-sm',
+  devIconSize: windowHeight <= 500 ? '10px' : windowHeight <= 600 ? '12px' : windowHeight <= 700 ? '14px' : '16px',
+  imageSize: windowHeight <= 500 ? 10 : windowHeight <= 600 ? 12 : windowHeight <= 700 ? 14 : 16
+});
+
+const renderTechIcon = ({ type, path, font }: FileProps['icon'], windowHeight: number) => {
+  const { devIconSize, imageSize } = getResponsiveClasses(windowHeight);
+  
   if (type === 'font' && font) {
     return (
       <i 
         className={`devicon-${font.name} colored`} 
         style={{ 
-          fontSize: '16px',
+          fontSize: devIconSize,
           color: font.color 
         }} 
       />
@@ -43,9 +67,9 @@ const renderTechIcon = ({ type, path, font }: FileProps['icon']) => {
     return (
       <Image 
         src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${path}`} 
-        className="h-4 w-4"
-        width={16}
-        height={16} 
+        className={`h-${imageSize/4} w-${imageSize/4}`}
+        width={imageSize}
+        height={imageSize}
         loading="lazy"
         alt=""
       />
@@ -56,6 +80,8 @@ const renderTechIcon = ({ type, path, font }: FileProps['icon']) => {
 };
 
 export const File: React.FC<FileProps> = ({ name, icon, activeSkills = [] }) => {
+  const windowHeight = useWindowHeight();
+  const { iconSize, gap, padding, fontSize } = getResponsiveClasses(windowHeight);
   const isActive = activeSkills.includes(name);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -65,36 +91,28 @@ export const File: React.FC<FileProps> = ({ name, icon, activeSkills = [] }) => 
         data-skill={name}
         initial={{ x: -10 }}
         animate={{ x: 0 }}
-        whileHover={{ 
-          x: 2,
-          transition: { duration: 0.1 }
-        }}
+        whileHover={{ x: 2, transition: { duration: 0.1 } }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         className={cn(
-          "flex items-center gap-2 p-1.5 rounded-sm relative group",
+          "flex items-center relative group",
+          gap,
+          padding,
+          fontSize,
+          "rounded-sm",
           isActive ? "text-white" : "",
           isHovered && !isActive && "text-[#97a1b8]"
         )}
         layout
-        transition={{
-          layout: { duration: 0.3 }
-        }}
+        transition={{ layout: { duration: 0.3 } }}
       >
         {isActive && (
-          <div 
-            className="absolute inset-0 rounded-sm bg-[#4a37b9] opacity-40"
-          />
+          <div className="absolute inset-0 rounded-sm bg-[#4a37b9] opacity-40" />
         )}
-        <FileIcon className={cn(
-          "h-4 w-4 relative z-10",
-          isActive && "text-white"
-        )} />
-        <div className="flex items-center gap-2 relative z-10">
-          {renderTechIcon(icon)}
-          <span className={cn(
-            isActive && "text-white font-medium"
-          )}>{name}</span>
+        <FileIcon className={cn(iconSize, "relative z-10", isActive && "text-white")} />
+        <div className={cn("flex items-center relative z-10", gap)}>
+          {renderTechIcon(icon, windowHeight)}
+          <span className={cn(isActive && "text-white")}>{name}</span>
         </div>
       </motion.div>
     </div>
@@ -102,11 +120,12 @@ export const File: React.FC<FileProps> = ({ name, icon, activeSkills = [] }) => 
 };
 
 export const Folder: React.FC<FolderProps> = ({ name, children, activeSkills = [], defaultOpen }) => {
+  const windowHeight = useWindowHeight();
+  const { iconSize, gap, padding, indent, fontSize } = getResponsiveClasses(windowHeight);
+  
   const hasActiveSkills = React.Children.toArray(children).some((child) => {
     const element = child as FileOrFolderElement;
-    if (element.type === File) {
-      return activeSkills.includes(element.props.name);
-    }
+    if (element.type === File) return activeSkills.includes(element.props.name);
     return element.props.activeSkills?.some((skill: string) => activeSkills.includes(skill));
   });
 
@@ -116,7 +135,6 @@ export const Folder: React.FC<FolderProps> = ({ name, children, activeSkills = [
   const prevActiveSkills = useRef(activeSkills);
 
   useEffect(() => {
-    // Reset manual toggle if skills array changes completely
     if (
       prevActiveSkills.current.length !== activeSkills.length ||
       !prevActiveSkills.current.every(skill => activeSkills.includes(skill))
@@ -144,23 +162,19 @@ export const Folder: React.FC<FolderProps> = ({ name, children, activeSkills = [
     >
       <motion.div 
         className={cn(
-          "flex items-center gap-1 lg:gap-2 p-1 lg:p-1.5 cursor-pointer rounded-sm",
+          "flex items-center cursor-pointer rounded-sm",
+          gap,
+          padding,
+          fontSize,
           isHovered && "",
           (hasActiveSkills || isOpen) ? "text-[#d1dfff]" : ""
         )}
         onClick={handleToggle}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        whileHover={{ 
-          x: 2,
-          opacity: hasActiveSkills ? 1 : 1,
-          transition: { duration: 0.1 }
-        }}
+        whileHover={{ x: 2, opacity: 1, transition: { duration: 0.1 } }}
         initial={{ opacity: hasActiveSkills ? 1 : 0.7 }}
-        whileTap={{ 
-          scale: 0.98,
-          transition: { duration: 0 }
-        }}
+        whileTap={{ scale: 0.98, transition: { duration: 0 } }}
         layout
       >
         <motion.div
@@ -168,12 +182,12 @@ export const Folder: React.FC<FolderProps> = ({ name, children, activeSkills = [
           animate={{ rotate: isOpen ? 90 : 0 }}
           transition={{ duration: 0.2 }}
         >
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className={iconSize} />
         </motion.div>
         {isOpen ? (
-          <FolderOpenIcon className="h-4 w-4" />
+          <FolderOpenIcon className={iconSize} />
         ) : (
-          <FolderIcon className="h-4 w-4" />
+          <FolderIcon className={iconSize} />
         )}
         <span>{name}</span>
       </motion.div>
@@ -197,7 +211,7 @@ export const Folder: React.FC<FolderProps> = ({ name, children, activeSkills = [
                 opacity: { duration: 0.1 }
               }
             }}
-            className="pl-6 overflow-hidden"
+            className={cn("overflow-hidden", indent)}
           >
             {children}
           </motion.div>

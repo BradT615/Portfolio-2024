@@ -30,6 +30,242 @@ interface ProjectCardProps {
   isSkillsConnected?: boolean;
 }
 
+const ProjectImage = ({ project }: { project: Project }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const imageComponent = (
+    <Image
+      src={project.imageUrl!}
+      alt={project.title}
+      width={1920}
+      height={1080}
+      className="w-full object-fit rounded-lg border-[1px] border-[#222441]"
+    />
+  );
+  if (project.videoUrl) {
+    return (
+      <>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="h-full w-full"
+          aria-label={`Watch video for ${project.title}`}
+        >
+          {imageComponent}
+        </button>
+        <YoutubeModal
+          videoUrl={project.videoUrl}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
+      </>
+    );
+  }
+  if (project.liveLink) {
+    return (
+      <Link
+        href={project.liveLink}
+        target="_blank"
+        className="h-full w-full"
+        aria-label={`Visit live site for ${project.title}`}
+      >
+        {imageComponent}
+      </Link>
+    );
+  }
+  return imageComponent;
+};
+
+const LandscapeGithubCard = ({ project }: { project: Project }) => (
+  <div className="flex flex-col items-center justify-center w-[40vw] max-w-2xl h-[60vh] relative bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl overflow-hidden">
+    <div className="flex flex-col justify-center items-center gap-[2vh] p-4">
+      <IoLogoGithub className='h-28 w-28 [@media(min-height:550px)]:h-48 [@media(min-height:550px)]:w-48' />
+      <button className="w-fit rounded-full border-[1px] border-[#222441] px-6 py-2 text-[#97a1b8] hover:border-[#97a1b8] transition-colors">
+        <Link href={project.repoLink} target="_blank">
+          <TextShimmer
+            className="font-mono text-lg"
+            duration={1}
+            repeat={Infinity}
+            delay={2}
+            spread={3}
+          >
+            View my GitHub
+          </TextShimmer>
+        </Link>
+      </button>
+    </div>
+  </div>
+);
+
+const VerticalGithubCard = ({ project }: { project: Project }) => (
+  <div className="flex flex-col items-center justify-center w-[40vw] max-w-2xl h-[60vh] relative bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl overflow-hidden">
+    <div className="flex flex-col justify-center items-center gap-8 p-4">
+      <IoLogoGithub className="h-28 w-28 lg:h-48 lg:w-48" />
+      <button className="w-fit rounded-full border-[1px] border-[#222441] px-6 py-2 text-[#97a1b8] hover:border-[#97a1b8] transition-colors">
+        <Link href={project.repoLink} target="_blank">
+          <TextShimmer
+            className="font-mono text-lg"
+            duration={1}
+            repeat={Infinity}
+            delay={2}
+            spread={3}
+          >
+            View my GitHub
+          </TextShimmer>
+        </Link>
+      </button>
+    </div>
+  </div>
+);
+
+const LandscapeCard = ({ project }: { project: Project }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  if (project.isGithubCard) {
+    return (
+      <LandscapeGithubCard project={project} />
+    );
+  }
+
+  return (
+    <div className="relative bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl overflow-hidden flex flex-col max-w-4xl max-h-[90vh]">
+      <div className="relative z-10 h-full w-full rounded-xl flex flex-col">
+        <div className="flex h-full">
+          <div className="relative mx-2 mt-2 flex-shrink-0">
+            <ProjectImage project={project} />
+          </div>
+          <div className="flex flex-col px-4 flex-1 min-h-0 overflow-y-auto border-2">
+            <div className="flex items-center justify-between m-2">
+              <h3 className="text-2xl font-semibold text-[#97a1b8]">
+                {project.title}
+              </h3>
+              <div className="flex items-center gap-4">
+                <Link
+                  href={project.repoLink}
+                  target="_blank"
+                  className="transition-colors hover:text-[#b6c2de]"
+                >
+                  <Github strokeWidth="1.5" className="w-5 h-5 lg:w-7 lg:h-7" />
+                </Link>
+                {project.videoUrl ? (
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="transition-colors hover:text-[#b6c2de]"
+                  >
+                    <Youtube strokeWidth="1.5" className="w-5 h-5 lg:w-7 lg:h-7" />
+                  </button>
+                ) : (
+                  project.liveLink && (
+                    <Link
+                      href={project.liveLink}
+                      target="_blank"
+                      className="p-1.5 lg:p-2 transition-colors hover:text-[#97a1b8]"
+                    >
+                      <ExternalLink strokeWidth="1.5" className="w-5 h-5 lg:w-7 lg:h-7" />
+                    </Link>
+                  )
+                )}
+              </div>
+            </div>
+            <div className="h-0.5 w-full self-center bg-[#222441]" />
+            <p className="flex-1 my-4 mx-1 text-sm lg:text-base text-[#81899c]">
+              {project.description}
+            </p>
+            <div className="flex flex-wrap gap-2 my-4 items-center">
+              {project.skills.map((skill, i) => (
+                <span key={i} className="text-xs lg:text-sm">
+                  <div className="w-full rounded-full bg-gray-400 bg-opacity-10 p-2 px-3 py-1.5 text-[#97a1b8] backdrop-blur-sm backdrop-filter">
+                    {skill}
+                  </div>
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+        {project.videoUrl && (
+          <YoutubeModal
+            videoUrl={project.videoUrl}
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
+
+const VerticalCard = ({ project }: { project: Project }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  if (project.isGithubCard) {
+    return (
+      <VerticalGithubCard project={project} />
+    );
+  }
+
+  return (
+    <div className="relative flex flex-col w-[40vw] max-w-2xl h-fit max-h-[60vh] bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl overflow-hidden">
+      <div className="relative z-10 h-full w-full rounded-xl flex flex-col">
+        <div className="relative mx-2 mt-2 flex-shrink-0">
+          <ProjectImage project={project} />
+        </div>
+        <div className="flex flex-col px-4 flex-1 min-h-0 overflow-y-auto">
+          <div className="flex items-center justify-between m-2">
+            <h3 className="text-2xl font-semibold text-[#97a1b8]">
+              {project.title}
+            </h3>
+            <div className="flex items-center gap-4">
+              <Link
+                href={project.repoLink}
+                target="_blank"
+                className="transition-colors hover:text-[#b6c2de]"
+              >
+                <Github strokeWidth="1.5" className="w-5 h-5 lg:w-7 lg:h-7" />
+              </Link>
+              {project.videoUrl ? (
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="transition-colors hover:text-[#b6c2de]"
+                >
+                  <Youtube strokeWidth="1.5" className="w-5 h-5 lg:w-7 lg:h-7" />
+                </button>
+              ) : (
+                project.liveLink && (
+                  <Link
+                    href={project.liveLink}
+                    target="_blank"
+                    className="p-1.5 lg:p-2 transition-colors hover:text-[#97a1b8]"
+                  >
+                    <ExternalLink strokeWidth="1.5" className="w-5 h-5 lg:w-7 lg:h-7" />
+                  </Link>
+                )
+              )}
+            </div>
+          </div>
+          <div className="h-0.5 w-full self-center bg-[#222441]" />
+          <p className="flex-1 my-4 mx-1 text-sm lg:text-base text-[#81899c]">
+            {project.description}
+          </p>
+          <div className="flex flex-wrap gap-2 my-4 items-center">
+            {project.skills.map((skill, i) => (
+              <span key={i} className="text-xs lg:text-sm">
+                <div className="w-full rounded-full bg-gray-400 bg-opacity-10 p-2 px-3 py-1.5 text-[#97a1b8] backdrop-blur-sm backdrop-filter">
+                  {skill}
+                </div>
+              </span>
+            ))}
+          </div>
+        </div>
+        {project.videoUrl && (
+          <YoutubeModal
+            videoUrl={project.videoUrl}
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
+
 const ProjectCard: React.FC<ProjectCardProps> = ({
   onProjectChange,
   projectRef,
@@ -39,7 +275,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   isSkillsConnected = false,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('down');
   const [isFirstRender, setIsFirstRender] = useState(true);
@@ -116,138 +351,17 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     }
   };
 
-  const renderProjectImage = (project: Project, isLandscape: boolean) => {
-    const imageComponent = (
-      <Image
-        src={project.imageUrl!}
-        alt={project.title}
-        width={500}
-        height={300}
-        className={`w-full object-fit rounded-lg border-[1px] border-[#222441] 
-          ${isLandscape ? 'max-h-[40vh]' : 'max-h-[30vh]'}`}
-      />
-    );
-
-    if (project.videoUrl) {
-      return (
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="h-full w-full"
-          aria-label={`Watch video for ${project.title}`}
-        >
-          {imageComponent}
-        </button>
-      );
-    }
-
-    if (project.liveLink) {
-      return (
-        <Link
-          href={project.liveLink}
-          target="_blank"
-          className="h-full w-full"
-          aria-label={`Visit live site for ${project.title}`}
-        >
-          {imageComponent}
-        </Link>
-      );
-    }
-
-    return imageComponent;
-  };
-
-  const renderCardContent = (project: Project, isLandscape: boolean) => (
-    <div className={`relative bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl overflow-hidden flex flex-col
-      ${isLandscape ? 'max-w-4xl max-h-[90vh]' : 'max-w-2xl max-h-[70vh]'}`}>
-      <div className="relative z-10 h-full w-full rounded-xl flex flex-col">
-        {project.isGithubCard ? (
-          <div className="flex flex-col h-[60vh] items-center justify-center gap-8 p-4">
-            <IoLogoGithub size={200} />
-            <button className="w-fit rounded-full border-[1px] border-[#222441] px-6 py-2 text-[#97a1b8] hover:border-[#97a1b8] transition-colors">
-              <Link href={project.repoLink} target="_blank">
-                <TextShimmer
-                  className="font-mono text-lg"
-                  duration={1}
-                  repeat={Infinity}
-                  delay={2}
-                  spread={3}
-                >
-                  View my GitHub
-                </TextShimmer>
-              </Link>
-            </button>
-          </div>
-        ) : (
-          <>
-            <div className={`relative mx-2 mt-2 flex-shrink-0 
-              ${isLandscape ? 'max-h-[40vh]' : ''}`}>
-              {renderProjectImage(project, isLandscape)}
-            </div>
-            <div className={`flex flex-col px-4 flex-1 min-h-0 overflow-y-auto border-2
-              ${isLandscape ? 'max-h-[45vh]' : ''}`}>
-              <div className="flex items-center justify-between m-2">
-                <h3 className="text-2xl font-semibold text-[#97a1b8]">
-                  {project.title}
-                </h3>
-                <div className="flex items-center gap-4">
-                  <Link
-                    href={project.repoLink}
-                    target="_blank"
-                    className="transition-colors hover:text-[#b6c2de]"
-                  >
-                    <Github strokeWidth="1.5" className="w-5 h-5 lg:w-7 lg:h-7" />
-                  </Link>
-                  {project.videoUrl ? (
-                    <button
-                      onClick={() => setIsModalOpen(true)}
-                      className="transition-colors hover:text-[#b6c2de]"
-                    >
-                      <Youtube strokeWidth="1.5" className="w-5 h-5 lg:w-7 lg:h-7" />
-                    </button>
-                  ) : (
-                    project.liveLink && (
-                      <Link
-                        href={project.liveLink}
-                        target="_blank"
-                        className="p-1.5 lg:p-2 transition-colors hover:text-[#97a1b8]"
-                      >
-                        <ExternalLink strokeWidth="1.5" className="w-5 h-5 lg:w-7 lg:h-7" />
-                      </Link>
-                    )
-                  )}
-                </div>
-              </div>
-              <div className="h-0.5 w-full self-center bg-[#222441]" />
-              <p className="flex-1 my-4 mx-1 text-sm lg:text-base text-[#81899c]">
-                {project.description}
-              </p>
-              <div className="flex flex-wrap gap-2 my-4 items-center">
-                {project.skills.map((skill, i) => (
-                  <span key={i} className="text-xs lg:text-sm">
-                    <div className="w-full rounded-full bg-gray-400 bg-opacity-10 p-2 px-3 py-1.5 text-[#97a1b8] backdrop-blur-sm backdrop-filter">
-                      {skill}
-                    </div>
-                  </span>
-                ))}
-              </div>
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
-
   return (
     <div
       ref={containerRef}
       id="projects"
-      className="relative flex h-full items-center justify-center"
+      className="relative flex h-full items-center justify-end lg:justify-center mr-8 lg:mr-0"
     >
       <div ref={projectRef} className="relative">
-        <AnimatePresence mode="popLayout" custom={scrollDirection}>
-          <div className="landscape-div">
+        <div className="landscape-div">
+          <AnimatePresence mode="popLayout" custom={scrollDirection}>
             <motion.div
-              key={`landscape-${projects[currentIndex].title}`}
+              key={`landscape-${projects[currentIndex].title}-${currentIndex}`}
               custom={scrollDirection}
               variants={slideVariants}
               initial={isFirstRender ? 'center' : 'enter'}
@@ -260,13 +374,15 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                 opacity: { duration: isFirstRender ? 0 : 0.3, delay: isFirstRender ? 0 : 0.2 },
               }}
             >
-              {renderCardContent(projects[currentIndex], true)}
+              <LandscapeCard project={projects[currentIndex]} />
             </motion.div>
-          </div>
-
-          <div className="vertical-div">
+          </AnimatePresence>
+        </div>
+  
+        <div className="vertical-div">
+          <AnimatePresence mode="popLayout" custom={scrollDirection}>
             <motion.div
-              key={`vertical-${projects[currentIndex].title}`}
+              key={`vertical-${projects[currentIndex].title}-${currentIndex}`}
               custom={scrollDirection}
               variants={slideVariants}
               initial={isFirstRender ? 'center' : 'enter'}
@@ -279,16 +395,15 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                 opacity: { duration: isFirstRender ? 0 : 0.3, delay: isFirstRender ? 0 : 0.2 },
               }}
             >
-              {renderCardContent(projects[currentIndex], false)}
+              <VerticalCard project={projects[currentIndex]} />
             </motion.div>
-          </div>
-        </AnimatePresence>
+          </AnimatePresence>
+        </div>
         <ProjectSpotlight
           isEnabled={isSkillsConnected}
           projectRef={projectRef!}
         />
       </div>
-
       <div className="ml-4 lg:ml-8">
         <ProjectIndicator
           totalProjects={projects.length}
@@ -297,14 +412,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           onIndicatorClick={handleIndicatorClick}
         />
       </div>
-
-      {projects[currentIndex].videoUrl && (
-        <YoutubeModal
-          videoUrl={projects[currentIndex].videoUrl!}
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-        />
-      )}
     </div>
   );
 };

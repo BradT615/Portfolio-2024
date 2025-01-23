@@ -46,7 +46,7 @@ const IndicatorButton: React.FC<IndicatorButtonProps> = ({
 
   return (
     <button
-      className="h-10 flex items-center group appearance-none focus:outline-none w-16"
+      className="h-[4vh] flex items-center group appearance-none focus:outline-none w-16"
       onClick={handleClick}
     >
       <div
