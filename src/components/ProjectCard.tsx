@@ -38,7 +38,7 @@ const ProjectImage = ({ project }: { project: Project }) => {
       alt={project.title}
       width={1920}
       height={1080}
-      className="w-full object-fit rounded-lg border-[1px] border-[#222441]"
+      className="w-fit object-fit rounded-lg border-[1px] border-[#222441]"
     />
   );
   if (project.videoUrl) {
@@ -75,7 +75,7 @@ const ProjectImage = ({ project }: { project: Project }) => {
 };
 
 const LandscapeGithubCard = ({ project }: { project: Project }) => (
-  <div className="flex flex-col items-center justify-center w-[40vw] max-w-2xl h-[60vh] relative bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl overflow-hidden">
+  <div className="flex flex-col items-center justify-center w-[50vw] max-w-3xl h-fit max-h-[90vh] relative bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl overflow-hidden">
     <div className="flex flex-col justify-center items-center gap-[2vh] p-4">
       <IoLogoGithub className='h-28 w-28 [@media(min-height:550px)]:h-48 [@media(min-height:550px)]:w-48' />
       <button className="w-fit rounded-full border-[1px] border-[#222441] px-6 py-2 text-[#97a1b8] hover:border-[#97a1b8] transition-colors">
@@ -96,7 +96,7 @@ const LandscapeGithubCard = ({ project }: { project: Project }) => (
 );
 
 const VerticalGithubCard = ({ project }: { project: Project }) => (
-  <div className="flex flex-col items-center justify-center w-[40vw] max-w-2xl h-[60vh] relative bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl overflow-hidden">
+  <div className="flex flex-col items-center justify-center w-[40vw] max-w-2xl h-[50vh] relative bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl overflow-hidden">
     <div className="flex flex-col justify-center items-center gap-8 p-4">
       <IoLogoGithub className="h-28 w-28 lg:h-48 lg:w-48" />
       <button className="w-fit rounded-full border-[1px] border-[#222441] px-6 py-2 text-[#97a1b8] hover:border-[#97a1b8] transition-colors">
@@ -126,60 +126,47 @@ const LandscapeCard = ({ project }: { project: Project }) => {
   }
 
   return (
-    <div className="relative bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl overflow-hidden flex flex-col max-w-4xl max-h-[90vh]">
-      <div className="relative z-10 h-full w-full rounded-xl flex flex-col">
-        <div className="flex h-full">
-          <div className="relative mx-2 mt-2 flex-shrink-0">
-            <ProjectImage project={project} />
-          </div>
-          <div className="flex flex-col px-4 flex-1 min-h-0 overflow-y-auto border-2">
-            <div className="flex items-center justify-between m-2">
-              <h3 className="text-2xl font-semibold text-[#97a1b8]">
-                {project.title}
-              </h3>
-              <div className="flex items-center gap-4">
-                <Link
-                  href={project.repoLink}
-                  target="_blank"
-                  className="transition-colors hover:text-[#b6c2de]"
-                >
-                  <Github strokeWidth="1.5" className="w-5 h-5 lg:w-7 lg:h-7" />
-                </Link>
-                {project.videoUrl ? (
-                  <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="transition-colors hover:text-[#b6c2de]"
-                  >
-                    <Youtube strokeWidth="1.5" className="w-5 h-5 lg:w-7 lg:h-7" />
-                  </button>
-                ) : (
-                  project.liveLink && (
-                    <Link
-                      href={project.liveLink}
-                      target="_blank"
-                      className="p-1.5 lg:p-2 transition-colors hover:text-[#97a1b8]"
-                    >
-                      <ExternalLink strokeWidth="1.5" className="w-5 h-5 lg:w-7 lg:h-7" />
-                    </Link>
-                  )
-                )}
-              </div>
-            </div>
-            <div className="h-0.5 w-full self-center bg-[#222441]" />
-            <p className="flex-1 my-4 mx-1 text-sm lg:text-base text-[#81899c]">
-              {project.description}
-            </p>
-            <div className="flex flex-wrap gap-2 my-4 items-center">
-              {project.skills.map((skill, i) => (
-                <span key={i} className="text-xs lg:text-sm">
-                  <div className="w-full rounded-full bg-gray-400 bg-opacity-10 p-2 px-3 py-1.5 text-[#97a1b8] backdrop-blur-sm backdrop-filter">
-                    {skill}
-                  </div>
-                </span>
-              ))}
-            </div>
-          </div>
+    <div className="relative flex flex-col w-[60vw] max-w-3xl h-fit max-h-[90vh] bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl overflow-hidden">
+      <div className='flex items-center justify-between mx-3 my-1'>
+        <h3 className="text-lg md:text-xl xl:text-2xl font-semibold text-[#97a1b8]">
+          {project.title}
+        </h3>
+        <div className="flex items-center gap-4">
+          <Link
+            href={project.repoLink}
+            target="_blank"
+            className="transition-colors hover:text-[#b6c2de]"
+          >
+            <Github strokeWidth="1.5" className="[@media(max-height:400px)]:h-[18px] [@media(max-height:400px)]:w-[18px] w-5 h-5 lg:w-7 lg:h-7" />
+          </Link>
+          {project.videoUrl ? (
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="transition-colors hover:text-[#b6c2de]"
+            >
+              <Youtube strokeWidth="1.5" className="[@media(max-height:400px)]:h-[18px] [@media(max-height:400px)]:w-[18px] w-5 h-5 lg:w-7 lg:h-7" />
+            </button>
+          ) : (
+            project.liveLink && (
+              <Link
+                href={project.liveLink}
+                target="_blank"
+                className="p-1.5 lg:p-2 transition-colors hover:text-[#97a1b8]"
+              >
+                <ExternalLink strokeWidth="1.5" className="[@media(max-height:400px)]:h-[18px] [@media(max-height:400px)]:w-[18px] w-5 h-5 lg:w-7 lg:h-7" />
+              </Link>
+            )
+          )}
         </div>
+      </div>
+      <div className="h-0.5 w-full self-center bg-[#222441]" />
+      <div className="relative z-10 h-full w-full flex">
+        <div className="relative mx-2 mt-2 flex-shrink-0 w-2/5 h-full">
+          <ProjectImage project={project} />
+        </div>
+        <p className="mt-[2%] text-sm lg:text-base xl:text-lg text-balance text-[#81899c]">
+          {project.description}
+        </p>
         {project.videoUrl && (
           <YoutubeModal
             videoUrl={project.videoUrl}
@@ -187,6 +174,15 @@ const LandscapeCard = ({ project }: { project: Project }) => {
             onClose={() => setIsModalOpen(false)}
           />
         )}
+      </div>
+      <div className="flex flex-wrap gap-1 lg:gap-2 [@media(max-height:400px)]:my-2 my-3 mx-2 items-center">
+        {project.skills.map((skill, i) => (
+          <span key={i} className="text-xs lg:text-sm">
+            <div className="w-full rounded-full bg-gray-400 bg-opacity-10 px-2 xl:px-3 py-1 [@media(min-height:400px)]:py-1.5 [@media(min-height:400px)]:px-3 text-[#97a1b8] backdrop-blur-sm backdrop-filter">
+              {skill}
+            </div>
+          </span>
+        ))}
       </div>
     </div>
   );
@@ -202,14 +198,14 @@ const VerticalCard = ({ project }: { project: Project }) => {
   }
 
   return (
-    <div className="relative flex flex-col w-[40vw] max-w-2xl h-fit max-h-[90vh] bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl overflow-hidden">
+    <div className="relative flex flex-col w-[50vw] max-w-2xl min-h-[50vh] h-fit max-h-[90vh] bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl overflow-hidden">
       <div className="relative z-10 h-full w-full rounded-xl flex flex-col">
         <div className="relative mx-2 mt-2 flex-shrink-0">
           <ProjectImage project={project} />
         </div>
         <div className="flex flex-col px-4 flex-1 min-h-0 overflow-y-auto">
           <div className="flex items-center justify-between m-2">
-            <h3 className="text-2xl font-semibold text-[#97a1b8]">
+            <h3 className="text-xl lg:text-2xl font-semibold text-[#97a1b8]">
               {project.title}
             </h3>
             <div className="flex items-center gap-4">
@@ -355,7 +351,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     <div
       ref={containerRef}
       id="projects"
-      className="relative flex h-full items-center justify-end lg:justify-center mr-8 lg:mr-0"
+      className="relative flex h-full items-center justify-end xl:justify-center mr-0 lg:mr-8 xl:mr-0"
     >
       <div ref={projectRef} className="relative">
         <div className="landscape-div">

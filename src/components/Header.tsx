@@ -112,7 +112,7 @@ export default function Header({
               key="projects-title"
               per="char" 
               preset="fade" 
-              className={`hidden lg:block ${isCompact ? 'text-2xl' : 'text-3xl'} font-light`}
+              className={`${isCompact ? 'text-2xl' : 'text-3xl'} font-light`}
               trigger={isVisible}
             >
               Projects
