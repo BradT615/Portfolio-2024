@@ -88,7 +88,7 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
         windowHeight <= 700 ? 'w-64 font-light' : 
         'w-64 lg:w-80 font-normal'
       }`}>
-        <div className="h-full font-normal border">
+        <div className="h-full font-normal">
           <SkillsTree activeSkills={activeSkills} />
         </div>
       </div>
