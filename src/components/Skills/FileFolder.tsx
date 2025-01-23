@@ -43,7 +43,7 @@ const getResponsiveClasses = (windowHeight: number) => ({
   gap: windowHeight <= 500 ? 'gap-0.5' : windowHeight <= 700 ? 'gap-1' : 'gap-2',
   padding: windowHeight <= 500 ? 'p-0.5' : windowHeight <= 600 ? 'p-1' : windowHeight <= 700 ? 'p-1' : 'p-1.5',
   indent: windowHeight <= 500 ? 'pl-3' : windowHeight <= 700 ? 'pl-4' : 'pl-6',
-  fontSize: windowHeight <= 500 ? 'text-[8px] font-light' : windowHeight <= 600 ? 'text-[10px] font-light' : windowHeight <= 700 ? 'text-[11px] font-normal' : 'text-xs font-light xl:text-sm xl:font-normal',
+  fontSize: windowHeight <= 400 ? 'text-[8px] font-light' : windowHeight <= 500 ? 'text-[9px] font-light' : windowHeight <= 600 ? 'text-[11px] font-light' : windowHeight <= 700 ? 'text-[13px] font-normal' : 'text-xs font-light xl:text-sm xl:font-normal',
   devIconSize: windowHeight <= 500 ? '10px' : windowHeight <= 600 ? '12px' : windowHeight <= 700 ? '14px' : '16px',
   imageSize: windowHeight <= 500 ? 10 : windowHeight <= 600 ? 12 : windowHeight <= 700 ? 14 : 16
 });

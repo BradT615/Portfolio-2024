@@ -37,6 +37,10 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
     element.scrollTop += e.deltaY;
   };
 
+  const handleTouch = (e: React.TouchEvent) => {
+    e.stopPropagation();
+  };
+
   const shouldRenderFolder = (childrenArray: React.ReactNode[]): boolean => {
     if (shouldShowAllSkills) return true;
     return childrenArray.some((child) => {
@@ -76,7 +80,6 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
     }).filter(Boolean);
   };
 
-  // Rest of the component remains the same
   return (
     <motion.div 
       initial={{ opacity: 0, x: -50 }}
@@ -84,6 +87,9 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
       transition={{ duration: 0.5 }}
       className="h-full flex flex-col relative"
       onWheel={handleScroll}
+      onTouchStart={handleTouch}
+      onTouchEnd={handleTouch}
+      onTouchMove={handleTouch}
     >
       <div 
         className={`flex-1 px-2 lg:px-4 custom-scrollbar overflow-y-auto ${
