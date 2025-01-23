@@ -104,7 +104,7 @@ export default function Header({
         transition={{ duration: 0.5, delay: 0.5 }}
         onWheel={handleScroll}
       >
-        <div className="flex items-center px-2 sm:px-10 h-full w-full text-[#97a1b8]">
+        <div className="flex items-center px-4 h-full w-full text-[#97a1b8]">
           <div className={`${animationComplete ? 'h-12 w-12' : 'h-32 w-32'}`} />
           
           <AnimatePresence mode="wait">
@@ -112,7 +112,7 @@ export default function Header({
               key="projects-title"
               per="char" 
               preset="fade" 
-              className={`${isCompact ? 'text-2xl' : 'text-3xl'} font-light`}
+              className={`${isCompact ? 'text-2xl mt-2 ml-1' : 'text-3xl ml-2'} font-light transition-all duration-1000 delay-100`}
               trigger={isVisible}
             >
               Projects
