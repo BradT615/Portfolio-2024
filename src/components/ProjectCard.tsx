@@ -202,7 +202,7 @@ const VerticalCard = ({ project }: { project: Project }) => {
   }
 
   return (
-    <div className="relative flex flex-col w-[40vw] max-w-2xl h-fit max-h-[60vh] bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl overflow-hidden">
+    <div className="relative flex flex-col w-[40vw] max-w-2xl h-fit max-h-[90vh] bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl overflow-hidden">
       <div className="relative z-10 h-full w-full rounded-xl flex flex-col">
         <div className="relative mx-2 mt-2 flex-shrink-0">
           <ProjectImage project={project} />

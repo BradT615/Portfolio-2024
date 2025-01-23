@@ -2,6 +2,20 @@ import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { File, Folder } from "./FileFolder";
 
+type SkillTreeChild = React.ReactElement<{
+  name: string;
+  children?: React.ReactNode;
+  activeSkills?: string[];
+  icon?: {
+    type: 'devicon' | 'font';
+    path?: string;
+    font?: {
+      name: string;
+      color: string;
+    };
+  };
+}>;
+
 export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills = [] }) => {
   const [windowHeight, setWindowHeight] = useState(typeof window !== 'undefined' ? window.innerHeight : 701);
   const shouldShowAllSkills = windowHeight > 750;
@@ -25,41 +39,44 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
 
   const shouldRenderFolder = (childrenArray: React.ReactNode[]): boolean => {
     if (shouldShowAllSkills) return true;
-    return childrenArray.some((child: any) => {
-      if (!child?.props) return false;
-      if (child.type === File) {
-        return activeSkills.includes(child.props.name);
+    return childrenArray.some((child) => {
+      const typedChild = child as SkillTreeChild;
+      if (!typedChild?.props) return false;
+      if (typedChild.type === File) {
+        return activeSkills.includes(typedChild.props.name);
       }
-      return shouldRenderFolder(React.Children.toArray(child.props.children));
+      return shouldRenderFolder(React.Children.toArray(typedChild.props.children));
     });
   };
 
   const renderChildren = (children: React.ReactNode): React.ReactNode[] => {
     const childrenArray = React.Children.toArray(children);
-    return childrenArray.map((child: any) => {
-      if (!child?.props) return null;
+    return childrenArray.map((child) => {
+      const typedChild = child as SkillTreeChild;
+      if (!typedChild?.props) return null;
       
-      if (child.type === File) {
-        if (shouldShowAllSkills || activeSkills.includes(child.props.name)) {
-          return child;
+      if (typedChild.type === File) {
+        if (shouldShowAllSkills || activeSkills.includes(typedChild.props.name)) {
+          return typedChild;
         }
         return null;
       }
       
-      if (child.type === Folder) {
-        const folderChildren = React.Children.toArray(child.props.children);
+      if (typedChild.type === Folder) {
+        const folderChildren = React.Children.toArray(typedChild.props.children);
         if (!shouldRenderFolder(folderChildren)) return null;
         
-        return React.cloneElement(child, {
-          ...child.props,
-          children: renderChildren(child.props.children)
+        return React.cloneElement(typedChild, {
+          ...typedChild.props,
+          children: renderChildren(typedChild.props.children)
         });
       }
       
-      return child;
+      return typedChild;
     }).filter(Boolean);
   };
 
+  // Rest of the component remains the same
   return (
     <motion.div 
       initial={{ opacity: 0, x: -50 }}
@@ -132,7 +149,7 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
             <Folder key="cs" name="Computer Science" activeSkills={activeSkills}>
               <File name="Algorithms" icon={{ type: 'font', font: { name: "algorithm-plain", color: "#FFFFFF" } }} activeSkills={activeSkills} />
               <File name="Data Structures" icon={{ type: 'font', font: { name: "datastructures-plain", color: "#FFFFFF" } }} activeSkills={activeSkills} />
-            </Folder>
+              </Folder>
           ])}
         </Folder>
       </div>
