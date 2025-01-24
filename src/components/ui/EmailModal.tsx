@@ -31,7 +31,6 @@ const Toast = ({ message, type, onClose }: Toast & { onClose: () => void }) => {
     setIsVisible(true);
     const fadeOutTimer = setTimeout(() => setIsVisible(false), 2500);
     const closeTimer = setTimeout(onClose, 3000);
-
     return () => {
       clearTimeout(fadeOutTimer);
       clearTimeout(closeTimer);
@@ -40,15 +39,10 @@ const Toast = ({ message, type, onClose }: Toast & { onClose: () => void }) => {
 
   return (
     <div
-      className={`fixed bottom-4 right-4 p-4 rounded-md shadow-lg transition-all duration-500 ease-in-out ${
-        isVisible 
-          ? 'opacity-100 translate-y-0' 
-          : 'opacity-0 translate-y-2'
-      } ${
-        type === 'success' 
-          ? 'bg-green-600 text-white' 
-          : 'bg-red-600 text-white'
-      }`}
+      className={`fixed bottom-4 right-4 p-4 rounded-md shadow-lg transition-all duration-500 ease-in-out 
+        ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}
+        ${type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}
+        max-w-[90vw] sm:max-w-md`}
     >
       {message}
     </div>
@@ -63,10 +57,10 @@ const EmailModal = ({ open, onOpenChange }: EmailModalProps) => {
 
   useEffect(() => {
     const updateMaxHeight = () => {
-      setMaxHeight(window.innerHeight / 3);
+      const vh = window.innerHeight;
+      setMaxHeight(Math.min(vh * 0.3, 300));
     };
 
-    // Check session storage on mount and modal open
     const checkSubmissionStatus = () => {
       const submitted = sessionStorage.getItem(CONTACT_FORM_SUBMITTED_KEY) === 'true';
       setAlreadySubmitted(submitted);
@@ -122,7 +116,6 @@ const EmailModal = ({ open, onOpenChange }: EmailModalProps) => {
     }
   };
 
-  // Get button text based on state
   const getButtonText = () => {
     if (isSubmitting) return 'Sending...';
     if (alreadySubmitted) return 'Message Already Sent';
@@ -132,17 +125,17 @@ const EmailModal = ({ open, onOpenChange }: EmailModalProps) => {
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[425px] bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl text-[#97a1b8]  z-30">
-          <DialogHeader>
-            <DialogTitle className="text-2xl text-[#b6c2de]">
+        <DialogContent className="w-[95vw] sm:w-[440px] md:w-[500px] max-h-[90vh] overflow-y-auto bg-[#101328] rounded-lg border-2 border-[#222441] shadow-2xl text-[#97a1b8] z-50 mt-16">
+          <DialogHeader className="space-y-2 px-2 sm:px-4">
+            <DialogTitle className="text-xl sm:text-2xl text-[#b6c2de]">
               Get in Touch
             </DialogTitle>
-            <DialogDescription className="font-light text-[#97a1b8]">
+            <DialogDescription className="text-sm sm:text-base font-light text-[#97a1b8]">
               Send me a message and I&apos;ll get back to you as soon as possible.
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-6 pt-6">
-            <div className="space-y-4 font-thin">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 pt-4 sm:pt-6 px-2 sm:px-4">
+            <div className="space-y-3 sm:space-y-4 font-thin">
               <FloatingLabelInput
                 id="name"
                 name="name"
@@ -151,7 +144,7 @@ const EmailModal = ({ open, onOpenChange }: EmailModalProps) => {
                 autoComplete="name"
                 required
                 disabled={isSubmitting || alreadySubmitted}
-                labelClassName="peer-focus:text-[#b6c2de]"
+                labelClassName="peer-focus:text-[#b6c2de] text-sm sm:text-base"
                 className="rounded-sm"
               />
               <FloatingLabelInput
@@ -162,7 +155,7 @@ const EmailModal = ({ open, onOpenChange }: EmailModalProps) => {
                 autoComplete="email"
                 required
                 disabled={isSubmitting || alreadySubmitted}
-                labelClassName="peer-focus:text-[#b6c2de]"
+                labelClassName="peer-focus:text-[#b6c2de] text-sm sm:text-base"
                 className="rounded-sm"
               />
               <FloatingLabelTextarea
@@ -171,18 +164,18 @@ const EmailModal = ({ open, onOpenChange }: EmailModalProps) => {
                 label="Message"
                 required
                 disabled={isSubmitting || alreadySubmitted}
-                minHeight={150}
+                minHeight={120}
                 maxHeight={maxHeight}
-                labelClassName="peer-focus:text-[#b6c2de]"
+                labelClassName="peer-focus:text-[#b6c2de] text-sm sm:text-base"
                 className="rounded-sm"
               />
             </div>
 
-            <DialogFooter>
+            <DialogFooter className="px-0 sm:px-0">
               <button 
                 type="submit" 
                 disabled={isSubmitting || alreadySubmitted}
-                className="w-full py-2 bg-[#101328] border disabled:border-[#6d7484] border-[#868fa6] hover:border-[#b6c2de] rounded-md text-[#97a1b8] hover:text-[#b6c2de]"
+                className="w-full py-2 bg-[#101328] border disabled:border-[#6d7484] border-[#868fa6] hover:border-[#b6c2de] rounded-md text-[#97a1b8] hover:text-[#b6c2de] text-sm sm:text-base"
               >
                 <span className="relative z-10">
                   {getButtonText()}

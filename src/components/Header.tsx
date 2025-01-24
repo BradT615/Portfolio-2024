@@ -71,7 +71,7 @@ export default function Header({
   return (
     <>
       <motion.div 
-        className="fixed z-30"
+        className="fixed z-40"
         initial={{ 
           left: "50%",
           top: "50%",
@@ -98,7 +98,7 @@ export default function Header({
       </motion.div>
 
       <motion.header 
-        className={`w-full z-10 ${headerHeight}`}
+        className={`w-full z-40 ${headerHeight}`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.5 }}
@@ -112,7 +112,7 @@ export default function Header({
               key="projects-title"
               per="char" 
               preset="fade" 
-              className={`${isCompact ? 'text-2xl mt-2 ml-1' : 'text-3xl ml-2'} font-light transition-all duration-1000 delay-100`}
+              className={`${isCompact ? 'text-2xl mt-2 ml-1' : 'text-3xl ml-2'} hidden sm:block font-light transition-all duration-1000 delay-100`}
               trigger={isVisible}
             >
               Projects

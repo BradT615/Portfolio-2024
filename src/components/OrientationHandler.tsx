@@ -1,4 +1,3 @@
-// OrientationHandler.tsx
 'use client'
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
@@ -20,22 +19,18 @@ const OrientationHandler: React.FC<OrientationHandlerProps> = ({
       setIsPortrait(window.innerHeight > window.innerWidth);
     };
 
-    // Check initial orientation
     checkOrientation();
-
-    // Add event listener for orientation changes
     window.addEventListener('resize', checkOrientation);
-
     return () => window.removeEventListener('resize', checkOrientation);
   }, []);
 
   if (!isProjectSection || !isPortrait) return null;
 
   return (
-    <div className="fixed inset-0 bg-[#080b23] z-50 flex flex-col items-center justify-center">
+    <div className="fixed inset-0 bg-[#080b23] z-40 flex flex-col items-center justify-center">
       <button 
         onClick={onNavigateToHero}
-        className="absolute top-8 left-8 flex"
+        className="absolute top-20 sm:top-24 left-4 flex"
       >
         <div className="flex items-center space-x-2">
           <ArrowLeft className="w-4 h-4 text-white" />
