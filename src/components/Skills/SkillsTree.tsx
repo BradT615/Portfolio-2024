@@ -18,7 +18,8 @@ type SkillTreeChild = React.ReactElement<{
 
 export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills = [] }) => {
   const [windowHeight, setWindowHeight] = useState(typeof window !== 'undefined' ? window.innerHeight : 701);
-  const shouldShowAllSkills = windowHeight > 750;
+  const [forceShowAll, setForceShowAll] = useState(false);
+  const shouldShowAllSkills = forceShowAll || windowHeight > 750;
 
   useEffect(() => {
     const handleResize = () => setWindowHeight(window.innerHeight);
@@ -85,7 +86,7 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
       initial={{ opacity: 0, x: -50 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5 }}
-      className="h-full flex flex-col relative"
+      className="h-full flex flex-col relative" // Added relative positioning here
       onWheel={handleScroll}
       onTouchStart={handleTouch}
       onTouchEnd={handleTouch}
@@ -104,6 +105,21 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
           minHeight: "0"
         }}
       >
+        {windowHeight <= 750 && (
+          <button
+            onClick={() => setForceShowAll(!forceShowAll)}
+            className={`
+            absolute right-2 z-20 rounded-sm bg-[#101328] border border-[#222441] text-[#97a1b8]
+            transition-all duration-200 ease-in-out
+            ${windowHeight <= 500 ? 'top-1 text-[8px] px-1.5 py-0.5' :
+              windowHeight <= 600 ? 'top-1.5 text-[9px] px-1.5 py-0.5' :
+              windowHeight <= 700 ? 'top-2 text-[10px] px-2 py-1' :
+              'top-2 text-[11px] px-2.5 py-1'
+            }`}
+          >
+            {forceShowAll ? 'Hide All' : 'Show All'}
+          </button>
+        )}
         <Folder name="Skills" activeSkills={activeSkills}>
           {renderChildren([
             <Folder key="front-end" name="Front-End" activeSkills={activeSkills}>
@@ -159,13 +175,13 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
           ])}
         </Folder>
       </div>
-      <div className={`absolute top-0 left-0 right-0 w-full pointer-events-none z-10 transition-opacity duration-200 bg-gradient-to-b from-[#080b23] to-transparent ${
+      <div className={`absolute top-0 inset-x-0 pointer-events-none z-10 transition-opacity duration-200 bg-gradient-to-b from-[#080b23] to-transparent ${
           windowHeight <= 500 ? 'h-2' :
           windowHeight <= 600 ? 'h-4' :
           windowHeight <= 750 ? 'h-6' :
           'h-8'
         }`} />
-      <div className={`absolute bottom-0 left-0 right-0 w-full pointer-events-none z-10 transition-opacity duration-200 bg-gradient-to-t from-[#080b23] to-transparent ${
+      <div className={`absolute bottom-0 inset-x-0 pointer-events-none z-10 transition-opacity duration-200 bg-gradient-to-t from-[#080b23] to-transparent ${
           windowHeight <= 500 ? 'h-2' :
           windowHeight <= 600 ? 'h-4' :
           windowHeight <= 750 ? 'h-6' :
