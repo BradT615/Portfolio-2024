@@ -1,11 +1,12 @@
-import { Resend } from 'resend';
+import sgMail from '@sendgrid/mail';
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
 
 const MY_EMAIL = 'bradtitus615@gmail.com';
 const FROM_EMAIL = 'noreply@bradtitus.dev';
+const FROM_NAME = 'Brad Titus';
 
 // List of bot identifiers
 const BOT_IDENTIFIERS = [
@@ -49,20 +50,24 @@ export async function POST() {
 
     const deviceType = getDeviceType(userAgent);
     
-    // Send notification email with device type
-    await resend.emails.send({
-      from: FROM_EMAIL,
+    // Prepare notification email
+    const msg = {
       to: MY_EMAIL,
+      from: {
+        email: FROM_EMAIL,
+        name: FROM_NAME
+      },
       subject: `New Website Visit - ${deviceType}`,
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px;">
           <h2>New Website Visit Detected</h2>
           <p><strong>Device Type:</strong> ${deviceType}</p>
-          <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
           <p><strong>Referrer:</strong> ${referer}</p>
         </div>
       `
-    });
+    };
+
+    await sgMail.send(msg);
 
     return NextResponse.json(
       { message: 'View tracked successfully' },
