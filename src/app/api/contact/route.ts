@@ -1,10 +1,12 @@
-import { Resend } from 'resend';
+import sgMail from '@sendgrid/mail';
 import { NextResponse } from 'next/server';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize SendGrid with your API key
+sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
 
 const MY_EMAIL = 'bradtitus615@gmail.com';
 const FROM_EMAIL = 'noreply@bradtitus.dev';
+const FROM_NAME = 'Brad Titus';
 
 // Use hosted logo image
 const LOGO_IMG = `<img src="https://bradtitus.dev/Logo.png" alt="Logo" style="width: 100px; height: auto;" />`;
@@ -34,10 +36,14 @@ export async function POST(req: Request) {
   try {
     const { name, email, message } = await req.json();
 
-    // Send notification to yourself
-    await resend.emails.send({
-      from: FROM_EMAIL,
+    // Prepare notification email to yourself
+    const notificationEmail = {
       to: MY_EMAIL,
+      from: {
+        email: FROM_EMAIL,
+        name: FROM_NAME
+      },
+      replyTo: email,
       subject: `New Contact Form Message from ${name}`,
       html: `
         <div style="${emailStyle}">
@@ -56,12 +62,16 @@ export async function POST(req: Request) {
           </div>
         </div>
       `
-    });
+    };
 
-    // Send confirmation to the user
-    await resend.emails.send({
-      from: FROM_EMAIL,
+    // Prepare confirmation email to the user
+    const confirmationEmail = {
       to: email,
+      from: {
+        email: FROM_EMAIL,
+        name: FROM_NAME
+      },
+      replyTo: MY_EMAIL,
       subject: 'Thanks for reaching out!',
       html: `
         <div style="${emailStyle}">
@@ -76,12 +86,18 @@ export async function POST(req: Request) {
             <p style="white-space: pre-wrap;">${message}</p>
           </div>
           <p>Best regards,<br>Brad Titus</p>
-          <div style="text-align: center; color: #666; font-size: 12px; margin-top: 20px; border-top: 1px solid #eaeaea; padding-top: 20px;">
-            <p>© ${new Date().getFullYear()} Brad Titus. All rights reserved.</p>
+          <div style="text-align: center; color: #666; font-size: 12px; margin-top: 20px;">
+            <p>© ${new Date().getFullYear()} Brad Titus</p>
           </div>
         </div>
       `
-    });
+    };
+
+    // Send both emails
+    await Promise.all([
+      sgMail.send(notificationEmail),
+      sgMail.send(confirmationEmail)
+    ]);
 
     return NextResponse.json(
       { message: 'Emails sent successfully' },

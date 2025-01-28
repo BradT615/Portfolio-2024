@@ -11,7 +11,7 @@ const robotoMono = Roboto_Mono({
 
 export const metadata: Metadata = {
   title: "Brad Titus",
-  description: "Brad Titus - Front End Developer Portfolio",
+  description: "Brad Titus - Full Stack Developer Portfolio",
 };
 
 export default function RootLayout({
