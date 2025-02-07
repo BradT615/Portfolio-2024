@@ -1,4 +1,3 @@
-// app/layout.tsx
 import type { Metadata } from "next";
 import { Roboto_Mono } from 'next/font/google';
 import ViewTracker from '@/components/ViewTracker';
@@ -12,6 +11,9 @@ const robotoMono = Roboto_Mono({
 export const metadata: Metadata = {
   title: "Brad Titus",
   description: "Brad Titus - Full Stack Developer Portfolio",
+  verification: {
+    google: "1mlH0b6ZQUcucsv7tibARouXD4ATrO8zANWKFm103d0",
+  },
 };
 
 export default function RootLayout({
