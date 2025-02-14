@@ -28,20 +28,20 @@ export const projects: Project[] = [
     skills: ["React", "Tailwind CSS", "Algorithms", "Data Structures"]
   },
   {
-    title: "Habit Tracker",
-    description: "A React habit tracker app with Firebase, featuring secure authentication and real-time Firestore data syncing.",
-    imageUrl: "/images/StreakThumbnail.png",
-    liveLink: "https://bradt615-streaks.web.app/",
-    repoLink: "https://github.com/BradT615/Streaks",
-    skills: ["React", "Tailwind CSS", "Firebase", "Firestore", "Authentication"]
-  },
-  {
     title: "Sudoku Game",
     description: "A web platform for generating Sudoku puzzles with a recursive algorithm, offering diverse challenges and advanced solving tools for an optimal user experience.",
     imageUrl: "/images/sudokuThumbnail.png",
     liveLink: "https://bradt615sudoku.netlify.app",
     repoLink: "https://github.com/BradT615/Sudoku",
     skills: ["HTML5", "CSS3", "JavaScript", "Bootstrap", "Algorithms"]
+  },
+  {
+    title: "Habit Tracker",
+    description: "A React habit tracker app with Firebase, featuring secure authentication and real-time Firestore data syncing.",
+    imageUrl: "/images/StreakThumbnail.png",
+    liveLink: "https://bradt615-streaks.web.app/",
+    repoLink: "https://github.com/BradT615/Streaks",
+    skills: ["React", "Tailwind CSS", "Firebase", "Firestore", "Authentication"]
   },
   {
     title: "Movie Database",
