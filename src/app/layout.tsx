@@ -19,13 +19,6 @@ export default function RootLayout({
         <title>Brad Titus</title>
         <meta name="description" content="Brad Titus - Full Stack Developer Portfolio" />
         <meta name="google-site-verification" content="1mlH0b6ZQUcucsv7tibARouXD4ATrO8zANWKFm103d0" />
-
-        <meta property="og:image" content="<generated>" />
-        <meta property="og:image:type" content="<generated>" />
-        <meta property="og:image:width" content="<generated>" />
-        <meta property="og:image:height" content="<generated>" />
-
-
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
