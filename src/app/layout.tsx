@@ -8,6 +8,15 @@ const robotoMono = Roboto_Mono({
   display: 'swap',
 });
 
+export const metadata = {
+  title: 'Brad Titus',
+  description: 'Brad Titus - Full Stack Developer Portfolio',
+  metadataBase: new URL("https://bradtitus.dev"),
+  verification: {
+    google: '1mlH0b6ZQUcucsv7tibARouXD4ATrO8zANWKFm103d0',
+  },
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -16,9 +25,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={robotoMono.className}>
       <head>
-        <title>Brad Titus</title>
-        <meta name="description" content="Brad Titus - Full Stack Developer Portfolio" />
-        <meta name="google-site-verification" content="1mlH0b6ZQUcucsv7tibARouXD4ATrO8zANWKFm103d0" />
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
