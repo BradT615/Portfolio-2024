@@ -22,7 +22,7 @@ export const metadata = {
     url: 'https://bradtitus.dev',
     locale: 'en_US',
     images: [{
-      url: '/opengraph-image.png',
+      url: 'https://bradtitus.dev/opengraph-image.png',
       width: 1200,
       height: 630,
       alt: 'Brad Titus - Full Stack Developer Portfolio',
@@ -34,10 +34,11 @@ export const metadata = {
     title: 'Brad Titus',
     description: 'Full Stack Developer Portfolio',
     images: [{
-      url: '/opengraph-image.png',
+      url: 'https://bradtitus.dev/opengraph-image.png',
       width: 1200,
       height: 630,
       alt: 'Brad Titus - Full Stack Developer Portfolio',
+      type: 'image/png',
     }],
   },
   icons: {
