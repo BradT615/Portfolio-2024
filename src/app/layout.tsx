@@ -11,6 +11,7 @@ const robotoMono = Roboto_Mono({
 export const metadata = {
   title: 'Brad Titus',
   description: 'Brad Titus - Full Stack Developer Portfolio',
+  metadataBase: new URL("https://bradtitus.dev"),
   authors: [{ name: 'Brad Titus' }],
   verification: {
     google: '1mlH0b6ZQUcucsv7tibARouXD4ATrO8zANWKFm103d0',
