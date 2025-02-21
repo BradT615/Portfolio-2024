@@ -11,8 +11,27 @@ const robotoMono = Roboto_Mono({
 export const metadata: Metadata = {
   title: "Brad Titus",
   description: "Brad Titus - Full Stack Developer Portfolio",
+  authors: [{ name: "Brad Titus" }],
   verification: {
     google: "1mlH0b6ZQUcucsv7tibARouXD4ATrO8zANWKFm103d0",
+  },
+  openGraph: {
+    type: 'website',
+    title: 'Brad Titus',
+    description: 'Full Stack Developer Portfolio',
+    siteName: 'Brad Titus',
+    url: 'https://bradtitus.dev',
+    images: [
+      {
+        url: 'https://bradtitus.dev/OG-preview.png',
+        width: 1200,
+        height: 630,
+        alt: 'Brad Titus - Full Stack Developer',
+      },
+    ],
+  },
+  icons: {
+    icon: '/favicon.ico',
   },
 };
 
