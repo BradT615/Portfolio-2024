@@ -8,44 +8,6 @@ const robotoMono = Roboto_Mono({
   display: 'swap',
 });
 
-export const metadata = {
-  title: 'Brad Titus',
-  description: 'Full Stack Developer Portfolio',
-  metadataBase: new URL("https://bradtitus.dev"),
-  verification: {
-    google: '1mlH0b6ZQUcucsv7tibARouXD4ATrO8zANWKFm103d0',
-  },
-  openGraph: {
-    type: 'website',
-    title: 'Brad Titus',
-    description: 'Full Stack Developer Portfolio',
-    url: 'https://bradtitus.dev',
-    locale: 'en_US',
-    images: [{
-      url: 'https://bradtitus.dev/opengraph-image.png',
-      width: 1200,
-      height: 630,
-      alt: 'Brad Titus - Full Stack Developer Portfolio',
-      type: 'image/png',
-    }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Brad Titus',
-    description: 'Full Stack Developer Portfolio',
-    images: [{
-      url: 'https://bradtitus.dev/opengraph-image.png',
-      width: 1200,
-      height: 630,
-      alt: 'Brad Titus - Full Stack Developer Portfolio',
-      type: 'image/png',
-    }],
-  },
-  icons: {
-    icon: '/favicon.ico',
-  },
-};
-
 export default function RootLayout({
   children,
 }: {
@@ -54,6 +16,28 @@ export default function RootLayout({
   return (
     <html lang="en" className={robotoMono.className}>
       <head>
+        {/* Keep your existing meta tags */}
+        <title>Brad Titus</title>
+        <meta name="description" content="Full Stack Developer Portfolio" />
+        <meta name="google-site-verification" content="1mlH0b6ZQUcucsv7tibARouXD4ATrO8zANWKFm103d0" />
+        
+        {/* Explicitly add OpenGraph tags */}
+        <meta property="og:url" content="https://bradtitus.dev" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Brad Titus" />
+        <meta property="og:description" content="Full Stack Developer Portfolio" />
+        <meta property="og:image" content="https://bradtitus.dev/opengraph-image.png" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:locale" content="en_US" />
+
+        {/* Twitter Card tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Brad Titus" />
+        <meta name="twitter:description" content="Full Stack Developer Portfolio" />
+        <meta name="twitter:image" content="https://bradtitus.dev/opengraph-image.png" />
+
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
