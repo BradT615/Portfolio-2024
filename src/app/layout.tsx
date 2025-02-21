@@ -21,11 +21,24 @@ export const metadata = {
     description: 'Full Stack Developer Portfolio',
     url: 'https://bradtitus.dev',
     locale: 'en_US',
+    images: [{
+      url: '/opengraph-image.png',
+      width: 1200,
+      height: 630,
+      alt: 'Brad Titus - Full Stack Developer Portfolio',
+      type: 'image/png',
+    }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Brad Titus',
     description: 'Full Stack Developer Portfolio',
+    images: [{
+      url: '/opengraph-image.png',
+      width: 1200,
+      height: 630,
+      alt: 'Brad Titus - Full Stack Developer Portfolio',
+    }],
   },
   icons: {
     icon: '/favicon.ico',
