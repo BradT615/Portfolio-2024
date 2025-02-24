@@ -251,7 +251,7 @@ const AnimatedInteractiveGrid = ({
               linear-gradient(90deg, ${highlightColor} 1px, transparent 1px)
             `,
             backgroundSize: `${cellSize}px ${cellSize}px`,
-            backgroundPosition: `${(-animationProgress * cellSize * gridColumns) - 1}px -1px`,
+            backgroundPosition: `${(-animationProgress * cellSize * gridColumns) - 2}px -1px`,
             maskImage: mousePosition ? `
               radial-gradient(circle ${cellSize * 1.5}px at ${mousePosition.x}px ${mousePosition.y}px, black, transparent),
               linear-gradient(to bottom, transparent, black 30%, black 70%, transparent),
