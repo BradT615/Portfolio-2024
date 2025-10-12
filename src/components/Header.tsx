@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Logo } from '@/components/Logo';
 import EmailModal from '@/components/ui/EmailModal';
 import { TextEffect } from './core/text-effect';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { useState, useEffect } from 'react';
 
 interface HeaderProps {
@@ -66,7 +66,7 @@ export default function Header({
     `${animationComplete ? 'h-8 w-8 sm:h-10 sm:w-10' : 'h-40 w-40'}` : 
     `${animationComplete ? 'h-10 w-10 sm:h-12 sm:w-12' : 'h-52 w-52'}`;
   const navFontSize = isCompact ? 'text-sm sm:text-base' : 'text-base sm:text-lg';
-  const navSpacing = isCompact ? 'mx-1 sm:mx-4' : 'mx-1 sm:mx-6';
+  const navSpacing = isCompact ? 'mx-1 sm:mx-2' : 'mx-1 sm:mx-3';
 
   return (
     <>
@@ -125,9 +125,9 @@ export default function Header({
             animate={{ opacity: animationComplete ? 1 : 0 }}
             transition={{ duration: 0.3 }}
           >
-            <Link 
-              href="https://www.linkedin.com/in/bradt615/" 
-              className="nav-link hover:text-white transition-colors pointer-events-auto" 
+            <Link
+              href="https://www.linkedin.com/in/bradt615/"
+              className="nav-link hover:text-white transition-colors pointer-events-auto inline-block py-3"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -148,9 +148,9 @@ export default function Header({
             >
               /
             </motion.span>
-            <Link 
-              href="https://github.com/BradT615" 
-              className="nav-link hover:text-white transition-colors pointer-events-auto" 
+            <Link
+              href="https://github.com/BradT615"
+              className="nav-link hover:text-white transition-colors pointer-events-auto inline-block py-3"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -171,9 +171,9 @@ export default function Header({
             >
               /
             </motion.span>
-            <button 
+            <button
               onClick={() => setIsEmailModalOpen(true)}
-              className="nav-link hover:text-white transition-colors pointer-events-auto"
+              className="nav-link hover:text-white transition-colors pointer-events-auto inline-block py-3"
             >
               <TextEffect
                 per="char"

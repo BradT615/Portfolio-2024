@@ -6,7 +6,7 @@ import { ImagePreloader } from '@/components/ImagePreloader';
 import GridBackground from '@/components/GridBackground';
 import HeroSection from '@/components/HeroSection';
 import OrientationHandler from '@/components/OrientationHandler';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 
 export default function Home() {
   const [currentSection, setCurrentSection] = useState<'hero' | 'projects'>('hero');

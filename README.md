@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
 
-## Getting Started
+<img src="public/logo.svg" alt="Brad Titus Logo" width="120" height="120" >
 
-First, run the development server:
+# Brad Titus
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### 💻 Full Stack Developer • 📍 Tampa, FL
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[![Portfolio](https://img.shields.io/badge/Portfolio-bradtitus.dev-0ea5e9?style=for-the-badge&logo=vercel&logoColor=white)](https://bradtitus.dev)
+[![GitHub](https://img.shields.io/badge/GitHub-BradT615-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/BradT615)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 🎨 About
 
-## Learn More
+Building modern web applications with **interactive experiences** and **smooth animations**
 
-To learn more about Next.js, take a look at the following resources:
+From API integrations to algorithm visualizations, I create projects that blend functionality with design
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 🚀 Featured Projects
 
-## Deploy on Vercel
+</div>
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+<table>
+<tr>
+<td width="50%">
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+#### 🎵 Full Stack Spotify Clone
+Web app using Spotify API/SDK with OAuth 2.0 authentication
+
+</td>
+<td width="50%">
+
+#### 📊 Algorithm Visualizer
+Interactive visualizations of 16 sorting algorithms
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+#### 🎮 Sudoku Game
+Puzzle generator with recursive algorithm and solving tools
+
+</td>
+<td width="50%">
+
+#### ✅ Habit Tracker
+React app with Firebase authentication and Firestore
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+#### 🎬 Movie Database
+TMDb API integration for browsing movies
+
+</td>
+<td width="50%">
+
+#### 🔗 More on GitHub
+TypeScript • Next.js • Python • Rust • AWS
+
+</td>
+</tr>
+</table>
+
+<div align="center">
+
+---
+
+### 💡 Portfolio Highlights
+
+🌊 **Smooth Transitions** • 🎯 **Interactive Skills Tree** • 📱 **Responsive Design** • ⚡ **Framer Motion Animations**
+
+---
+
+*View the live portfolio at [bradtitus.dev](https://bradtitus.dev)*
+
+</div>

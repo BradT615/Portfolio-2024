@@ -15,6 +15,12 @@ export const metadata = {
   verification: {
     google: '1mlH0b6ZQUcucsv7tibARouXD4ATrO8zANWKFm103d0',
   },
+  icons: {
+    icon: [
+      { url: '/favicon-light.svg', media: '(prefers-color-scheme: light)' },
+      { url: '/favicon-dark.svg', media: '(prefers-color-scheme: dark)' },
+    ],
+  },
 };
 
 export default function RootLayout({

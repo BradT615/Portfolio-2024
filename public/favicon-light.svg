@@ -1,4 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="109 135 182 135">
+    <style>
+        path {
+            fill: black;
+        }
+    </style>
     <!-- Top right diagonal line -->
     <path 
         d="M 119.239 140.430
@@ -11,7 +16,7 @@
           L 219.336 164.258
           L 143.065 164.258
           Z"
-        fill="#0ea5e9" 
+        stroke="none"
         />
 
     <!-- Main body and curves -->
@@ -40,5 +45,5 @@
          L 139.258 170.409
          L 114.258 145.411
          Z"
-        fill="#0ea5e9" />
+        stroke="none"/>
 </svg>

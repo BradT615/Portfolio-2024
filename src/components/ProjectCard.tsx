@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { Github, ExternalLink, Youtube } from 'lucide-react';
 import { IoLogoGithub } from "react-icons/io";
 import { projects } from '@/lib/projects';

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, MapPin } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 
 interface HeroSectionProps {
   onNavigateToProjects: () => void;
@@ -92,46 +92,61 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
 
   return (
     <div className={`w-full h-full flex justify-center text-center`}>
-      <motion.div 
+      <motion.div
         className={`${contentHeight} flex flex-col`}
         initial="hidden"
         animate="visible"
         variants={contentVariants}
         transition={contentTransition}
       >
-        <div>
-          <h1 className={`${titleSize} font-bold text-[#d1dbff] mb-[2vh]`}>
+        <div className="space-y-4">
+          <h1 className={`${titleSize} font-semibold tracking-tight text-white mb-3`}>
             Brad Titus
           </h1>
-          <h2 className={`${subtitleSize} text-[#97a1b8] font-light mb-[1vh]`}>
+          <h2 className={`${subtitleSize} text-neutral-400 font-normal tracking-wide`}>
             Full Stack Developer
           </h2>
-          <div className="flex justify-center items-center gap-2">
-            <MapPin size={isCompact ? 16 : 18} strokeWidth={1.25} />
-            <h3 className={`${locationSize} text-[#97a1b8] font-light`}>
-              Tampa,FL
-            </h3>
+          <div className="flex justify-center items-center gap-2 text-neutral-500 mt-2">
+            <MapPin size={isCompact ? 14 : 16} strokeWidth={2} className="opacity-70" />
+            <span className={`${locationSize} font-light tracking-wide`}>
+              Tampa, FL
+            </span>
           </div>
         </div>
-        <div className={`flex gap-4 sm:gap-8 justify-center mt-[5vh]`}>
-          <button 
-            className={`group relative ${buttonPadding} ${buttonSize} shadow-xl bg-[#1a1a50] hover:bg-[#262676] text-[#d1dbff] border-[2px] border-[#6d7484] hover:text-white hover:border-[#97a1b8] transition-all duration-300 rounded-lg overflow-hidden ${!isEnabled && 'pointer-events-none'}`}
+        <div className={`flex gap-4 justify-center mt-12`}>
+          <button
+            className={`group relative ${buttonPadding} ${buttonSize} font-medium tracking-wide
+              bg-white/5 hover:bg-white/10
+              text-white/90 hover:text-white
+              border border-white/10 hover:border-white/20
+              backdrop-blur-sm
+              transition-all duration-200 ease-out
+              rounded-xl
+              shadow-lg hover:shadow-xl
+              ${!isEnabled && 'pointer-events-none'}`}
             onClick={() => isEnabled && setIsResumeOpen(true)}
           >
-            <span>Resume</span>
+            <span className="relative z-10">Resume</span>
           </button>
-          
-          <button 
-            className={`relative ${buttonPadding} ${buttonSize} shadow-xl text-[#d1dbff] border-[2px] border-[#6d7484] hover:text-white hover:border-[#97a1b8] transition-all duration-300 rounded-lg overflow-hidden ${!isEnabled && 'pointer-events-none'}`}
+
+          <button
+            className={`relative ${buttonPadding} ${buttonSize} font-medium tracking-wide
+              bg-white/10 hover:bg-white/[0.15]
+              text-white
+              border border-white/20 hover:border-white/30
+              backdrop-blur-sm
+              transition-all duration-200 ease-out
+              rounded-xl
+              shadow-lg hover:shadow-xl
+              ${!isEnabled && 'pointer-events-none'}`}
             onClick={handleClick}
           >
-            <div className="absolute inset-0 bg-neutral-400 bg-opacity-10 backdrop-blur-sm backdrop-filter" />
-            <span className="relative">Projects</span>
+            <span className="relative z-10">Projects</span>
           </button>
         </div>
       </motion.div>
 
-      <motion.div 
+      <motion.div
         className={`fixed ${chevronPosition} left-1/2 -translate-x-1/2 ${!isEnabled && 'pointer-events-none'}`}
         initial="hidden"
         animate="visible"
@@ -139,13 +154,14 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
         transition={chevronTransition}
         onClick={handleClick}
       >
-        <ChevronDown 
-          size={isCompact ? 35 : 45} 
-          className="cursor-pointer transition-all animate-[bounce_1.5s_ease-in-out_infinite] hover:text-[#97a1b8]"
+        <ChevronDown
+          size={isCompact ? 32 : 40}
+          className="cursor-pointer text-white/40 hover:text-white/60 transition-colors animate-[bounce_1.5s_ease-in-out_infinite]"
+          strokeWidth={1.5}
         />
       </motion.div>
 
-      <ResumeModal 
+      <ResumeModal
         isOpen={isResumeOpen}
         onClose={() => setIsResumeOpen(false)}
       />
