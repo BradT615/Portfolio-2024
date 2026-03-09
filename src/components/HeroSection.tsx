@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, MapPin } from 'lucide-react';
 import { motion } from 'motion/react';
+import { BREAKPOINTS } from '@/lib/constants';
 
 interface HeroSectionProps {
   onNavigateToProjects: () => void;
@@ -47,7 +48,7 @@ const HeroSection = ({ onNavigateToProjects, isEnabled = true, hasScrolled = fal
 
   useEffect(() => {
     const checkSize = () => {
-      setIsCompact(window.innerHeight <= 500);
+      setIsCompact(window.innerHeight <= BREAKPOINTS.SMALL_HEIGHT);
     };
 
     checkSize();

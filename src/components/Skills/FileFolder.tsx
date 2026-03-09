@@ -3,6 +3,8 @@ import Image from "next/image";
 import { FileIcon, FolderIcon, FolderOpenIcon, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
+import { useWindowHeight } from "@/hooks/useWindowHeight";
+import { getResponsiveClasses } from "@/lib/responsive";
 
 interface FolderProps {
   name: string;
@@ -25,28 +27,6 @@ interface FileProps {
 }
 
 type FileOrFolderElement = React.ReactElement<FileProps | FolderProps>;
-
-const useWindowHeight = () => {
-  const [windowHeight, setWindowHeight] = useState(typeof window !== 'undefined' ? window.innerHeight : 701);
-  
-  useEffect(() => {
-    const handleResize = () => setWindowHeight(window.innerHeight);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  
-  return windowHeight;
-};
-
-const getResponsiveClasses = (windowHeight: number) => ({
-  iconSize: windowHeight <= 500 ? 'h-2.5 w-2.5' : windowHeight <= 600 ? 'h-3 w-3' : windowHeight <= 700 ? 'h-3.5 w-3.5' : 'h-4 w-4',
-  gap: windowHeight <= 500 ? 'gap-0.5' : windowHeight <= 700 ? 'gap-1' : 'gap-2',
-  padding: windowHeight <= 500 ? 'p-0.5' : windowHeight <= 600 ? 'p-1' : windowHeight <= 700 ? 'p-1' : 'p-1.5',
-  indent: windowHeight <= 500 ? 'pl-3' : windowHeight <= 700 ? 'pl-4' : 'pl-6',
-  fontSize: windowHeight <= 400 ? 'text-[8px] font-light' : windowHeight <= 500 ? 'text-[9px] font-light' : windowHeight <= 600 ? 'text-[11px] font-light' : windowHeight <= 700 ? 'text-[13px] font-normal' : 'text-xs font-light xl:text-sm xl:font-normal',
-  devIconSize: windowHeight <= 500 ? '10px' : windowHeight <= 600 ? '12px' : windowHeight <= 700 ? '14px' : '16px',
-  imageSize: windowHeight <= 500 ? 10 : windowHeight <= 600 ? 12 : windowHeight <= 700 ? 14 : 16
-});
 
 const renderTechIcon = ({ type, path, font }: FileProps['icon'], windowHeight: number) => {
   const { devIconSize, imageSize } = getResponsiveClasses(windowHeight);

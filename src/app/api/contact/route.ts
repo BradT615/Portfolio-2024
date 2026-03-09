@@ -1,36 +1,5 @@
-import sgMail from '@sendgrid/mail';
 import { NextResponse } from 'next/server';
-
-// Initialize SendGrid with your API key
-sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
-
-const MY_EMAIL = 'bradtitus615@gmail.com';
-const FROM_EMAIL = 'noreply@bradtitus.dev';
-const FROM_NAME = 'Brad Titus';
-
-// Use hosted logo image
-const LOGO_IMG = `<img src="https://bradtitus.dev/Logo.png" alt="Logo" style="width: 100px; height: auto;" />`;
-
-// Shared email styles
-const emailStyle = `
-  font-family: Arial, sans-serif;
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-`;
-
-const headerStyle = `
-  text-align: center;
-  padding: 20px 0;
-  border-bottom: 1px solid #eaeaea;
-`;
-
-const contentStyle = `
-  background-color: #f3f4f6;
-  padding: 20px;
-  border-radius: 8px;
-  margin: 20px 0;
-`;
+import { sgMail, MY_EMAIL, FROM_EMAIL, FROM_NAME, LOGO_IMG, emailStyle, headerStyle, contentStyle } from '@/lib/email';
 
 export async function POST(req: Request) {
   try {

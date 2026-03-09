@@ -1,14 +1,7 @@
 'use client'
 
 import Image from 'next/image';
-import { projects } from '@/lib/projects';
-
-interface Project {
-  title: string;
-  imageUrl?: string;
-  repoLink: string;
-  skills: string[];
-}
+import { projects, Project } from '@/lib/projects';
 
 export const ImagePreloader = () => {
   // Filter out projects without imageUrl and handle type safety

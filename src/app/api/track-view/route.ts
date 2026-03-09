@@ -1,12 +1,6 @@
-import sgMail from '@sendgrid/mail';
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
-
-sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
-
-const MY_EMAIL = 'bradtitus615@gmail.com';
-const FROM_EMAIL = 'noreply@bradtitus.dev';
-const FROM_NAME = 'Brad Titus';
+import { sgMail, MY_EMAIL, FROM_EMAIL, FROM_NAME } from '@/lib/email';
 
 // List of bot identifiers
 const BOT_IDENTIFIERS = [
@@ -39,7 +33,7 @@ export async function POST() {
     const headersList = headers();
     const userAgent = headersList.get('user-agent') || 'Unknown';
     const referer = headersList.get('referer') || 'Direct visit';
-    
+
     // Skip bot traffic
     if (isBot(userAgent)) {
       return NextResponse.json(
@@ -49,7 +43,7 @@ export async function POST() {
     }
 
     const deviceType = getDeviceType(userAgent);
-    
+
     // Prepare notification email
     const msg = {
       to: MY_EMAIL,

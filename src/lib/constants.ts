@@ -1,0 +1,6 @@
+export const BREAKPOINTS = {
+  COMPACT_HEIGHT: 700,
+  SMALL_HEIGHT: 500,
+  MEDIUM_HEIGHT: 600,
+  TALL_HEIGHT: 750,
+} as const;

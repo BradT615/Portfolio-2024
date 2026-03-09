@@ -3,6 +3,8 @@ import { SkillsTree } from './Skills/SkillsTree';
 import ProjectCard from './ProjectCard';
 import SkillConnections from './Skills/SkillConnections';
 import { projects } from '@/lib/projects';
+import { useWindowHeight } from '@/hooks/useWindowHeight';
+import { BREAKPOINTS } from '@/lib/constants';
 
 interface ProjectSectionProps {
   onTopScroll?: () => void;
@@ -10,7 +12,7 @@ interface ProjectSectionProps {
 }
 
 const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectChange }) => {
-  const [windowHeight, setWindowHeight] = useState(typeof window !== 'undefined' ? window.innerHeight : 701);
+  const windowHeight = useWindowHeight();
   const [activeSkills, setActiveSkills] = useState<string[]>(projects[0].skills);
   const [showConnections, setShowConnections] = useState(false);
   const [currentProject, setCurrentProject] = useState(0);
@@ -21,12 +23,6 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
   const connectionsTimer = useRef<NodeJS.Timeout>();
   const spotlightTimer = useRef<NodeJS.Timeout>();
   
-  useEffect(() => {
-    const handleResize = () => setWindowHeight(window.innerHeight);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   useEffect(() => {
     currentProjectRef.current = currentProject;
   }, [currentProject]);
@@ -83,9 +79,9 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ onTopScroll, onProjectC
   return (
     <div className="relative w-full flex">
       <div className={`${
-        windowHeight <= 400 ? 'w-48' : 
-        windowHeight <= 600 ? 'w-56 font-light' : 
-        windowHeight <= 700 ? 'w-64 font-light' : 
+        windowHeight <= 400 ? 'w-48' :
+        windowHeight <= BREAKPOINTS.MEDIUM_HEIGHT ? 'w-56 font-light' :
+        windowHeight <= BREAKPOINTS.COMPACT_HEIGHT ? 'w-64 font-light' :
         'w-64 lg:w-80 font-normal'
       }`}>
         <div className="h-full font-normal">

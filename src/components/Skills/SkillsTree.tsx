@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "motion/react";
 import { File, Folder } from "./FileFolder";
+import { useWindowHeight } from "@/hooks/useWindowHeight";
+import { BREAKPOINTS } from "@/lib/constants";
 
 type SkillTreeChild = React.ReactElement<{
   name: string;
@@ -17,15 +19,9 @@ type SkillTreeChild = React.ReactElement<{
 }>;
 
 export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills = [] }) => {
-  const [windowHeight, setWindowHeight] = useState(typeof window !== 'undefined' ? window.innerHeight : 701);
+  const windowHeight = useWindowHeight();
   const [forceShowAll, setForceShowAll] = useState(false);
-  const shouldShowAllSkills = forceShowAll || windowHeight > 750;
-
-  useEffect(() => {
-    const handleResize = () => setWindowHeight(window.innerHeight);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const shouldShowAllSkills = forceShowAll || windowHeight > BREAKPOINTS.TALL_HEIGHT;
 
   const handleScroll = (e: React.WheelEvent) => {
     const element = e.currentTarget;
@@ -94,26 +90,25 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
     >
       <div 
         className={`flex-1 px-2 lg:px-4 custom-scrollbar overflow-y-auto ${
-          windowHeight <= 600 ? 'text-[10px] px-2' : 
-          windowHeight <= 600 ? 'text-[10px] px-2' : 
-          windowHeight <= 700 ? 'text-[11px] px-2' : 
+          windowHeight <= BREAKPOINTS.MEDIUM_HEIGHT ? 'text-[10px] px-2' :
+          windowHeight <= BREAKPOINTS.COMPACT_HEIGHT ? 'text-[11px] px-2' :
           'text-xs xl:text-sm'
         }`}
         style={{
-          paddingTop: windowHeight <= 500 ? "0.5rem" : windowHeight <= 600 ? "1rem" : windowHeight <= 750 ? "1.5rem" : "2rem",
-          paddingBottom: windowHeight <= 500 ? "0.5rem" : windowHeight <= 600 ? "1rem" : windowHeight <= 750 ? "1.5rem" : "2rem",
+          paddingTop: windowHeight <= BREAKPOINTS.SMALL_HEIGHT ? "0.5rem" : windowHeight <= BREAKPOINTS.MEDIUM_HEIGHT ? "1rem" : windowHeight <= BREAKPOINTS.TALL_HEIGHT ? "1.5rem" : "2rem",
+          paddingBottom: windowHeight <= BREAKPOINTS.SMALL_HEIGHT ? "0.5rem" : windowHeight <= BREAKPOINTS.MEDIUM_HEIGHT ? "1rem" : windowHeight <= BREAKPOINTS.TALL_HEIGHT ? "1.5rem" : "2rem",
           minHeight: "0"
         }}
       >
-        {windowHeight <= 750 && (
+        {windowHeight <= BREAKPOINTS.TALL_HEIGHT && (
           <button
             onClick={() => setForceShowAll(!forceShowAll)}
             className={`
             absolute right-2 z-20 rounded-sm bg-[#101328] border border-[#222441] text-[#97a1b8]
             transition-all duration-200 ease-in-out
-            ${windowHeight <= 500 ? 'top-1 text-[8px] px-1.5 py-0.5' :
-              windowHeight <= 600 ? 'top-1.5 text-[9px] px-1.5 py-0.5' :
-              windowHeight <= 700 ? 'top-2 text-[10px] px-2 py-1' :
+            ${windowHeight <= BREAKPOINTS.SMALL_HEIGHT ? 'top-1 text-[8px] px-1.5 py-0.5' :
+              windowHeight <= BREAKPOINTS.MEDIUM_HEIGHT ? 'top-1.5 text-[9px] px-1.5 py-0.5' :
+              windowHeight <= BREAKPOINTS.COMPACT_HEIGHT ? 'top-2 text-[10px] px-2 py-1' :
               'top-2 text-[11px] px-2.5 py-1'
             }`}
           >
@@ -176,15 +171,15 @@ export const SkillsTree: React.FC<{ activeSkills?: string[] }> = ({ activeSkills
         </Folder>
       </div>
       <div className={`absolute top-0 inset-x-0 pointer-events-none z-10 transition-opacity duration-200 bg-gradient-to-b from-[#080b23] to-transparent ${
-          windowHeight <= 500 ? 'h-2' :
-          windowHeight <= 600 ? 'h-4' :
-          windowHeight <= 750 ? 'h-6' :
+          windowHeight <= BREAKPOINTS.SMALL_HEIGHT ? 'h-2' :
+          windowHeight <= BREAKPOINTS.MEDIUM_HEIGHT ? 'h-4' :
+          windowHeight <= BREAKPOINTS.TALL_HEIGHT ? 'h-6' :
           'h-8'
         }`} />
       <div className={`absolute bottom-0 inset-x-0 pointer-events-none z-10 transition-opacity duration-200 bg-gradient-to-t from-[#080b23] to-transparent ${
-          windowHeight <= 500 ? 'h-2' :
-          windowHeight <= 600 ? 'h-4' :
-          windowHeight <= 750 ? 'h-6' :
+          windowHeight <= BREAKPOINTS.SMALL_HEIGHT ? 'h-2' :
+          windowHeight <= BREAKPOINTS.MEDIUM_HEIGHT ? 'h-4' :
+          windowHeight <= BREAKPOINTS.TALL_HEIGHT ? 'h-6' :
           'h-8'
         }`} />
     </motion.div>
